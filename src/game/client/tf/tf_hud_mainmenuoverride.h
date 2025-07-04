@@ -183,6 +183,7 @@ private:
 	CExImageButton					*m_pMOTDNextButton;
 	CExImageButton					*m_pMOTDPrevButton;
 	CExButton						*m_pMOTDURLButton;
+	CExButton						*m_pMOTDURLButton2;
 
 	// MOTD handling
 	static CMOTDManager		m_MOTDManager;

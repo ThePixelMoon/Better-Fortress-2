@@ -2,14 +2,15 @@
 {
 	"last_request_time"		"2025-05-31 03:05:18"
 	"last_request_language"		"english"
-	"119"
+	"500"
 	{
 		"post_time"		"2025-05-31 03:05:18"
-		"title_english"		"Welcome to Better Fortress 2!"
-		"text_english"		"WARNING: This build was NOT meant to relase, this is a BETA Playtest! "
+		"title_english"		"Welcome to our Mod!"
+		"text_english"		"WARNING: This build was NOT meant to relase, this is a BETA Playtest! Have fun Tossing Bread, playing MvM Versus, and Experimenting with new VScript Functions! Also featuring tons of bugfixes, Mini-dispenser and Offshore Content, Make sure to join Our Discord for more info!"
 		"url"		"https://github.com/ALIEN31ITA/Better-Fortress-2"
-		"image"		"../logo/new_tf2_logo"
+		"url2"		"https://discord.gg/NM82mujJsf"
+		"image"		"../logo/bf2_logo_mvmvs"
 		"header_type"		"0"
-		"header_english"		"#TF_SteamWorkshop_Tag_CommunityFix"
+		"header_english"		"#TF_ModGameTitle"
 	}
 }

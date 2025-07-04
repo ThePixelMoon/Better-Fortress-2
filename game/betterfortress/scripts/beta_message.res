@@ -4,6 +4,7 @@
 	{
 		"ControlName"	"Label"
 		"fieldName"		"BetaMessage"
+		"font" 			"MenuLarge"
 		"xpos"			"0"
 		"ypos"			"0"
 		"wide"			"600"

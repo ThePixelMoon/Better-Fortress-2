@@ -164,6 +164,7 @@ CHudMainMenuOverride::CHudMainMenuOverride( IViewPort *pViewPort ) : BaseClass( 
 	m_pMOTDPanel = NULL;
 	m_pMOTDShowPanel = NULL;
 	m_pMOTDURLButton = NULL;
+	m_pMOTDURLButton2 = NULL;
 	m_pMOTDNextButton = NULL;
 	m_pMOTDPrevButton = NULL;
 	m_iNotiPanelWide = 0;
@@ -570,6 +571,7 @@ void CHudMainMenuOverride::ApplySchemeSettings( IScheme *scheme )
 	m_pMOTDPrevButton = dynamic_cast<CExImageButton*>( m_pMOTDPanel->FindChildByName("MOTD_PrevButton") );
 	m_pMOTDNextButton = dynamic_cast<CExImageButton*>( m_pMOTDPanel->FindChildByName("MOTD_NextButton") );
 	m_pMOTDURLButton = dynamic_cast<CExButton*>( m_pMOTDPanel->FindChildByName("MOTD_URLButton") );
+	m_pMOTDURLButton2 = dynamic_cast<CExButton*>( m_pMOTDPanel->FindChildByName("MOTD_URLButton2") );
 
 	// m_pNotificationsShowPanel shows number of unread notifications. Pressing it pops up the first notification.
 	m_pNotificationsShowPanel = dynamic_cast<vgui::EditablePanel*>( FindChildByName("Notifications_ShowButtonPanel") );
@@ -1371,6 +1373,11 @@ void CHudMainMenuOverride::UpdateMOTD( bool bNewMOTDs )
 			const char *pszURL = pMOTD->GetURL();
 			m_pMOTDURLButton->SetVisible( (pszURL && pszURL[0]) );
 		}
+		if ( m_pMOTDURLButton2 )
+		{
+			const char *pszURL2 = pMOTD->GetURL2();
+			m_pMOTDURLButton2->SetVisible( (pszURL2 && pszURL2[0]) );
+		}
 		if ( m_pMOTDPrevButton )
 		{
 			m_pMOTDPrevButton->SetEnabled( m_iCurrentMOTD > 0 );
@@ -1825,6 +1832,23 @@ void CHudMainMenuOverride::OnCommand( const char *command )
 				if ( steamapicontext && steamapicontext->SteamFriends() )
 				{
 					steamapicontext->SteamFriends()->ActivateGameOverlayToWebPage( pszURL );
+				}
+			}
+		}
+		return;
+	}
+	//Better Fortress 2 - MOTD 2nd Button
+	else if ( !Q_stricmp( command, "motd_viewurl_secondary" ) )
+	{
+		CMOTDEntryDefinition *pMOTD = GetMOTDManager().GetMOTDByIndex( m_iCurrentMOTD );
+		if ( pMOTD )
+		{
+			const char *pszURL2 = pMOTD->GetURL2();
+			if ( pszURL2 && pszURL2[0] )
+			{
+				if ( steamapicontext && steamapicontext->SteamFriends() )
+				{
+					steamapicontext->SteamFriends()->ActivateGameOverlayToWebPage( pszURL2 );
 				}
 			}
 		}

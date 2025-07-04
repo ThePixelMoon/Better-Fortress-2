@@ -1037,16 +1037,16 @@
 		{
 			"ControlName"	"CExButton"
 			"fieldName"		"MOTD_URLButton"
-			"xpos"			"75"
+			"xpos"			"15"
 			"ypos"			"rs1.2"
-			"wide"			"150"
+			"wide"			"125"
 			"tall"			"15"
 			"autoResize"	"0"
 			"pinCorner"		"3"
 			"visible"		"1"
 			"enabled"		"1"
 			"tabPosition"	"0"
-			"labelText"		"#MMenu_MOTD_URL"
+			"labelText"		"#TFB_MOTD_GITHUB"
 			"textinsetx"	"20"
 			"use_proportional_insets" "1"
 			"font"			"HudFontSmallestBold"
@@ -1055,6 +1055,47 @@
 			"brighttext"	"0"
 			"default"		"1"
 			"command"		"motd_viewurl"
+			"proportionaltoparent" "1"
+			"actionsignallevel"	"2"
+
+
+			"navUp"			"MOTD_CloseButton"
+			"navLeft"		"MOTD_PrevButton"
+			"navRight"		"MOTD_NextButton"
+
+			"sound_depressed"	"UI/buttonclick.wav"
+			"sound_released"	"UI/buttonclickrelease.wav"
+			
+			"defaultFgColor_override" "235 226 202 255"
+			"defaultBgColor_override" "46 43 42 255"
+			"armedFgColor_override" "235 226 202 255"
+			"depressedFgColor_override" "235 226 202 255"
+		}	
+		
+		// BETTER FORTRESS DISCORD LINK
+		
+		"MOTD_URLButton2"
+		{
+			"ControlName"	"CExButton"
+			"fieldName"		"MOTD_URLButton2"
+			"xpos"			"155"
+			"ypos"			"rs1.2"
+			"wide"			"125"
+			"tall"			"15"
+			"autoResize"	"0"
+			"pinCorner"		"3"
+			"visible"		"1"
+			"enabled"		"1"
+			"tabPosition"	"0"
+			"labelText"		"#TFB_MOTD_DISCORD"
+			"textinsetx"	"20"
+			"use_proportional_insets" "1"
+			"font"			"HudFontSmallestBold"
+			"textAlignment"	"center"
+			"dulltext"		"0"
+			"brighttext"	"0"
+			"default"		"1"
+			"command"		"motd_viewurl_secondary"
 			"proportionaltoparent" "1"
 			"actionsignallevel"	"2"
 

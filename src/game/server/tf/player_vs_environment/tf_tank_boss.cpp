@@ -525,6 +525,7 @@ void CTFTankBoss::Spawn( void )
 void CTFTankBoss::UpdateOnRemove( void )
 {
 	StopSound( "MVM.TankEngineLoop" );
+	StopSound( "MVM.TankDeploy" );
 
 	if ( TFObjectiveResource() )
 	{
@@ -1027,6 +1028,7 @@ void CTFTankBoss::FirePopFileEvent( EventInfo *eventInfo )
 void CTFTankBoss::Explode( void )
 {
 	StopSound( "MVM.TankEngineLoop" );
+	StopSound( "MVM.TankDeploy" );
 
 	FirePopFileEvent( &m_onKilledEventInfo );
 

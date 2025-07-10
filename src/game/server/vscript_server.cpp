@@ -1184,6 +1184,56 @@ bool ScriptSendGlobalGameEvent( const char *szName, HSCRIPT params )
 	return true;
 }
 
+bool ScriptSendGlobalGameEventToClient( const char *szName, HSCRIPT params, int userid )
+{
+	if ( !szName || !*szName )
+		return false;
+
+	IGameEvent *event = gameeventmanager->CreateEvent( szName );
+	if ( !event )
+		return false;
+
+	// Josh: This wasn't as bad as I thought it would be!
+	{
+		int nIter = 0;
+		int nEntries = g_pScriptVM->GetNumTableEntries( params );
+		for ( int i = 0; i < nEntries; i++ )
+		{
+			ScriptVariant_t vKey, vValue;
+			nIter = g_pScriptVM->GetKeyValue( params, nIter, &vKey, &vValue );
+
+			if ( vKey.GetType() != FIELD_CSTRING )
+			{
+				Log_Msg( LOG_VScript, "VSCRIPT: ScriptSendRealGameEvent: Key must be a FIELD_CSTRING" );
+				continue;
+			}
+			const char *pszKeyName = (const char *)vKey;
+			switch ( vValue.GetType() )
+			{
+			case FIELD_BOOLEAN: event->SetBool  ( pszKeyName, (bool)vValue );         break;
+			case FIELD_FLOAT:   event->SetFloat ( pszKeyName, (float)vValue );        break;
+			case FIELD_INTEGER: event->SetInt   ( pszKeyName, (int)vValue );          break;
+			case FIELD_CSTRING: event->SetString( pszKeyName, (const char *)vValue ); break;
+			case FIELD_UINT64:  event->SetUint64( pszKeyName, (uint64)vValue );       break;
+			default:
+			{
+				Log_Msg( LOG_VScript, "VSCRIPT: ScriptSendRealGameEvent: Don't understand FIELD_TYPE of value for key %s.", pszKeyName );
+				break;
+			}
+			}
+		}
+	}
+	IServer *pGameServer = engine->GetIServer();
+	CGameEventListener *pGameClient = (CGameEventListener *) pGameServer->GetClient( userid );
+	if (!pGameClient)
+	{
+		return false;
+	}
+	pGameClient->FireGameEvent( event );
+
+	return true;
+}
+
 const Vector &RotatePosition( const Vector rotateOrigin, const QAngle rotateAngles, const Vector position )
 {
 	VMatrix rotationMatrix;
@@ -2546,6 +2596,7 @@ bool VScriptServerInit()
 				ScriptRegisterFunctionNamed( g_pScriptVM, ScriptFireGameEvent, "FireGameEvent", "Fire a game event to a listening callback function in script. Parameters are passed in a squirrel table." );
 				ScriptRegisterFunctionNamed( g_pScriptVM, ScriptFireScriptHook, "FireScriptHook", "Fire a script hoook to a listening callback function in script. Parameters are passed in a squirrel table." );
 				ScriptRegisterFunctionNamed( g_pScriptVM, ScriptSendGlobalGameEvent, "SendGlobalGameEvent", "Sends a real game event to everything. Parameters are passed in a squirrel table." );
+				ScriptRegisterFunctionNamed( g_pScriptVM, ScriptSendGlobalGameEventToClient, "SendGlobalGameEventToClient", "Sends a real game event to a specific client. Parameters are passed in a squirrel table." );
 				ScriptRegisterFunction( g_pScriptVM, ScriptHooksEnabled, "Returns whether script hooks are currently enabled." );
 
 				ScriptRegisterFunctionNamed( g_pScriptVM, Script_SpawnEntityFromTable, "SpawnEntityFromTable", "Spawn entity from KeyValues in table - 'name' is entity name, rest are KeyValues for spawn." );

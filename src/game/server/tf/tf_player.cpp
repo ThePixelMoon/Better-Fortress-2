@@ -7831,7 +7831,7 @@ bool CTFPlayer::ClientCommand( const CCommand &args )
 		return true;
 	}
 	// Better Fortress - Add attribute shortcuts
-	else if ( FStrEq( pcmd, "addgunattribute" ) )
+	else if ( FStrEq( pcmd, "addgunattr" ) )
 	{
 		if ( sv_cheats->GetBool() && args.ArgC() >= 2 )
 		{
@@ -7842,7 +7842,7 @@ bool CTFPlayer::ClientCommand( const CCommand &args )
 		}
 		return true;
 	}
-	else if ( FStrEq( pcmd, "removegunattribute" ) )
+	else if ( FStrEq( pcmd, "removegunattr" ) )
 	{
 		if ( sv_cheats->GetBool() && args.ArgC() >= 2 )
 		{
@@ -7853,7 +7853,7 @@ bool CTFPlayer::ClientCommand( const CCommand &args )
 		}
 		return true;
 	}
-	else if ( FStrEq( pcmd, "addattribute" ) )
+	else if ( FStrEq( pcmd, "addattr" ) )
 	{
 		if ( sv_cheats->GetBool() && args.ArgC() >= 2 )
 		{
@@ -7861,7 +7861,7 @@ bool CTFPlayer::ClientCommand( const CCommand &args )
 		}
 		return true;
 	}
-	else if ( FStrEq( pcmd, "removeattribute" ) )
+	else if ( FStrEq( pcmd, "removeattr" ) )
 	{
 		if ( sv_cheats->GetBool() && args.ArgC() >= 2 )
 		{

@@ -994,3 +994,4 @@ game/betterfortress/maps/rs_pipeflow_a0.nav
 game/betterfortress/scripts/vscripts/ragdoll.nut
 game/betterfortress/scripts/vscripts/merasmusprop.nut
 game/betterfortress/cfg/ragdoll.cfg
+game/betterfortress/scripts/population/mvm_2hatch.pop

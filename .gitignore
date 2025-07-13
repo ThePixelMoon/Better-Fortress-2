@@ -995,3 +995,5 @@ game/betterfortress/scripts/vscripts/ragdoll.nut
 game/betterfortress/scripts/vscripts/merasmusprop.nut
 game/betterfortress/cfg/ragdoll.cfg
 game/betterfortress/scripts/population/mvm_2hatch.pop
+game/betterfortress/maps/mvm_mannfactured_a1.nav
+game/betterfortress/scripts/population/mvm_mannfactured_a1.pop

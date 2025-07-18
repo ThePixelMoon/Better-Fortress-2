@@ -25531,8 +25531,34 @@
 }
 
 //-----------------------------------------------------------------------------
-//End of Soldier BATCH 9
+//End of Soldier BATCH 9 - Betterfortress Demoman Charge
 //-----------------------------------------------------------------------------
+
+"Demo_MVM_Charge.Charging"
+{
+	"channel"	"CHAN_STATIC"
+	"soundlevel"	"SNDLVL_94dB"
+	"volume"	"1.0"
+	"rndwave"
+	{
+		"wave"		"weapons/demo_mvm_charge_windup1.mp3"
+		"wave"		"weapons/demo_mvm_charge_windup2.mp3"
+		"wave"		"weapons/demo_mvm_charge_windup3.mp3"
+	}
+}
+
+"Demo_MVM_M_Charge.Charging"
+{
+	"channel"	"CHAN_STATIC"
+	"soundlevel"	"SNDLVL_94dB"
+	"volume"	"1.0"
+	"rndwave"
+	{
+		"wave"		"weapons/demo_mvm_m_charge_windup1.mp3"
+		"wave"		"weapons/demo_mvm_m_charge_windup2.mp3"
+		"wave"		"weapons/demo_mvm_m_charge_windup3.mp3"
+	}
+}
 
 
 //-----------------------------------------------------------------------------

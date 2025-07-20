@@ -8204,6 +8204,9 @@ bool CTFPlayer::ClientCommand( const CCommand &args )
 
 			if ( bArgsChecked )
 			{
+				if ( TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_INVADERS && tf_gamemode_mvmvs.GetBool() && iBuilding == OBJ_TELEPORTER && iMode == MODE_TELEPORTER_ENTRANCE )
+					return true;
+
 				StartBuildingObjectOfType( iBuilding, iMode );
 			}
 			else
@@ -14004,7 +14007,8 @@ void CTFPlayer::RemoveAllOwnedEntitiesFromWorld( bool bExplodeBuildings /* = fal
 {
 	RemoveOwnedProjectiles();
 
-	if ( TFGameRules()->IsMannVsMachineMode() && ( GetTeamNumber() == TF_TEAM_PVE_INVADERS ) )
+	// In Versus, we detonate objects on blue if you're not a bot.
+	if ( TFGameRules()->IsMannVsMachineMode() && ( GetTeamNumber() == TF_TEAM_PVE_INVADERS ) && IsBot() )
 	{
 		// MvM engineer bots leave their sentries behind when they die
 		return;

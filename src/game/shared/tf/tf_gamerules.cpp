@@ -877,9 +877,6 @@ ConVar tf_raid_allow_overtime( "tf_raid_allow_overtime", "0"/*, FCVAR_CHEAT*/ );
 #endif // TF_RAID_MODE
 
 ConVar tf_mvm_defenders_team_size( "tf_mvm_defenders_team_size", "6", FCVAR_REPLICATED | FCVAR_NOTIFY, "Maximum number of defenders in MvM" );
-ConVar tf_gamemode_mvmvs( "tf_gamemode_mvmvs", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Enable versus in MvM");
-ConVar tf_mvmvs_robot_stations( "tf_mvmvs_robot_stations", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Allow Robots to use upgrade stations");
-ConVar tf_mvmvs_use_loadout( "tf_mvmvs_use_loadout", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "Enable versus in MvM");
 ConVar tf_mvm_max_connected_players( "tf_mvm_max_connected_players", "10", FCVAR_GAMEDLL, "Maximum number of connected real players in MvM" );
 ConVar tf_mvm_max_invaders( "tf_mvm_max_invaders", "24", FCVAR_GAMEDLL, "Maximum number of invaders in MvM" );
 
@@ -890,6 +887,10 @@ ConVar tf_mvm_respec_credit_goal( "tf_mvm_respec_credit_goal", "2000", FCVAR_CHE
 ConVar tf_mvm_buybacks_method( "tf_mvm_buybacks_method", "0", FCVAR_REPLICATED | FCVAR_HIDDEN, "When set to 0, use the traditional, currency-based system.  When set to 1, use finite, charge-based system.", true, 0.0, true, 1.0 );
 ConVar tf_mvm_buybacks_per_wave( "tf_mvm_buybacks_per_wave", "3", FCVAR_REPLICATED | FCVAR_HIDDEN, "The fixed number of buybacks players can use per-wave." );
 
+//MVM Versus - Convars
+ConVar tf_gamemode_mvmvs( "tf_gamemode_mvmvs", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "Enable versus in MvM");
+ConVar tf_mvmvs_robot_stations( "tf_mvmvs_robot_stations", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Allow Robots to use upgrade stations");
+ConVar tf_mvmvs_use_loadout( "tf_mvmvs_use_loadout", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "Robot players will spawn with their loadout items, if not, will be picked from the robot selection list file");
 
 #ifdef GAME_DLL
 enum { kMVM_CurrencyPackMinSize = 1, };

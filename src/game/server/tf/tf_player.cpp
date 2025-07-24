@@ -3299,6 +3299,7 @@ void CTFPlayer::PrecachePlayerModels( void )
 */
 	}
 
+	// MVM Versus - CTrigger_Hurt badass viewmodels.
 	for ( int i = TF_FIRST_NORMAL_CLASS; i < TF_LAST_NORMAL_CLASS; ++i )
 	{
 		COMPILE_TIME_ASSERT( ARRAYSIZE( g_szBotViewmodels ) == TF_LAST_NORMAL_CLASS );

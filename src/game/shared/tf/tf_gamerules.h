@@ -98,6 +98,7 @@ class CMannVsMachineUpgrades;
 
 extern ConVar tf_mvm_defenders_team_size;
 extern ConVar tf_gamemode_mvmvs;
+extern ConVar tf_mvmvs_use_loadout;
 extern ConVar tf_mvm_max_invaders;
 
 const int kLadder_TeamSize_6v6 = 6;

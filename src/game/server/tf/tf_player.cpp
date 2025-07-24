@@ -3230,6 +3230,7 @@ void CTFPlayer::PrecacheMvM()
 	PrecacheScriptSound( "Spy.MVM_TeaseVictim" );
 	PrecacheScriptSound( "MVM.Robot_Engineer_Spawn" );
 	PrecacheScriptSound( "MVM.Robot_Teleporter_Deliver" );
+	PrecacheScriptSound( "MVM.Robot_Teleporter_Activate" );
 	PrecacheScriptSound( "MVM.MoneyPickup" );
 
 	PrecacheMaterial( "effects/circle_nocull" );

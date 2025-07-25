@@ -1182,7 +1182,6 @@
 			"equip_regions"
 			{
 				"zombie_body"			"1"
-				"feet"					"1"
 			}
 			"used_by_classes"
 			{

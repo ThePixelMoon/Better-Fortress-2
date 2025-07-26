@@ -127,13 +127,10 @@ mono_crash.*
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
-x64/
-x86/
 [Ww][Ii][Nn]32/
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
 bld/
-[Bb]in/
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
@@ -577,3 +574,8 @@ game/betterfortress/maps/mvm_mannfactured_a1.nav
 game/betterfortress/scripts/population/mvm_mannfactured_a1.pop
 game/betterfortress/scripts/vscripts/bot.nut
 game/betterfortress/scripts/vscripts/getweaponslots.nut
+src/lib/public/x64/mathlib.lib
+src/lib/public/x64/matsys_controls.lib
+src/lib/public/x64/raytrace.lib
+src/lib/public/x64/tier1.lib
+src/lib/public/x64/vgui_controls.lib

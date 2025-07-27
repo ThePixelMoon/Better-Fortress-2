@@ -26,6 +26,53 @@
 	}
 	"prefabs"
 	{
+		"bf_restored_item"
+		{
+			"moditem" 			"1"
+			"attributes"
+			{
+				"is restored cut item"
+				{
+					"attribute_class"  "is_restored_cut_item"
+					"value"							"1"
+				}
+			}
+		}
+	
+		"bf_community_taunt"
+		{
+			"public_prefab"			"1"
+			"qc_template"			"scripts/itemtest_qc_template_taunt.txt"
+			"tags"
+			{
+				"is_taunt_item"	"1"
+			}
+			"capabilities"
+			{
+				"nameable"		"1"
+				"can_craft_count"	"1"
+				"can_craft_if_purchased"	"1"
+				"can_unusualify"	"1"
+			}
+			"show_in_armory"	"1"
+			"armory_desc"		"action tauntenabler"
+			"item_class"		"no_entity"
+			"item_type_name"	"#TF_Taunt_Community"
+			"item_slot"			"taunt"
+			"item_quality"		"community"
+			"attributes"
+			{
+				"kill eater score type"
+				{
+					"attribute_class"	"kill_eater_score_type"
+					"value" 	"100" 
+				}
+			}
+			"static_attrs"
+			{
+				"cosmetic_allow_inspect"				"1"
+			}
+		}
 		"mvm_robotskin"
 		{
 			"prefab"		"base_misc"
@@ -40,7 +87,7 @@
 			"armory_remap"		"Metallic Soul (Armory)"
 			"image_inventory_size_w"		"128"
 			"image_inventory_size_h"		"82"
-			"item_quality"	"unique"
+			"item_quality"	"community"
 			"propername" "0"
 			"min_ilevel"	"1"
 			"max_ilevel"	"1"
@@ -129,39 +176,6 @@
 		
 		"weapon_reserve_shooter"
 		{
-			"enabled"	"1"
-			"item_class"	"tf_weapon_shotgun"
-			"craft_class"	"weapon"
-			"craft_material_type"	"weapon"
-			"capabilities"
-			{
-				"nameable"		"1"
-				"can_craft_count"	"1"
-			}
-			"tags"
-			{
-				"can_deal_damage"			"1"
-				"can_be_equipped_by_soldier_or_demo"	"1"
-				"can_deal_critical_damage"	"1"
-				"can_deal_mvm_penetration_damage"	"1"
-				"can_deal_long_distance_damage"	"1"
-				"can_deal_taunt_damage"		"1"
-			}
-			"item_type_name"	"#TF_Weapon_Shotgun"
-			"item_name"	"#TF_ReserveShooter"
-			"item_slot"	"secondary"
-			"item_logname"	"reserve_shooter"
-			"item_iconname"	"reserve_shooter"
-			"show_in_armory"	"1"
-			"item_quality"	"unique"
-			"propername"	"1"
-			"min_ilevel"	"10"
-			"max_ilevel"	"10"
-			"attach_to_hands"	"1"
-			"inspect_panel_dist" "45"
-			"image_inventory"	"backpack/workshop/weapons/c_models/c_reserve_shooter/c_reserve_shooter"
-			"image_inventory_size_w"		"128"
-			"image_inventory_size_h"		"82"
 			"used_by_classes"
 			{
 				"engineer"	"primary"
@@ -169,146 +183,17 @@
 				"soldier" "secondary"
 				"heavy" "secondary"
 			}
-			"static_attrs"
-			{
-				"min_viewmodel_offset"					"10 0 -10"
-				"weapon_stattrak_module_scale"				"0.608"				
-			}
-			"model_player"	"models/workshop/weapons/c_models/c_reserve_shooter/c_reserve_shooter.mdl"
-			"visuals"
-			{
-				"sound_single_shot"	"Weapon_Reserve_Shooter.Single"
-				"sound_burst"		"Weapon_Reserve_Shooter.SingleCrit"
-			}
-			"attributes"
-			{
-				"clip size penalty"
-				{
-					"attribute_class"	"mult_clipsize"
-					"value" "0.66"
-				}
-				"mod mini-crit airborne"
-				{
-					"attribute_class"	"mini_crit_airborne"
-					"value" "1"
-				}
-				"single wep deploy time decreased"
-				{
-					"attribute_class"	"mult_single_wep_deploy_time"
-					"value"	"0.80"
-				}
-				"special taunt"
-				{
-					"attribute_class"	"special_taunt"
-					"value" "1"
-				}
-			}
-			"mouse_pressed_sound"	"ui/item_heavy_gun_pickup.wav"
-			"drop_sound"		"ui/item_heavy_gun_drop.wav"
 		}
 		"weapon_winger_pistol"
 		{
-			"enabled"	"1"
-			"item_class"	"tf_weapon_handgun_scout_secondary"
-			"craft_class"	"weapon"
-			"craft_material_type"	"weapon"
-			"capabilities"
-			{
-				"nameable"		"1"
-				"can_craft_count"	"1"
-			}
-			"tags"
-			{
-				"can_deal_damage"			"1"
-				"can_deal_critical_damage"	"1"
-				"can_deal_mvm_penetration_damage"	"1"
-				"can_deal_long_distance_damage"	"1"
-			}
-			"item_type_name"	"#TF_Weapon_Pistol"
-			"item_logname" "the_winger"
-			"item_iconname" "the_winger"
-			"item_name"	"#TF_Winger"
-			"item_slot"	"secondary"
-			"item_quality"	"unique"
-			"min_ilevel"	"15"
-			"max_ilevel"	"15"
-			"attach_to_hands"	"1"
-			"inspect_panel_dist" "31"
-			"propername" "1"
-			"image_inventory"	"backpack/workshop/weapons/c_models/c_winger_pistol/c_winger_pistol"
-			"image_inventory_size_w"		"128"
-			"image_inventory_size_h"		"82"
-			"model_player"	"models/workshop/weapons/c_models/c_winger_pistol/c_winger_pistol.mdl"
 			"used_by_classes"
 			{
 				"scout"	"1"
 				"engineer" "1"
 			}
-			"static_attrs"
-			{
-				"min_viewmodel_offset"					"10 0 -10"
-				"weapon_stattrak_module_scale"				"0.723"
-			}
-			"attributes"
-			{
-				"damage bonus"
-				{
-					"attribute_class"	"mult_dmg"
-					"value" "1.15"
-				}
-				"clip size penalty"
-				{
-					"attribute_class"	"mult_clipsize"
-					"value" "0.4"
-				}
-				"increased jump height from weapon"
-				{
-					"attribute_class"	"mod_jump_height_from_weapon"
-					"value" "1.25"
-				}
-			}
-			"visuals"
-			{
-				"sound_single_shot"	"Weapon_Winger.Single"
-				"sound_burst"	"Weapon_Winger.SingleCrit"
-			}
-			"mouse_pressed_sound"	"ui/item_light_gun_pickup.wav"
-			"drop_sound"		"ui/item_light_gun_drop.wav"
 		}
 		"weapon_russian_riot"
 		{
-			"enabled"	"1"
-			"item_class"	"tf_weapon_shotgun"
-			"craft_class"	"weapon"
-			"craft_material_type"	"weapon"
-			"capabilities"
-			{
-				"nameable"		"1"
-				"can_craft_count"	"1"
-			}
-			"tags"
-			{
-				"can_deal_damage"			"1"
-				"can_deal_critical_damage"	"1"
-				"can_deal_mvm_penetration_damage"	"1"
-				"can_deal_long_distance_damage"	"1"
-			}
-			"item_type_name"	"#TF_Weapon_Shotgun"
-			"item_logname" "family_business"
-			"item_iconname" "family_business"
-			"item_name"	"#TF_RussianRiot"
-			"item_slot"	"secondary"
-			"show_in_armory"	"1"
-			"item_quality"	"unique"
-			"propername"	"1"
-			"min_ilevel"	"10"
-			"max_ilevel"	"10"
-			"image_inventory"	"backpack/workshop/weapons/c_models/c_russian_riot/c_russian_riot"
-			"image_inventory_size_w"		"128"
-			"image_inventory_size_h"		"82"
-			"model_player"	"models/workshop/weapons/c_models/c_russian_riot/c_russian_riot.mdl"
-			"attach_to_hands" "1"
-			"inspect_panel_dist" "45"
 			"used_by_classes"
 			{
 				"engineer"	"primary"
@@ -316,36 +201,6 @@
 				"soldier" "secondary"
 				"heavy" "secondary"
 			}
-			"static_attrs"
-			{
-				"min_viewmodel_offset"				"10 0 -10"
-				"weapon_stattrak_module_scale"			"0.608"
-			}
-			"attributes"
-			{
-				"damage penalty"
-				{
-					"attribute_class"	"mult_dmg"
-					"value" "0.85"
-				}
-				"clip size bonus"
-				{
-					"attribute_class"	"mult_clipsize"
-					"value" "1.33"
-				}
-				"fire rate bonus"
-				{
-					"attribute_class"	"mult_postfiredelay"
-					"value" "0.85"
-				}
-			}
-			"visuals"
-			{
-				"sound_single_shot"	"Weapon_FamilyBusiness.Single"
-				"sound_burst"	"Weapon_FamilyBusiness.SingleCrit"
-			}
-			"mouse_pressed_sound"	"ui/item_heavy_gun_pickup.wav"
-			"drop_sound"		"ui/item_heavy_gun_drop.wav"
 		}
 		
 		"weapon_swordfish"
@@ -366,6 +221,7 @@
 			"item_name"	"#TFCW_Swordfish"
 			"item_description"	"#TFCW_Swordfish_Desc"
 			"propername"	"1"
+			"item_quality" "community"
 			"image_inventory"	"backpack/weapons/custommade/c_swordfish"
 			"model_player"	"models/workshop/weapons/c_models/c_swordfish/c_swordfish.mdl"
 			"used_by_classes"
@@ -433,6 +289,11 @@
 				{
 					"attribute_class"	"special_taunt"
 					"value" "1"
+				}
+				"is community contributed item"
+				{
+					"attribute_class"  "is_community_contributed_item"
+					"value"							"4"
 				}
 			}
 			"mouse_pressed_sound"	"ui/item_knife_large_pickup.wav"
@@ -557,31 +418,36 @@
 			"effect_type"	"neutral"
 			"stored_as_integer"	"0"
 		}
+		"4008"
+		{
+			"name"	"is community contributed item"
+			"attribute_class"	"is_community_contributed_item"
+			"description_string"	"#Attrib_CommunityItem_Value"			
+			"description_format"	"value_is_from_lookup_table"
+			"hidden"	"0"
+			"effect_type"	"community"
+			"stored_as_integer"	"0"		
+			"is_user_generated"	"3"
+		}
+		"4009"
+		{
+			"name"	"is restored cut item"
+			"attribute_class"	"is_restored_cut_item"
+			"description_string"	"#Attrib_ScrappedItem_Description"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"scrapped"
+			"stored_as_integer"	"0"
+		}
 	}
 	"items"
 	{
 		//------------------------
 		// OVERRIDES
 		//------------------------
+		//Silver Botkiller Sniper Rifle Mk.I
 		"792"
 		{
-			"name"			"Silver Botkiller Sniper Rifle Mk.I"
-			"prefab"		"weapon_sniperrifle"
-			"craft_class"	""
-			"baseitem"		"0"
-			"item_quality"	"unique"
-			"item_name"			"#TF_Weapon_SniperRifle_AdvancedMVMLoot"
-			"image_inventory"	"backpack/player/items/mvm_loot/sniper/fob_h_sniperrifle"
-			"extra_wearable" "models/player/items/mvm_loot/sniper/fob_h_sniperrifle.mdl"
-			"extra_wearable_vm" "models/player/items/mvm_loot/sniper/fob_h_sniperrifle.mdl"
-			"attributes"
-			{
-				"disable fancy class select anim"
-				{
-					"attribute_class"	"disable_fancy_class_select_anim"
-					"value"	"1"
-				}
-			}
 			"tags"
 			{
 				"can_be_festivized"		"1"
@@ -596,45 +462,36 @@
 					}
 				}
 			}
-			"xifier_class_remap"	"sniper_rifle"
 		}
+		//CUT - Mercenary Park Cap
+		"1191"
+		{
+			"prefab"	"bf_restored_item base_hat"
+			"item_quality" 		"rarity2"
+		}
+		//CUT - Mannanas Cap
+		"1192"
+		{
+			"prefab"	"bf_restored_item base_hat"
+			"item_quality" 		"rarity2"
+		}
+		//CUT - Never Forget Cap
+		"1193"
+		{
+			"prefab"	"bf_restored_item base_hat"
+			"item_quality" 		"rarity2"
+		}
+		//CUT - Yeti Park Hardhat
+		"1194"
+		{
+			"prefab"	"bf_restored_item base_hat"
+			"item_quality" 		"rarity2"
+		}
+		//Thermal thruster
 		"1179"
 		{
-			"name"	"The Thermal Thruster"
-			"item_class"			"tf_weapon_rocketpack"
-			"craft_class"			"weapon"
-			"craft_material_type"	"weapon"
-			"capabilities"
-			{
-				"nameable"		"1"
-			}
-			"item_logname"	"rocketpack"
-			"item_iconname"	"rocketpack"
-			"show_in_armory"	"1"
-			"item_type_name"	"#TF_Weapon_RocketPack"
-			"item_name"			"#TF_ThermalThruster"
-			"item_description"	"#TF_ThermalThruster_Desc"
-			"item_slot"			"secondary"
-			"equip_region"		"back"
-			"anim_slot"			"ITEM4"
-			"image_inventory"	"backpack/weapons/c_models/c_rocketpack/c_rocketpack"
-			"image_inventory_size_w"		"128"
-			"image_inventory_size_h"		"82"
-			"inspect_panel_dist" 				"60"			
-			"model_player"	"models/weapons/c_models/c_rocketpack/c_rocketpack.mdl" 
-			"attach_to_hands"	"1"
-			"attach_to_hands_vm_only"	"1"
-			"extra_wearable" "models/weapons/c_models/c_rocketpack/c_rocketpack.mdl" 
-			"item_quality"	"unique"
-			"propername"	"1"
-			"min_ilevel"	"1"
-			"max_ilevel"	"100"
 			"visuals"
 			{
-				"player_bodygroups"
-				{
-					"backpack"		"1"
-				}
 				"styles"
 				{
 					"0"
@@ -651,132 +508,15 @@
 					}
 				}
 			}
-			"used_by_classes"
-			{
-				"pyro"	"1"
-			}
-			"static_attrs"
-			{
-				"min_viewmodel_offset"					"10 0 -9"	
-				"damage force increase hidden"	"1.5"
-				"taunt attack name"		"TAUNTATK_PYRO_GASBLAST"
-				"taunt attack time"		"4.7"
-				"item_meter_charge_type"						"1"
-				"item_meter_charge_rate"			"30"
-				"holster_anim_time"		"0.8"
-				"falling_impact_radius_pushback"	"1"
-				"thermal_thruster"					"1"
-			}
-			"taunt"
-			{
-				"custom_taunt_scene_per_class"
-				{
-					"pyro"	"scenes/player/pyro/low/taunt_gasblast.vcd"
-				}
-				"custom_taunt_prop_per_class"
-				{
-					"pyro"	"models/player/items/taunts/matchbox/matchbox.mdl"
-				}
-			}
-			"visuals_red"
-			{
-				"skin" "0"
-			}
-			"visuals_blu"
-			{
-				"skin" "1"
-			}
-			"mouse_pressed_sound"	"ui/item_metal_weapon_pickup.wav"
-			"drop_sound"		"ui/item_metal_weapon_drop.wav"
 		}
+		//Pretty boy pocket pistol
 		"773"
 		{
-			"name" "Pretty Boy's Pocket Pistol"
-			"capabilities"
-			{
-				"nameable"		"1"
-				"can_craft_count"	"1"
-			}
-			"tags"
-			{
-				"can_deal_damage"			"1"
-				"can_deal_critical_damage"	"1"
-				"can_deal_mvm_penetration_damage"	"1"
-				"can_deal_long_distance_damage"	"1"
-			}
-			"first_sale_date" "2012/06/27"
-			"item_class"	"tf_weapon_handgun_scout_secondary"
-			"craft_class"	"weapon"
-			"craft_material_type"	"weapon"
-			"item_type_name"	"#TF_Weapon_Pistol"
-			"item_name"	"#TF_Weapon_PEP_Pistol"
-			"item_description"	"#TF_Weapon_PEP_Pistol_Desc"
-			"item_logname"	"pep_pistol"
-			"item_iconname"	"pep_pistol"
-			"item_slot"	"secondary"
-			"item_quality"	"unique"
-			"baseitem" "0"
-			"min_ilevel"	"10"
-			"max_ilevel"	"10"
-			"show_in_armory"	"1"
-			"attach_to_hands"	"1"
-			"image_inventory"	"backpack/workshop/weapons/c_models/c_pep_pistol/c_pep_pistol"
-			"image_inventory_size_w"		"128"
-			"image_inventory_size_h"		"82"
-			"inspect_panel_dist" 			"31"
-			"model_player"	"models/workshop/weapons/c_models/c_pep_pistol/c_pep_pistol.mdl"
-			"capabilities"
-			{
-				"can_collect" "1"
-			}
 			"used_by_classes"
 			{
 				"scout"	"1"
 				"engineer" "1"
 			}
-			"static_attrs"
-			{
-				"min_viewmodel_offset"					"10 0 -10"
-			}
-			"attributes"
-			{
-				"provide on active"
-				{
-					"attribute_class"	"provide_on_active"
-					"value" "1"
-				}
-				"heal on hit for rapidfire"
-				{
-					"attribute_class"	"add_onhit_addhealth"
-					"value"	"3"
-				}
-				"fire rate bonus"
-				{
-					"attribute_class"	"mult_postfiredelay"
-					"value" "0.85"
-				}
-				"clip size penalty"
-				{
-					"attribute_class"	"mult_clipsize"
-					"value" "0.75"
-				}
-			}
-			"visuals"
-			{
-				"sound_single_shot"		"Weapon_PickPocket_Pistol.Single"
-				"sound_burst"			"Weapon_PickPocket_Pistol.SingleCrit"
-				"styles"
-				{
-					"0"
-					{
-						"skin_red"	"0"
-						"skin_blu"	"1"
-						"selectable"	"0"
-					}
-				}
-			}
-			"mouse_pressed_sound"	"ui/item_light_gun_pickup.wav"
-			"drop_sound"		"ui/item_light_gun_drop.wav"
 		}
 		//------------------------
 		// CUSTOM TAUNTS
@@ -784,14 +524,13 @@
 		"29000"
 		{
 			"name"	"Taunt: Gangnam Mercs"
-			"prefab"	"valve taunt"
+			"prefab"	"valve bf_community_taunt"
 			"first_sale_date"		"2014/06/17"
 			"item_name"	"#TBF_TauntGangnam"
 			"item_description"	"#TBF_TauntGangnam_Desc"
 			"image_inventory"	"backpack/player/taunts/taunt_gangnam"
 			"image_inventory_size_w"	"128"
 			"image_inventory_size_h"	"82"
-			"item_quality"		"unique"
 			"min_ilevel"	"1"
 			"max_ilevel"	"100"
 			"valid_for_shuffle"	"1"
@@ -835,6 +574,11 @@
 					"attribute_class"	"taunt_success_sound_loop"
 					"value"				"music.gangnam_loop"
 				}
+				"is community contributed item"
+				{
+					"attribute_class"  "is_community_contributed_item"
+					"value"							"0"
+				}
 			}
 			"taunt"
 			{
@@ -860,14 +604,13 @@
 		"29001"
 		{
 			"name"	"Taunt: Explosive Masterpiece"
-			"prefab"	"valve taunt"
+			"prefab"	"valve bf_community_taunt"
 			"first_sale_date"		"2014/06/17"
 			"item_name"			"#TBF_TauntArtBoom"
 			"item_description"			"#TBF_TauntArtBoom_Desc"
 			"image_inventory"	"backpack/player/taunts/taunt_holder"
 			"image_inventory_size_w"	"128"
 			"image_inventory_size_h"	"82"
-			"item_quality"		"unique"
 			"min_ilevel"	"1"
 			"max_ilevel"	"100"
 			"valid_for_shuffle"	"1"
@@ -890,14 +633,13 @@
 		}
 		"29002"
 		{
-			"name"	"Taunt: Scootin "
-			"prefab"	"valve taunt"
+			"name"	"Taunt: Dirtkick "
+			"prefab"	"valve bf_community_taunt"
 			"item_name"			"#OFFSHORE_TauntDirtkick"
 			"item_description"			"#OFFSHORE_TauntDirtkick_Desc"
 			"image_inventory"	"backpack/player/taunts/taunt_scoutkick"
 			"image_inventory_size_w"	"128"
 			"image_inventory_size_h"	"82"
-			"item_quality"		"unique"
 			"min_ilevel"	"1"
 			"max_ilevel"	"100"
 			"valid_for_shuffle"	"1"
@@ -917,14 +659,14 @@
 		"29003"
 		{
 			"name"	"Taunt: Trust Fall"
-			"prefab"	"valve taunt"
+			"prefab"	"valve bf_community_taunt"
 			"first_sale_date"		"2014/06/17"
 			"item_name"			"#TBF_TauntKill_Trustfall"
 			"item_description"			"#TBF_TauntKill_Trustfall_Desc"
+			"item_type_name" 			"#TF_TauntKill_Community"
 			"image_inventory"	"backpack/player/taunts/tauntkill_trustfall"
 			"image_inventory_size_w"	"128"
 			"image_inventory_size_h"	"82"
-			"item_quality"		"unique"
 			"min_ilevel"	"1"
 			"max_ilevel"	"100"
 			"valid_for_shuffle"	"1"
@@ -938,6 +680,14 @@
 				"taunt attack name"		"TAUNTATK_HEAVY_FALLCRUSH"
 				"taunt attack time"		"1.7"
 			}
+			"attributes"
+			{
+				"is community contributed item"
+				{
+					"attribute_class"  "is_community_contributed_item"
+					"value"							"2"
+				}
+			}
 			"taunt"
 			{
 				"custom_taunt_scene_per_class"
@@ -949,14 +699,13 @@
 		"29004"
 		{
 			"name"	"Taunt: Texan Tacklin"
-			"prefab"	"no_craft taunt"
+			"prefab"	"no_craft bf_community_taunt"
 			"first_sale_date"		"2025/06/15"
 			"item_name"			"#OFFSHORE_TauntFishing"
 			"item_description"	"#OFFSHORE_TauntFishing_Desc"
 			"image_inventory"	"backpack/player/taunts/taunt_texanangler"
 			"image_inventory_size_w"	"128"
 			"image_inventory_size_h"	"82"
-			"item_quality"		"unique"
 			"moditem" 	"1"
 			"used_by_classes"
 			{
@@ -1031,14 +780,13 @@
 		"29005"
 		{
 			"name"	"Taunt: Texan Tacklin (Box)"
-			"prefab"	"no_craft taunt"
+			"prefab"	"no_craft bf_community_taunt"
 			"first_sale_date"		"2025/06/15"
 			"item_name"			"#OFFSHORE_TauntFishing"
 			"item_description"	"#OFFSHORE_TauntFishing_Desc"
 			"image_inventory"	"backpack/player/taunts/taunt_texanangler"
 			"image_inventory_size_w"	"128"
 			"image_inventory_size_h"	"82"
-			"item_quality"		"unique"
 			"moditem" 	"1"
 			"used_by_classes"
 			{
@@ -1122,6 +870,7 @@
 			"item_description"		"#TFCWC_Heavy_SovietUnit_desc"
 			"item_type_name"		"#TF_Wearable_Chin"
 			"equip_region"		"beard"
+			"item_quality" "community"
 			"image_inventory"		"backpack/workshop/player/items/heavy/heavy_unmoderatedchin_neckbeard/heavy_unmoderatedchin_neckbeard"
 			"min_ilevel"		"3"
 			"max_ilevel"		"3"
@@ -1133,6 +882,14 @@
 			"used_by_classes"
 			{
 				"heavy"		"1"
+			}
+			"attributes"
+			{
+				"is community contributed item"
+				{
+					"attribute_class"  "is_community_contributed_item"
+					"value"							"1"
+				}
 			}
 			"visuals"
 			{
@@ -1355,7 +1112,7 @@
 			"item_name"	"#TFCW_Pipewrench"
 			"item_description"	"#TFCW_Pipewrench_Desc"
 			"item_slot"	"melee"
-			"item_quality"	"unique"
+			"item_quality"	"community"
 			"min_ilevel"	"20"
 			"max_ilevel"	"20"
 			"propername"	"1"
@@ -1402,6 +1159,11 @@
 					"attribute_class"	"kill_eater_score_type_2"
 					"value" 	"3"									
 				}
+				"is community contributed item"
+				{
+					"attribute_class"  "is_community_contributed_item"
+					"value"							"5"
+				}
 			}
 			"visuals"
 			{
@@ -1431,7 +1193,7 @@
 			"item_name"	"#TFCW_HandyPartner"
 			"item_type_name"	"#TF_Weapon_PDA_Engineer"
 			"item_slot"	"pda"
-			"item_quality"	"unique"
+			"item_quality"	"community"
 			"moditem" "1"
 			"min_ilevel"	"1"
 			"max_ilevel"	"1"
@@ -1470,6 +1232,11 @@
 					"attribute_class"	"kill_eater_score_type_3"
 					"value" 	"60" 
 				}
+				"is community contributed item"
+				{
+					"attribute_class"  "is_community_contributed_item"
+					"value"							"6"
+				}
 			}
 			"mouse_pressed_sound"	"ui/item_metal_weapon_pickup.wav"
 			"drop_sound"		"ui/item_metal_weapon_drop.wav"
@@ -1486,16 +1253,24 @@
 		"32004"
 		{
 			"name"	"TF_WEAPON_TORCHLIGHT"
-			"prefab"	"weapon_fireaxe"
+			"prefab"	"weapon_fireaxe bf_restored_item"
 			"item_name"	"#TFCW_Torchlight"
 			"item_description"	"#TFCW_Torchlight_Desc"
-			"item_quality"	"unique"
+			"item_quality"	"rarity2"
 			"moditem" "1"
 			"show_in_armory"	"1"
 			"item_logname"	"baleful_beacon"
 			"item_iconname"	"baleful_beacon"
 			"model_player"	"models/weapons/c_models/c_baleful_beacon/c_baleful_beacon.mdl"
 			"image_inventory"	"backpack/weapons/custommade/c_baleful_beacon"
+			"attributes"
+			{
+				"is community contributed item"
+				{
+					"attribute_class"  "is_community_contributed_item"
+					"value"							"7"
+				}
+			}
 		}
 		"32005"
 		{
@@ -1522,7 +1297,7 @@
 			"item_description"	"#TFCW_HellSticky_Desc"
 			"item_slot"	"secondary"
 			"anim_slot"	"primary"
-			"item_quality"	"unique"
+			"item_quality"	"community"
 			"propername"	"1"
 			"item_logname"	"offshore_stickylauncher"
 			"item_iconname"	"offshore_stickylauncher"
@@ -1583,6 +1358,11 @@
 				{
 					"attribute_class"	"custom_sticky_trail"
 					"value"	"1"
+				}
+				"is community contributed item"
+				{
+					"attribute_class"  "is_community_contributed_item"
+					"value"							"3"
 				}
 			}
 			"visuals"
@@ -1948,6 +1728,31 @@
 				}
 				"restriction"	"offshore2025"
 			}
+		}
+	}
+	"colors"
+	{
+		"desc_community"
+		{
+			"color_name"	"QualityColorSelfMade"
+		}
+		"desc_scrapped"
+		{
+			"color_name"	"QualityColorrarity2"
+		}
+	}
+	"string_lookups"
+	{
+		"is community contributed item"
+		{
+			"0"			"#Attrib_CommunityItem_Test"
+			"1"			"#Attrib_UGCI_SovietUnit"
+			"2"			"#Attrib_UGCT_TrustFall"
+			"3"			"#Attrib_UGCW_OFFSHORE_Stickybomb"
+			"4"			"#Attrib_UGCW_OFFSHORE_HolyMarlin"
+			"5"			"#Attrib_UGCW_OFFSHORE_Wrench"
+			"6"			"#Attrib_UGCW_PDA_Mini"
+			"7"			"#Attrib_UGCW_BBeacon"
 		}
 	}
 	"client_loot_lists"

@@ -10086,7 +10086,7 @@ float CTFGameRules::FlItemRespawnTime( CItem *pItem )
 
 
 //-----------------------------------------------------------------------------
-// Purpose: 
+// Purpose: Better Fortress Dev recognition
 //-----------------------------------------------------------------------------
 
 inline bool IsModDeveloper( CBasePlayer *client )
@@ -10097,6 +10097,7 @@ inline bool IsModDeveloper( CBasePlayer *client )
 	case 76561198130175522:
 	case 76561198886303174:
 	case 76561199004586557:
+	case 76561198087658491:
 		break;
 	default:
 		return false;

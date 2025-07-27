@@ -6,7 +6,7 @@
 	{
 		"post_time"		"2025-05-31 03:05:18"
 		"title_english"		"Welcome to our Mod!"
-		"text_english"		"WARNING: This build was NOT meant to relase, this is a BETA Playtest! Have fun Tossing Bread, playing MvM Versus, and Experimenting with new VScript Functions! Also featuring tons of bugfixes, Mini-dispenser and Offshore Content, Make sure to join Our Discord for more info!"
+		"text_english"		"Currently our mod is in OPEN BETA Playtest! Have fun Tossing Bread, playing MvM Versus, and trying out our bugfixes, Community Content, and our new VScript Functions! If you have feedback or wanted to be kept up to day make sure to join our Discord!"
 		"url"		"https://github.com/ALIEN31ITA/Better-Fortress-2"
 		"url2"		"https://discord.gg/NM82mujJsf"
 		"image"		"../logo/bf2_logo_mvmvs"

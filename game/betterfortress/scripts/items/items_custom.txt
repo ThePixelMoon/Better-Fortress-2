@@ -439,6 +439,16 @@
 			"effect_type"	"scrapped"
 			"stored_as_integer"	"0"
 		}
+		"4010"
+		{
+			"name"	"is blacklisted in mvm"
+			"attribute_class"	"is_blacklisted_in_mvm"
+			"description_format"	"value_is_additive"
+			"description_string"	"#Attrib_Blacklisted_MVM_Description"
+			"hidden"	"0"
+			"effect_type"	"negative"
+			"stored_as_integer"	"0"
+		}
 	}
 	"items"
 	{
@@ -460,6 +470,50 @@
 					{
 						"model"	"models/weapons/c_models/c_sniperrifle/c_sniperrifle_festivizer.mdl"
 					}
+				}
+			}
+		}
+		//Deflector Player
+		"849"
+		{
+			"name"			"Deflector Player"
+			"prefab"		"weapon_minigun"
+			"craft_class"	""
+			"baseitem"		"0"
+			"show_in_armory"	"1"
+			"moditem" 	"1"
+			"item_name"		"#TF_Minigun_Deflector"
+			"item_quality"	"unique"
+			"visuals"
+			{
+				"sound_double_shot"	"MVM.GiantHeavyGunFire"
+				"sound_burst"		"MVM.GiantHeavyGunFire"
+				"sound_special1"	"MVM.GiantHeavyGunWindUp"
+				"sound_special2"	"MVM.GiantHeavyGunWindDown"
+				"sound_special3"	"MVM.GiantHeavyGunSpin"
+				"tracer_effect"	"bullet_tracer02"
+			}
+			"attributes"
+			{
+				"attack projectiles"
+				{
+					"attribute_class"  "attack_projectiles"
+					"value"							"2"
+				}
+				"spread penalty"
+				{
+					"attribute_class" 	"mult_spread_scale"
+					"value" "1.8"
+				}
+				"maxammo primary reduced"
+				{
+					"attribute_class"	"mult_maxammo_primary"
+					"value" "0.625"
+				}
+				"is blacklisted in mvm"
+				{
+					"attribute_class" 	"is_blacklisted_in_mvm"
+					"value" 	"1"
 				}
 			}
 		}
@@ -1270,6 +1324,11 @@
 					"attribute_class"  "is_community_contributed_item"
 					"value"							"7"
 				}
+				"allowed in medieval mode"
+				{
+					"attribute_class"	"allowed_in_medieval_mode"
+					"value"	"1"
+				}
 			}
 		}
 		"32005"
@@ -1319,32 +1378,12 @@
 			}
 			"attributes"
 			{
-				"sticky arm time bonus"
-				{
-					"attribute_class"	"sticky_arm_time"
-					"value"	"-0.2"
-				}
-				"stickybomb charge rate"
-				{
-					"attribute_class"	"stickybomb_charge_rate"
-					"value"	"0.3"
-				}
-				"stickybomb_charge_damage_increase"
-				{
-					"attribute_class"	"stickybomb_charge_damage_increase"
-					"value"	"1.35"
-				}
-				"stickies detonate stickies"
-				{
-					"attribute_class"	"stickies_detonate_stickies"
-					"value"	"1"
-				}
 				"clip size penalty"
 				{
 					"attribute_class"	"mult_clipsize"
-					"value"	"0.5"
+					"value"	"0.4"
 				}
-				"damage penalty"
+				"damage bonus"
 				{
 					"attribute_class"	"mult_dmg"
 					"value"	"0.85"

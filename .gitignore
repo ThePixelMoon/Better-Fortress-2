@@ -579,3 +579,4 @@ src/lib/public/x64/matsys_controls.lib
 src/lib/public/x64/raytrace.lib
 src/lib/public/x64/tier1.lib
 src/lib/public/x64/vgui_controls.lib
+game/betterfortress/scripts/vscripts/dumpnet.nut

@@ -1566,7 +1566,7 @@ CEconItemView *CTFPlayerInventory::GetItemInLoadout( int iClass, int iSlot )
 					CEconItemView* pItem = TFInventoryManager()->GetModItem(i);
 					if (pItem && pItem->GetItemDefIndex() == m_LoadoutItems[iClass][iSlot])
 					{
-						DevMsg( "Using mod item: %d\n", m_LoadoutItems[iClass][iSlot] );
+						//DevMsg( "Using mod item: %d\n", m_LoadoutItems[iClass][iSlot] );
 						if (pItem && AreSlotsConsideredIdentical(pItem->GetStaticData()->GetEquipType(), pItem->GetStaticData()->GetLoadoutSlot(iClass), iSlot))
 							return pItem;
 					}
@@ -1605,7 +1605,7 @@ CEconItemView *CTFPlayerInventory::GetCacheServerItemInLoadout( int iClass, int 
 				CEconItemView* pItem = TFInventoryManager()->GetModItem(i);
 				if (pItem && pItem->GetItemDefIndex() == m_CachedServerLoadoutItems[iClass][iSlot])
 				{
-					DevMsg( "Using cached mod item: %d\n", m_CachedServerLoadoutItems[iClass][iSlot] );
+					//DevMsg( "Using cached mod item: %d\n", m_CachedServerLoadoutItems[iClass][iSlot] );
 					if (pItem && AreSlotsConsideredIdentical(pItem->GetStaticData()->GetEquipType(), pItem->GetStaticData()->GetLoadoutSlot(iClass), iSlot))
 						return pItem;
 				}

@@ -668,7 +668,7 @@
 			"min_ilevel"	"1"
 			"max_ilevel"	"100"
 			"valid_for_shuffle"	"1"
-			"moditem" "1"
+			//"moditem" "1"
 			"used_by_classes"
 			{
 				"demoman"	"1"

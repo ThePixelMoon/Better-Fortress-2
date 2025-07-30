@@ -4849,7 +4849,7 @@ void C_TFPlayer::UpdateTauntItem()
 		
 		if ( pMiscItemView )
 		{
-			DevMsg( "Using item id for taunt: %d\n", pMiscItemView->GetItemID() );
+			//DevMsg( "Using item id for taunt: %d\n", pMiscItemView->GetItemID() );
 			m_TauntEconItemView = *pMiscItemView;
 		}
 

@@ -5789,6 +5789,10 @@ static ConCommand ent_viewoffset("ent_viewoffset", CC_Ent_ViewOffset, "Displays 
 //------------------------------------------------------------------------------
 void CC_Ent_Remove( const CCommand& args )
 {
+	CBasePlayer *pPlayer = ToBasePlayer( UTIL_GetCommandClient() );
+	if ( !pPlayer )
+		return;
+
 	CBaseEntity *pEntity = NULL;
 	
 	//Check who is calling the command
@@ -5800,6 +5804,24 @@ void CC_Ent_Remove( const CCommand& args )
 	if ( FStrEq( args[1],"") ) 
 	{
 		pEntity = FindPickerEntity( UTIL_GetCommandClient() );
+	}
+	if ( FStrEq( args[1], "worldspawn" ) || (pEntity && pEntity->IsWorld()) )
+	{
+		Msg( "You are not allowed to to remove worldspawn\n" );
+		return;
+	}
+	else if (( FStrEq( args[1], "player" ) ) || (pEntity && pEntity->IsPlayer()) )
+	{
+		return;
+	}
+	else if ( FStrEq( args[1], "!player" ) || (pEntity && pEntity->IsPlayer()) )
+	{
+		return;
+	}
+	else if ( FStrEq( args[1], "!activator" ) )
+	{
+		Msg( "%s erased themselves from the server.\n", pPlayer->GetPlayerName() );
+		engine->ServerCommand( UTIL_VarArgs( "kickid %d %s\n", pPlayer->GetUserID(), "You erased yourself from the server." ) );
 	}
 	else 
 	{
@@ -5828,8 +5850,19 @@ void CC_Ent_Remove( const CCommand& args )
 	// Found one?
 	if ( pEntity )
 	{
-		Msg( "Removed %s(%s)\n", STRING(pEntity->m_iClassname), pEntity->GetDebugName() );
-		UTIL_Remove( pEntity );
+		if ( !pEntity->IsPlayer() )
+		{
+			Msg( "Removed %s(%s)\n", STRING(pEntity->m_iClassname), pEntity->GetDebugName() );
+			UTIL_Remove( pEntity );
+		}
+		else	
+		{
+			CTFPlayer *pTarget = ToTFPlayer( pEntity );
+			if ( pTarget )
+			{
+				ClientPrint( pPlayer, HUD_PRINTCONSOLE, "You cannot remove players anymore...\n" );
+			}
+		}
 	}
 }
 static ConCommand ent_remove("ent_remove", CC_Ent_Remove, "Removes the given entity(s)\n\tArguments:   	{entity_name} / {class_name} / no argument picks what player is looking at ");
@@ -5846,9 +5879,22 @@ void CC_Ent_RemoveAll( const CCommand& args )
 	if ( args.ArgC() < 2 )
 	{
 		Msg( "Removes all entities of the specified type\n\tArguments:   	{entity_name} / {class_name}\n" );
+		return;
 	}
-	else 
+	else if ( FStrEq( args[1], "worldspawn" ) )
 	{
+		Msg( "You are not allowed to to remove worldspawn\n" );
+		return;
+	}
+	else if ( FStrEq( args[1], "player" ) )
+	{
+		Msg( "You are not allowed to to remove all players\n" );
+		return;
+	}
+	else
+	{
+
+
 		// Otherwise remove based on name or classname
 		int iCount = 0;
 		CBaseEntity *ent = NULL;

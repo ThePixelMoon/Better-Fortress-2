@@ -10084,39 +10084,13 @@ float CTFGameRules::FlItemRespawnTime( CItem *pItem )
 	return ITEM_RESPAWN_TIME;
 }
 
-
-//-----------------------------------------------------------------------------
-// Purpose: Better Fortress Dev recognition
-//-----------------------------------------------------------------------------
-
-inline int IsModDeveloper( CBasePlayer *client )
-{
-	uint64 steamid = client->GetSteamIDAsUInt64();
-	switch(steamid)
-	{
-		case 76561198130175522: // Alien31
-		case 76561198886303174: // main_thing
-		case 76561199004586557: // Vvis
-			return 1;
-		break;
-
-		case 76561198087658491: // MixerRules
-			return 2;
-		break;
-
-		default:
-			return 0;
-		break;
-	}
-}
-
 const char *CTFGameRules::GetChatFormat( bool bTeamOnly, CBasePlayer *pPlayer )
 {
 	if ( !pPlayer )  // dedicated server output
 	{
 		return NULL;
 	}
-	int bModDev = IsModDeveloper( pPlayer );
+	int bModDev = UTIL_PlayerIsModDev( pPlayer );
 	const char *pszFormat = NULL;
 
 	// coach?

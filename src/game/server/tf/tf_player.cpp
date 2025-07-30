@@ -225,7 +225,7 @@ ConVar tf_boss_battle_respawn_on_friends( "tf_boss_battle_respawn_on_friends", "
 ConVar tf_mvm_death_penalty( "tf_mvm_death_penalty", "0", FCVAR_NOTIFY | FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY, "How much currency players lose when dying" );
 extern ConVar tf_populator_damage_multiplier;
 extern ConVar tf_mvm_skill;
-ConVar tf_mvm_maxcurrency ("tf_mvm_maxcurrency","30000",FCVAR_CHEAT);
+ConVar tf_mvm_maxcurrency ("tf_mvm_maxcurrency","30000",FCVAR_REPLICATED);
 
 ConVar tf_highfive_separation_forward( "tf_highfive_separation_forward", "0", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY, "Forward distance between high five partners" );
 ConVar tf_highfive_separation_right( "tf_highfive_separation_right", "0", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY, "Right distance between high five partners" );
@@ -873,13 +873,14 @@ ConCommand cc_CreatePredictionError( "CreatePredictionError", cc_CreatePredictio
 
 // -------------------------------------------------------------------------------- //
 
-CON_COMMAND_F(give_econ, "Give ECON item with specified ID from item schema.\nFormat: <id> <classname> <attribute1> <value1> <attribute2> <value2> ... <attributeN> <valueN>", FCVAR_CHEAT)
+CON_COMMAND_F(give_econ, "Give ECON item with specified ID from item schema.\nFormat: <id> <classname> <attribute1> <value1> <attribute2> <value2> ... <attributeN> <valueN>", FCVAR_NONE)
 {
 	if (args.ArgC() < 2)
 		return;
 
-	CTFPlayer* pPlayer = ToTFPlayer(UTIL_GetCommandClient());
-	if (!pPlayer)
+	//Check who is calling the command
+	CTFPlayer* pPlayer = ToTFPlayer(UTIL_GetCommandClient());;
+	if( !UTIL_HandleCheatCmdForPlayer(pPlayer) ) 
 		return;
 
 	int iItemID = atoi(args[1]);
@@ -7736,7 +7737,7 @@ bool CTFPlayer::ClientCommand( const CCommand &args )
 
 	if ( FStrEq( pcmd, "addcond" ) )
 	{
-		if ( sv_cheats->GetBool() && args.ArgC() >= 2 )
+		if ( UTIL_HandleCheatCmdForPlayer( this ) && args.ArgC() >= 2 )
 		{
 			CTFPlayer *pTargetPlayer = this;
 			if ( args.ArgC() >= 4 )
@@ -7787,7 +7788,7 @@ bool CTFPlayer::ClientCommand( const CCommand &args )
 	}
 	else if ( FStrEq( pcmd, "removecond" ) )
 	{
-		if ( sv_cheats->GetBool() && args.ArgC() >= 2 )
+		if ( UTIL_HandleCheatCmdForPlayer( this ) && args.ArgC() >= 2 )
 		{
 			CTFPlayer *pTargetPlayer = this;
 			if ( args.ArgC() >= 3 )
@@ -7835,7 +7836,7 @@ bool CTFPlayer::ClientCommand( const CCommand &args )
 	// Better Fortress - Add attribute shortcuts
 	else if ( FStrEq( pcmd, "addgunattr" ) )
 	{
-		if ( sv_cheats->GetBool() && args.ArgC() >= 2 )
+		if ( UTIL_HandleCheatCmdForPlayer( this ) && args.ArgC() >= 2 )
 		{
 			const CEconItemAttributeDefinition *pDef = GetItemSchema()->GetAttributeDefinitionByName( args[1] );
 			if ( !pDef )
@@ -7846,7 +7847,7 @@ bool CTFPlayer::ClientCommand( const CCommand &args )
 	}
 	else if ( FStrEq( pcmd, "removegunattr" ) )
 	{
-		if ( sv_cheats->GetBool() && args.ArgC() >= 2 )
+		if ( UTIL_HandleCheatCmdForPlayer( this ) && args.ArgC() >= 2 )
 		{
 			const CEconItemAttributeDefinition *pDef = GetItemSchema()->GetAttributeDefinitionByName( args[1] );
 			if ( !pDef )
@@ -7857,7 +7858,7 @@ bool CTFPlayer::ClientCommand( const CCommand &args )
 	}
 	else if ( FStrEq( pcmd, "addattr" ) )
 	{
-		if ( sv_cheats->GetBool() && args.ArgC() >= 2 )
+		if ( UTIL_HandleCheatCmdForPlayer( this )  && args.ArgC() >= 2 )
 		{
 			AddCustomAttribute( args[1],  atof(args[2]),  atof(args[3]) );
 		}
@@ -7865,7 +7866,7 @@ bool CTFPlayer::ClientCommand( const CCommand &args )
 	}
 	else if ( FStrEq( pcmd, "removeattr" ) )
 	{
-		if ( sv_cheats->GetBool() && args.ArgC() >= 2 )
+		if ( UTIL_HandleCheatCmdForPlayer( this ) && args.ArgC() >= 2 )
 		{
 			RemoveCustomAttribute( args[1] );
 		}
@@ -7876,48 +7877,48 @@ bool CTFPlayer::ClientCommand( const CCommand &args )
 	//	m_Shared.Burn( this, GetActiveTFWeapon() );
 	//	return true;
 	//}
-	else if ( FStrEq( pcmd, "bleed" ) )
-	{
-		m_Shared.MakeBleed( this, GetActiveTFWeapon(), 10.0f );
-		return true;
-	}
+	//else if ( FStrEq( pcmd, "bleed" ) )
+	//{
+	//	m_Shared.MakeBleed( this, GetActiveTFWeapon(), 10.0f );
+	//	return true;
+	//}
 	//else if ( FStrEq( pcmd, "dump_damagers" ) )
 	//{
 	//	m_AchievementData.DumpDamagers();
 	//	return true;
 	//}
-	else if ( FStrEq( pcmd, "stun" ) )
-	{
-		if ( args.ArgC() >= 4 )
-		{
-			m_Shared.StunPlayer( atof(args[1]), atof(args[2]), atof(args[3]) );
-		}
-		return true;
-	}
- 	else if ( FStrEq( pcmd, "decoy" ) )
- 	{
- 		CBotNPCDecoy *decoy = (CBotNPCDecoy *)CreateEntityByName( "bot_npc_decoy" );
- 		if ( decoy )
- 		{
-			decoy->SetOwnerEntity( this );
- 			DispatchSpawn( decoy );
-		}
- 		return true;
- 	}
-	else if ( FStrEq( pcmd, "tada" ) )
-	{
-		if ( ShouldRunRateLimitedCommand( args ) )
-		{
-			Taunt( TAUNT_SHOW_ITEM );
-		}
-		return true;
-	}
-//	else if ( FStrEq( pcmd, "player_disguise" ) )
-//	{
-//		CTFPlayer *pPlayer = ToTFPlayer( UTIL_PlayerByName( args[1] ) );
-//		pPlayer->m_Shared.Disguise( Q_atoi( args[2] ), Q_atoi( args[3] ) );
-//		return true;
-//	}
+	//else if ( FStrEq( pcmd, "stun" ) )
+	//{
+	//	if ( args.ArgC() >= 4 )
+	//	{
+	//		m_Shared.StunPlayer( atof(args[1]), atof(args[2]), atof(args[3]) );
+	//	}
+	//	return true;
+	//}
+ 	//else if ( FStrEq( pcmd, "decoy" ) )
+ 	//{
+ 	//	CBotNPCDecoy *decoy = (CBotNPCDecoy *)CreateEntityByName( "bot_npc_decoy" );
+ 	//	if ( decoy )
+ 	//	{
+	//		decoy->SetOwnerEntity( this );
+ 	//		DispatchSpawn( decoy );
+	//	}
+ 	//	return true;
+ 	//}
+	//else if ( FStrEq( pcmd, "tada" ) )
+	//{
+	//	if ( ShouldRunRateLimitedCommand( args ) )
+	//	{
+	//		Taunt( TAUNT_SHOW_ITEM );
+	//	}
+	//	return true;
+	//}
+	//	else if ( FStrEq( pcmd, "player_disguise" ) )
+	//	{
+	//		CTFPlayer *pPlayer = ToTFPlayer( UTIL_PlayerByName( args[1] ) );
+	//		pPlayer->m_Shared.Disguise( Q_atoi( args[2] ), Q_atoi( args[3] ) );
+	//		return true;
+	//	}
 	else if ( FStrEq( pcmd, "jointeam" ) )
 	{
 		// don't let them spam the server with changes
@@ -8024,7 +8025,7 @@ bool CTFPlayer::ClientCommand( const CCommand &args )
 				return true;
 			}
 
-			if ( sv_cheats->GetBool() )
+			if ( UTIL_HandleCheatCmdForPlayer( this ) )
 			{
 				if ( !PlayGesture( args[1] ) )
 				{
@@ -8045,7 +8046,7 @@ bool CTFPlayer::ClientCommand( const CCommand &args )
 				return true;
 			}
 
-			if ( sv_cheats->GetBool() )
+			if ( UTIL_HandleCheatCmdForPlayer( this ) )
 			{
 				if ( !PlaySpecificSequence( args[1] ) )
 				{
@@ -15347,7 +15348,7 @@ void CTFPlayer::CheatImpulseCommands( int iImpulse )
 	{
 	case 101:
 		{
-			if( sv_cheats->GetBool() )
+			if( UTIL_HandleCheatCmdForPlayer( this ) )
 			{
 				extern int gEvilImpulse101;
 				gEvilImpulse101 = true;
@@ -23228,10 +23229,11 @@ bool CTFPlayer::IsAnyEnemySentryAbleToAttackMe( void ) const
 //-----------------------------------------------------------------------------
 // MVM Con Commands
 //-----------------------------------------------------------------------------
-CON_COMMAND_F( currency_give, "Have some in-game money.", FCVAR_CHEAT )
+CON_COMMAND_F( currency_give, "Have some in-game money.", FCVAR_NONE )
 {
+	//Check who is calling the command
 	CTFPlayer *pPlayer = ToTFPlayer( UTIL_GetCommandClient() );
-	if ( !pPlayer )
+	if( !UTIL_HandleCheatCmdForPlayer(pPlayer) ) 
 		return;
 
 	int nAmount = atoi( args[1] );
@@ -23245,9 +23247,9 @@ CON_COMMAND_F( currency_give, "Have some in-game money.", FCVAR_CHEAT )
 //-----------------------------------------------------------------------------
 void CTFPlayer::AddCurrency( int nAmount )
 {
-	if ( nAmount + m_nCurrency > 30000 )
+	if ( nAmount + m_nCurrency > tf_mvm_maxcurrency.GetInt() )
 	{
-		m_nCurrency = 30000;
+		m_nCurrency = tf_mvm_maxcurrency.GetInt();
 	}
 	else if ( nAmount + m_nCurrency < 0 )
 	{

@@ -5790,6 +5790,11 @@ static ConCommand ent_viewoffset("ent_viewoffset", CC_Ent_ViewOffset, "Displays 
 void CC_Ent_Remove( const CCommand& args )
 {
 	CBaseEntity *pEntity = NULL;
+	
+	//Check who is calling the command
+	CBasePlayer *pPlayer = UTIL_GetCommandClient();
+	if( !UTIL_HandleCheatCmdForPlayer(pPlayer) ) 
+		return;
 
 	// If no name was given set bits based on the picked
 	if ( FStrEq( args[1],"") ) 
@@ -5827,11 +5832,16 @@ void CC_Ent_Remove( const CCommand& args )
 		UTIL_Remove( pEntity );
 	}
 }
-static ConCommand ent_remove("ent_remove", CC_Ent_Remove, "Removes the given entity(s)\n\tArguments:   	{entity_name} / {class_name} / no argument picks what player is looking at ", FCVAR_CHEAT);
+static ConCommand ent_remove("ent_remove", CC_Ent_Remove, "Removes the given entity(s)\n\tArguments:   	{entity_name} / {class_name} / no argument picks what player is looking at ");
 
 //------------------------------------------------------------------------------
 void CC_Ent_RemoveAll( const CCommand& args )
 {
+	//Check who is calling the command
+	CBasePlayer *pPlayer = UTIL_GetCommandClient();
+	if( !UTIL_HandleCheatCmdForPlayer(pPlayer) ) 
+		return;
+
 	// If no name was given remove based on the picked
 	if ( args.ArgC() < 2 )
 	{
@@ -8605,11 +8615,10 @@ void CC_Ent_Create( const CCommand& args )
 {
 	MDLCACHE_CRITICAL_SECTION();
 
+	//Check who is calling the command
 	CBasePlayer *pPlayer = UTIL_GetCommandClient();
-	if (!pPlayer)
-	{
+	if( !UTIL_HandleCheatCmdForPlayer(pPlayer) ) 
 		return;
-	}
 
 	// Don't allow regular users to create point_servercommand entities for the same reason as blocking ent_fire
 	if ( !Q_stricmp( args[1], "point_servercommand" ) )
@@ -8667,7 +8676,7 @@ void CC_Ent_Create( const CCommand& args )
 	}
 	CBaseEntity::SetAllowPrecache( allowPrecache );
 }
-static ConCommand ent_create("ent_create", CC_Ent_Create, "Creates an entity of the given type where the player is looking.  Additional parameters can be passed in in the form: ent_create <entity name> <param 1 name> <param 1> <param 2 name> <param 2>...<param N name> <param N>", FCVAR_GAMEDLL | FCVAR_CHEAT);
+static ConCommand ent_create("ent_create", CC_Ent_Create, "Creates an entity of the given type where the player is looking.  Additional parameters can be passed in in the form: ent_create <entity name> <param 1 name> <param 1> <param 2 name> <param 2>...<param N name> <param N>", FCVAR_GAMEDLL );
 
 //------------------------------------------------------------------------------
 // Purpose: Teleport a specified entity to where the player is looking

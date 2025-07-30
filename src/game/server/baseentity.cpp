@@ -5789,17 +5789,13 @@ static ConCommand ent_viewoffset("ent_viewoffset", CC_Ent_ViewOffset, "Displays 
 //------------------------------------------------------------------------------
 void CC_Ent_Remove( const CCommand& args )
 {
-	CBasePlayer *pPlayer = ToBasePlayer( UTIL_GetCommandClient() );
-	if ( !pPlayer )
-		return;
-
-	CBaseEntity *pEntity = NULL;
-	
 	//Check who is calling the command
 	CBasePlayer *pPlayer = UTIL_GetCommandClient();
 	if( !UTIL_HandleCheatCmdForPlayer(pPlayer) ) 
 		return;
 
+	CBaseEntity *pEntity = NULL;
+	
 	// If no name was given set bits based on the picked
 	if ( FStrEq( args[1],"") ) 
 	{

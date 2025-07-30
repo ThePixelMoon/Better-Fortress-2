@@ -821,9 +821,13 @@ CON_COMMAND_F( explodevector, "Kills a player applying an explosive force. Usage
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
-CON_COMMAND_F( buddha, "Toggle.  Player takes damage but won't die. (Shows red cross when health is zero)", FCVAR_CHEAT )
+CON_COMMAND_F( buddha, "Toggle.  Player takes damage but won't die. (Shows red cross when health is zero)", FCVAR_NONE )
 {
+	//Check who is calling the command
 	CBasePlayer *pPlayer = ToBasePlayer( UTIL_GetCommandClient() ); 
+	if( !UTIL_HandleCheatCmdForPlayer(pPlayer) ) 
+		return;
+
 	if ( pPlayer )
 	{
 		if (pPlayer->m_debugOverlays & OVERLAY_BUDDHA_MODE)
@@ -1165,11 +1169,9 @@ void EnableNoClip( CBasePlayer *pPlayer )
 
 void CC_Player_NoClip( void )
 {
-	if ( !sv_cheats->GetBool() )
-		return;
-
+	//Check who is calling the command
 	CBasePlayer *pPlayer = ToBasePlayer( UTIL_GetCommandClient() ); 
-	if ( !pPlayer )
+	if( !UTIL_HandleCheatCmdForPlayer(pPlayer) ) 
 		return;
 
 	CPlayerState *pl = pPlayer->PlayerData();
@@ -1220,7 +1222,7 @@ void CC_Player_NoClip( void )
 	}
 }
 
-static ConCommand noclip("noclip", CC_Player_NoClip, "Toggle. Player becomes non-solid and flies.", FCVAR_CHEAT);
+static ConCommand noclip("noclip", CC_Player_NoClip, "Toggle. Player becomes non-solid and flies.", FCVAR_NONE);
 
 
 //------------------------------------------------------------------------------
@@ -1228,11 +1230,9 @@ static ConCommand noclip("noclip", CC_Player_NoClip, "Toggle. Player becomes non
 //------------------------------------------------------------------------------
 void CC_God_f (void)
 {
-	if ( !sv_cheats->GetBool() )
-		return;
-
+	//Check who is calling the command
 	CBasePlayer *pPlayer = ToBasePlayer( UTIL_GetCommandClient() ); 
-	if ( !pPlayer )
+	if( !UTIL_HandleCheatCmdForPlayer(pPlayer) ) 
 		return;
 
 #ifdef TF_DLL
@@ -1253,7 +1253,7 @@ void CC_God_f (void)
 		ClientPrint( pPlayer, HUD_PRINTCONSOLE, "godmode ON\n");
 }
 
-static ConCommand god("god", CC_God_f, "Toggle. Player becomes invulnerable.", FCVAR_CHEAT );
+static ConCommand god("god", CC_God_f, "Toggle. Player becomes invulnerable.", FCVAR_NONE );
 
 
 //------------------------------------------------------------------------------

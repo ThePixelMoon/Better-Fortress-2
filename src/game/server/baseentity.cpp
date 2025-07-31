@@ -6134,6 +6134,9 @@ public:
 			return;
 		}
 
+		if( !UTIL_HandleCheatCmdForPlayer(pPlayer) ) 
+			return;
+
 		// fires a command from the console
 		if ( command.ArgC() < 2 )
 		{
@@ -6355,7 +6358,7 @@ private:
 };
 
 static CEntFireAutoCompletionFunctor g_EntFireAutoComplete;
-static ConCommand ent_fire("ent_fire", &g_EntFireAutoComplete, "Usage:\n   ent_fire <target> [action] [value] [delay]\n", FCVAR_CHEAT, &g_EntFireAutoComplete );
+static ConCommand ent_fire("ent_fire", &g_EntFireAutoComplete, "Usage:\n   ent_fire <target> [action] [value] [delay]\n", FCVAR_NONE, &g_EntFireAutoComplete );
 
 void CC_Ent_CancelPendingEntFires( const CCommand& args )
 {

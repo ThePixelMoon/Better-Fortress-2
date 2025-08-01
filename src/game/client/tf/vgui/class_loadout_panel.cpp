@@ -99,7 +99,7 @@ struct LoadoutPanelPositioningInstance
 
 bool IsTauntPanelPosition( int iButtonPos )
 {
-	return iButtonPos >= 9 && iButtonPos <= 16;
+	return iButtonPos >= 10 && iButtonPos <= 17;
 }
 
 const LoadoutPanelPositioningInstance g_DefaultLoadoutPanelPositioning =
@@ -115,15 +115,16 @@ const LoadoutPanelPositioningInstance g_DefaultLoadoutPanelPositioning =
 		5,	// LOADOUT_POSITION_HEAD,
 		6,	// LOADOUT_POSITION_MISC,
 		8,	// LOADOUT_POSITION_ACTION,
+		8,	// LOADOUT_POSITION_SKIN, (same row as ACTION)
 		7,	// LOADOUT_POSITION_MISC2,
-		9,	// LOADOUT_POSITION_TAUNT,
-		10,	// LOADOUT_POSITION_TAUNT2,
-		11,	// LOADOUT_POSITION_TAUNT3,
-		12,	// LOADOUT_POSITION_TAUNT4,
-		13,	// LOADOUT_POSITION_TAUNT5,
-		14,	// LOADOUT_POSITION_TAUNT6,
-		15,	// LOADOUT_POSITION_TAUNT7,
-		16,	// LOADOUT_POSITION_TAUNT8,
+		10,	// LOADOUT_POSITION_TAUNT,
+		11,	// LOADOUT_POSITION_TAUNT2,
+		12,	// LOADOUT_POSITION_TAUNT3,
+		13,	// LOADOUT_POSITION_TAUNT4,
+		14,	// LOADOUT_POSITION_TAUNT5,
+		15,	// LOADOUT_POSITION_TAUNT6,
+		16,	// LOADOUT_POSITION_TAUNT7,
+		17,	// LOADOUT_POSITION_TAUNT8,
 
 	}
 };
@@ -141,15 +142,16 @@ const LoadoutPanelPositioningInstance g_LoadoutPanelPositioning_Spy =
 		5,	// LOADOUT_POSITION_HEAD,
 		6,	// LOADOUT_POSITION_MISC,
 		8,	// LOADOUT_POSITION_ACTION,
+		8,	// LOADOUT_POSITION_SKIN, (same row as ACTION)
 		7,	// LOADOUT_POSITION_MISC2,
-		9,	// LOADOUT_POSITION_TAUNT,
-		10,	// LOADOUT_POSITION_TAUNT2,
-		11,	// LOADOUT_POSITION_TAUNT3,
-		12,	// LOADOUT_POSITION_TAUNT4,
-		13,	// LOADOUT_POSITION_TAUNT5,
-		14,	// LOADOUT_POSITION_TAUNT6,
-		15,	// LOADOUT_POSITION_TAUNT7,
-		16,	// LOADOUT_POSITION_TAUNT8,
+		10,	// LOADOUT_POSITION_TAUNT,
+		11,	// LOADOUT_POSITION_TAUNT2,
+		12,	// LOADOUT_POSITION_TAUNT3,
+		13,	// LOADOUT_POSITION_TAUNT4,
+		14,	// LOADOUT_POSITION_TAUNT5,
+		15,	// LOADOUT_POSITION_TAUNT6,
+		16,	// LOADOUT_POSITION_TAUNT7,
+		17,	// LOADOUT_POSITION_TAUNT8,
 	}
 };
 
@@ -166,15 +168,16 @@ const LoadoutPanelPositioningInstance g_LoadoutPanelPositioning_Engineer =
 		5,	// LOADOUT_POSITION_HEAD,
 		6,	// LOADOUT_POSITION_MISC,
 		8,	// LOADOUT_POSITION_ACTION,
+		8,	// LOADOUT_POSITION_SKIN, (same row as ACTION)
 		7,	// LOADOUT_POSITION_MISC2,
-		9,	// LOADOUT_POSITION_TAUNT,
-		10,	// LOADOUT_POSITION_TAUNT2,
-		11,	// LOADOUT_POSITION_TAUNT3,
-		12,	// LOADOUT_POSITION_TAUNT4,
-		13,	// LOADOUT_POSITION_TAUNT5,
-		14,	// LOADOUT_POSITION_TAUNT6,
-		15,	// LOADOUT_POSITION_TAUNT7,
-		16,	// LOADOUT_POSITION_TAUNT8,
+		10,	// LOADOUT_POSITION_TAUNT,
+		11,	// LOADOUT_POSITION_TAUNT2,
+		12,	// LOADOUT_POSITION_TAUNT3,
+		13,	// LOADOUT_POSITION_TAUNT4,
+		14,	// LOADOUT_POSITION_TAUNT5,
+		15,	// LOADOUT_POSITION_TAUNT6,
+		16,	// LOADOUT_POSITION_TAUNT7,
+		17,	// LOADOUT_POSITION_TAUNT8,
 	}
 };
 
@@ -522,6 +525,24 @@ void CClassLoadoutPanel::PerformLayout( void )
 {
 	BaseClass::PerformLayout();
 
+	// Apply custom sizing immediately after base class layout to override default sizes
+	for ( int i = 0; i < m_pItemModelPanels.Count(); i++ )
+	{
+		// Make the cosmetic slots (HEAD, MISC, MISC2) wider
+		if ( i == LOADOUT_POSITION_HEAD || i == LOADOUT_POSITION_MISC || i == LOADOUT_POSITION_MISC2 )
+		{
+			// Use fixed original dimensions
+			const int ORIGINAL_ITEM_PANEL_WIDTH = 140;
+			const int ORIGINAL_ITEM_PANEL_HEIGHT = 124;
+			
+			// Make cosmetic slots a bit wider
+			int cosmeticWidth = ORIGINAL_ITEM_PANEL_WIDTH + 210;
+			int cosmeticHeight = ORIGINAL_ITEM_PANEL_HEIGHT + 30;
+			m_pItemModelPanels[i]->SetSize( cosmeticWidth, cosmeticHeight );
+			m_pItemModelPanels[i]->InvalidateLayout( true );
+		}
+	}
+
 	// This is disabled by default in res file. IF we turn it on again, uncomment this.
 	/*if ( m_pPassiveAttribsLabel )
 	{
@@ -606,7 +627,100 @@ void CClassLoadoutPanel::PerformLayout( void )
 			int iOffset = iColumn == 0 ? m_iItemXPosOffcenterA : m_iItemXPosOffcenterB + ((iColumn - 1) * 200);
 			int	iXPos = iCenter + iOffset;
 			int	iYPos = m_iItemYPos + (m_iItemYDelta * iYButtonPos);
-			m_pItemModelPanels[i]->SetPos( iXPos, iYPos );
+
+			// Special positioning for Action and Skin slots to be side by side
+			if ( i == LOADOUT_POSITION_ACTION || i == LOADOUT_POSITION_SKIN )
+			{
+				// Both slots are at position 8, so they'll have the same base coordinates
+				// Place Action slot on the left, Skin slot on the right (but smaller)
+				int actionSkinBaseX = iXPos;
+				int actionSkinBaseY = iYPos;
+				
+				if ( i == LOADOUT_POSITION_ACTION )
+				{
+					// Action slot: normal position
+					m_pItemModelPanels[i]->SetPos( actionSkinBaseX, actionSkinBaseY );
+				}
+				else // LOADOUT_POSITION_SKIN
+				{
+					// Skin slot: positioned to the right of action slot, with more spacing
+					int actionSlotWidth = (int)(140 * 1.15f); // Use the actual scaled width
+					int skinSlotSpacing = 35;  // Increased gap between slots (was 10)
+					int skinSlotX = actionSkinBaseX + actionSlotWidth + skinSlotSpacing;
+					m_pItemModelPanels[i]->SetPos( skinSlotX, actionSkinBaseY );
+				}
+			}
+			else
+			{
+				// Normal positioning for all other slots
+				m_pItemModelPanels[i]->SetPos( iXPos, iYPos );
+			}
+
+			// Make the skin slot slightly smaller than other panels
+			if ( i == LOADOUT_POSITION_HEAD || i == LOADOUT_POSITION_MISC || i == LOADOUT_POSITION_MISC2 )
+			{	
+				// Apply custom positioning settings to pan icons and text to the left
+				KeyValues *pKVs = new KeyValues( "CosmeticSlotSettings" );
+				pKVs->SetInt( "text_center", 0 );     // Disable text centering
+				pKVs->SetInt( "text_xpos", 20 );      // Position text towards left
+				m_pItemModelPanels[i]->ApplySettings( pKVs );
+				pKVs->deleteThis();		
+				
+				// Force layout recalculation to let the panel auto-scale its contents
+				m_pItemModelPanels[i]->InvalidateLayout( true );
+			}
+
+			// Make the skin slot slightly smaller than other panels
+			if ( i == LOADOUT_POSITION_SKIN )
+			{
+				// Use fixed original dimensions to prevent progressive shrinking
+				// Based on the default item panel size from resource files
+				const int ORIGINAL_ITEM_PANEL_WIDTH = 140;
+				const int ORIGINAL_ITEM_PANEL_HEIGHT = 124;
+				
+				// Set to slightly smaller size (85% of original, up from 75%)
+				int skinWidth = (int)(ORIGINAL_ITEM_PANEL_WIDTH * 1.15f);
+				int skinHeight = (int)(ORIGINAL_ITEM_PANEL_HEIGHT * 1.25f);
+				m_pItemModelPanels[i]->SetSize( skinWidth, skinHeight );
+				
+				// Apply custom positioning settings to pan icons and text to the left
+				KeyValues *pKVs = new KeyValues( "SkinSlotSettings" );
+				pKVs->SetInt( "model_center_x", 0 );  // Disable centering
+				pKVs->SetInt( "model_xpos", -10 );     // Position icon towards left
+				pKVs->SetInt( "text_center", 0 );     // Disable text centering
+				pKVs->SetInt( "text_xpos", -30 );      // Position text towards left
+				m_pItemModelPanels[i]->ApplySettings( pKVs );
+				pKVs->deleteThis();
+				
+				// Force layout recalculation to let the panel auto-scale its contents
+				m_pItemModelPanels[i]->InvalidateLayout( true );
+			}
+
+			// Make the action slot the same size as the skin slot
+			if ( i == LOADOUT_POSITION_ACTION )
+			{
+				// Use fixed original dimensions to prevent progressive shrinking
+				// Based on the default item panel size from resource files
+				const int ORIGINAL_ITEM_PANEL_WIDTH = 140;
+				const int ORIGINAL_ITEM_PANEL_HEIGHT = 124;
+				
+				// Set to same size as skin slot
+				int actionWidth = (int)(ORIGINAL_ITEM_PANEL_WIDTH * 1.15f);
+				int actionHeight = (int)(ORIGINAL_ITEM_PANEL_HEIGHT * 1.25f);
+				m_pItemModelPanels[i]->SetSize( actionWidth, actionHeight );
+				
+				// Apply custom positioning settings to pan icons and text to the left
+				KeyValues *pKVs = new KeyValues( "ActionSlotSettings" );
+				pKVs->SetInt( "model_center_x", 0 );  // Disable centering
+				pKVs->SetInt( "model_xpos", -10 );     // Position icon towards left
+				pKVs->SetInt( "text_center", 0 );     // Disable text centering
+				pKVs->SetInt( "text_xpos", -30 );      // Position text towards left
+				m_pItemModelPanels[i]->ApplySettings( pKVs );
+				pKVs->deleteThis();
+				
+				// Force layout recalculation to let the panel auto-scale its contents
+				m_pItemModelPanels[i]->InvalidateLayout( true );
+			}
 
 			// Update position and visibility of the item option buttons
 			if ( i < m_vecItemOptionButtons.Count() )

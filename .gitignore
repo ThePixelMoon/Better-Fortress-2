@@ -580,3 +580,5 @@ src/lib/public/x64/raytrace.lib
 src/lib/public/x64/tier1.lib
 src/lib/public/x64/vgui_controls.lib
 game/betterfortress/scripts/vscripts/dumpnet.nut
+game/betterfortress/materials/vgui/logos/ui/spray.vmt
+game/betterfortress/cfg/tr_walkway_rc2.cfg

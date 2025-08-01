@@ -43,6 +43,7 @@ const char *g_szArmoryFilterStrings[ARMFILT_TOTAL] =
 	"#ArmoryFilter_Spy",			// ARMFILT_CLASS_SPY,
 	"#ArmoryFilter_Engineer",		// ARMFILT_CLASS_ENGINEER,
 	"#ArmoryFilter_Donationitems",	// ARMFILT_DONATIONITEMS,
+	"#ArmoryFilter_ModItems",		// ARMFILT_MODITEMS,
 
 	"",								// ARMFILT_NUM_IN_DROPDOWN
 	"Not Used",						// ARMFILT_CUSTOM
@@ -619,6 +620,12 @@ bool CArmoryPanel::DefPassesFilter( const CTFItemDefinition *pDef, armory_filter
 		{
 			// Don't show class/slot usage for class/slot tokens
 			bInList = pDef->GetItemClass() && !V_strcmp( pDef->GetItemClass(), "map_token" );
+			break;
+		}
+
+	case ARMFILT_MODITEMS:
+		{
+			bInList = pDef->IsModItem();
 			break;
 		}
 	}

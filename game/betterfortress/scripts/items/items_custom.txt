@@ -1025,6 +1025,7 @@
 			"name"		"MVM Robot Scout"
 			"prefab"	"mvm_robotskin"
 			"item_name"	"#TF_Item_MVMBotScout"
+			"show_in_armory"	"1"
 			"equip_regions"
 			{
 				"zombie_body"			"1"
@@ -1040,6 +1041,7 @@
 			"name"		"MVM Robot Soldier"
 			"prefab"	"mvm_robotskin"
 			"item_name"	"#TF_Item_MVMBotSoldier"
+			"show_in_armory"	"1"
 			"equip_regions"
 			{
 				"zombie_body"			"1"
@@ -1056,6 +1058,7 @@
 			"name"		"MVM Robot Pyro"
 			"prefab"	"mvm_robotskin"
 			"item_name"	"#TF_Item_MVMBotPyro"
+			"show_in_armory"	"1"
 			"equip_regions"
 			{
 				"zombie_body"			"1"
@@ -1072,6 +1075,7 @@
 			"name"		"MVM Robot Demoman"
 			"prefab"	"mvm_robotskin"
 			"item_name"	"#TF_Item_MVMBotDemo"
+			"show_in_armory"	"1"
 			"equip_regions"
 			{
 				"zombie_body"			"1"
@@ -1088,6 +1092,7 @@
 			"name"		"MVM Robot Heavy"
 			"prefab"	"mvm_robotskin"
 			"item_name"	"#TF_Item_MVMBotHeavy"
+			"show_in_armory"	"1"
 			"equip_regions"
 			{
 				"zombie_body"			"1"
@@ -1105,6 +1110,7 @@
 			"name"		"MVM Robot Engineer"
 			"prefab"	"mvm_robotskin"
 			"item_name"	"#TF_Item_MVMBotEngineer"
+			"show_in_armory"	"1"
 			"equip_regions"
 			{
 				"zombie_body"			"1"
@@ -1122,6 +1128,7 @@
 			"name"		"MVM Robot Medic"
 			"prefab"	"mvm_robotskin"
 			"item_name"	"#TF_Item_MVMBotMedic"
+			"show_in_armory"	"1"
 			"equip_regions"
 			{
 				"zombie_body"			"1"
@@ -1138,6 +1145,7 @@
 			"name"		"MVM Robot Sniper"
 			"prefab"	"mvm_robotskin"
 			"item_name"	"#TF_Item_MVMBotSniper"
+			"show_in_armory"	"1"
 			"equip_regions"
 			{
 				"zombie_body"			"1"
@@ -1154,6 +1162,7 @@
 			"name"		"MVM Robot Spy"
 			"prefab"	"mvm_robotskin"
 			"item_name"	"#TF_Item_MVMBotSpy"
+			"show_in_armory"	"1"
 			"equip_regions"
 			{
 				"zombie_body"			"1"
@@ -1283,6 +1292,7 @@
 			"item_type_name"	"#TF_Weapon_PDA_Engineer"
 			"item_slot"	"pda"
 			"item_quality"	"community"
+			"show_in_armory"	"1"
 			"moditem" "1"
 			"min_ilevel"	"1"
 			"max_ilevel"	"1"

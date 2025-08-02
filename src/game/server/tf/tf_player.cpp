@@ -9,6 +9,7 @@
 #include "tf_player.h"
 #include "tf_gamerules.h"
 #include "tf_gamestats.h"
+#include "tf_shareddefs.h"
 #include "KeyValues.h"
 #include "viewport_panel_names.h"
 #include "client.h"
@@ -13901,7 +13902,29 @@ void CTFPlayer::ClientHearVox( const char *pSentence )
 //-----------------------------------------------------------------------------
 void CTFPlayer::UpdateModel( void )
 {
-	SetModel( GetPlayerClass()->GetModelName() );
+	const char *pszModelName = GetPlayerClass()->GetModelName();
+	
+	// Check if this is a spy disguised as a robot team member in MvM Versus mode
+	if ( IsPlayerClass( TF_CLASS_SPY ) && m_Shared.InCond( TF_COND_DISGUISED ) )
+	{
+		// Check if we're in MvM mode and disguised as the robot team
+		if ( TFGameRules() && TFGameRules()->IsMannVsMachineMode() && 
+			 m_Shared.GetDisguiseTeam() == TF_TEAM_PVE_INVADERS )
+		{
+			// Use robot model for the disguised class
+			int nDisguiseClass = m_Shared.GetDisguiseClass();
+			if ( nDisguiseClass >= TF_FIRST_NORMAL_CLASS && nDisguiseClass < TF_LAST_NORMAL_CLASS )
+			{
+				// Use the robot model for this class - g_szBotModels is indexed by class number directly
+				if ( nDisguiseClass >= 0 && nDisguiseClass < ARRAYSIZE( g_szBotModels ) )
+				{
+					pszModelName = g_szBotModels[ nDisguiseClass ];
+				}
+			}
+		}
+	}
+
+	SetModel( pszModelName );
 
 	// Immediately reset our collision bounds - our collision bounds will be set to the model's bounds.
 	SetCollisionBounds( GetPlayerMins(), GetPlayerMaxs() );

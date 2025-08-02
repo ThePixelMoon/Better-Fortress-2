@@ -1767,7 +1767,6 @@
 			"name"	"Offshore Oceanic Case"
 			"first_sale_date"	"2016/10/19"
 			"prefab" "base_cosmetic_case"
-			"show_in_armory"	"1"
 			"moditem" "1"
 			"tool"
 			{
@@ -1805,7 +1804,6 @@
 			"name"	"Offshore Oceanic Key" 
 			"first_sale_date"	"2016/10/19"
 			"prefab" 			"eventkey"
-			"show_in_armory"	"1"
 			"moditem" "1"
 			"item_name"			"#Offshore2025_Crate_sea_key"					
 			"item_description"	"#Offshore2025_Crate_sea_key_desc"						

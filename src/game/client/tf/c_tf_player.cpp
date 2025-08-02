@@ -6,6 +6,7 @@
 
 #include "cbase.h"
 #include "c_tf_player.h"
+#include "tf_shareddefs.h"
 #include "c_user_message_register.h"
 #include "view.h"
 #include "iclientvehicle.h"
@@ -745,7 +746,20 @@ void C_TFRagdoll::CreateTFRagdoll()
 
 	if ( pPlayer && pPlayer->GetPlayerClass() && !pPlayer->ShouldDrawSpyAsDisguised() )
 	{
-		nModelIndex = modelinfo->GetModelIndex( pPlayer->GetPlayerClass()->GetModelName() );
+		// Check if the player was using robot cosmetics
+		int usingRobotCosmetic = 0;
+		CALL_ATTRIB_HOOK_INT_ON_OTHER( pPlayer, usingRobotCosmetic, robotrobotrobotrobot );
+		
+		// MVM Versus - use robot model for ragdoll if player was using robot cosmetics
+		if ( usingRobotCosmetic && tf_robot_cosmetic_opt_in.GetBool() )
+		{
+			int nRobotClassIndex = pPlayer->GetPlayerClass()->GetClassIndex();
+			nModelIndex = modelinfo->GetModelIndex( g_szBotModels[ nRobotClassIndex ] );
+		}
+		else
+		{
+			nModelIndex = modelinfo->GetModelIndex( pPlayer->GetPlayerClass()->GetModelName() );
+		}
 	}
 	else
 	{
@@ -4596,7 +4610,7 @@ void C_TFPlayer::OnDataChanged( DataUpdateType_t updateType )
 			{
 				if ( m_Shared.InCond( TF_COND_DISGUISED ) )
 				{
-					UpdateMVMEyeGlowEffect( false );
+					UpdateMVMEyeGlowEffect( true );
 				}
 				else
 				{
@@ -9048,7 +9062,25 @@ void C_TFPlayer::ValidateModelIndex( void )
 	else if ( m_Shared.InCond( TF_COND_DISGUISED ) && IsEnemyPlayer() )
 	{
 		TFPlayerClassData_t *pData = GetPlayerClassData( m_Shared.GetDisguiseClass() );
-		m_nModelIndex = modelinfo->GetModelIndex( pData->GetModelName() );
+		const char *pszModelName = pData->GetModelName();
+		
+		// Check if this is MvM Versus mode and the spy is disguised as the robot team
+		if ( TFGameRules() && TFGameRules()->IsMannVsMachineMode() && 
+			 m_Shared.GetDisguiseTeam() == TF_TEAM_PVE_INVADERS )
+		{
+			// Use robot model for the disguised class
+			int nDisguiseClass = m_Shared.GetDisguiseClass();
+			if ( nDisguiseClass >= TF_FIRST_NORMAL_CLASS && nDisguiseClass < TF_LAST_NORMAL_CLASS )
+			{
+				// Use the robot model for this class - g_szBotModels is indexed by class number directly
+				if ( nDisguiseClass >= 0 && nDisguiseClass < ARRAYSIZE( g_szBotModels ) )
+				{
+					pszModelName = g_szBotModels[ nDisguiseClass ];
+				}
+			}
+		}
+		
+		m_nModelIndex = modelinfo->GetModelIndex( pszModelName );
 	}
 	else if ( m_Shared.InCond( TF_COND_HALLOWEEN_GHOST_MODE ) )
 	{
@@ -10679,9 +10711,33 @@ void C_TFPlayer::UpdateKillStreakEffects( int iCount, bool bKillScored /* = fals
 
 void C_TFPlayer::UpdateMVMEyeGlowEffect( bool bVisible )
 {
+	// Check if this player should have robot eye glow
+	bool bShouldHaveEyeGlow = false;
+	
 	int usingRobotCosmetic = 0;
 	CALL_ATTRIB_HOOK_INT( usingRobotCosmetic, robotrobotrobotrobot );
-	if ( !( ( TFGameRules() && TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_INVADERS ) || ( usingRobotCosmetic && tf_robot_cosmetic_opt_in.GetBool() ) ) )
+	
+	if ( TFGameRules() && TFGameRules()->IsMannVsMachineMode() )
+	{
+		// Actual robots (bots on invader team)
+		if ( GetTeamNumber() == TF_TEAM_PVE_INVADERS )
+		{
+			bShouldHaveEyeGlow = true;
+		}
+		// Spies disguised as robots
+		else if ( IsPlayerClass( TF_CLASS_SPY ) && m_Shared.InCond( TF_COND_DISGUISED ) && 
+				  m_Shared.GetDisguiseTeam() == TF_TEAM_PVE_INVADERS )
+		{
+			bShouldHaveEyeGlow = true;
+		}
+	}
+	// Players using robot cosmetic
+	else if ( usingRobotCosmetic && tf_robot_cosmetic_opt_in.GetBool() )
+	{
+		bShouldHaveEyeGlow = true;
+	}
+	
+	if ( !bShouldHaveEyeGlow )
 	{
 		return;
 	}

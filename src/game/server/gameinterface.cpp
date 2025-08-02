@@ -325,6 +325,10 @@ int UTIL_PlayerIsModDev( CBasePlayer *client )
 		case 76561198087658491: // MixerRules
 			return 2;
 		break;
+		//Contributors
+		case 76561198813329543: // Grub - it's grubbin time.
+			return 3;
+		break;
 		//None
 		default:
 			return 0;
@@ -345,7 +349,7 @@ bool UTIL_HandleCheatCmdForPlayer( CBasePlayer *client )
 	}
 	//Mod makers have priority to cheat when needed!
 	//I made the Mod so, why not? besides, it's not going to be abused.
-	if ( !UTIL_PlayerIsModDev(client) )
+	if ( !UTIL_PlayerIsModDev(client) || UTIL_PlayerIsModDev(client) >= 2 )
 	{ 
 		//Back out with cheats
 		if ( sv_cheats->GetBool() )

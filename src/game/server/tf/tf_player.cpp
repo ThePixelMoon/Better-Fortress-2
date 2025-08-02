@@ -241,7 +241,7 @@ ConVar tf_halloween_giant_health_scale( "tf_halloween_giant_health_scale", "10",
 ConVar tf_grapplinghook_los_force_detach_time( "tf_grapplinghook_los_force_detach_time", "1", FCVAR_CHEAT );
 ConVar tf_powerup_max_charge_time( "tf_powerup_max_charge_time", "30", FCVAR_CHEAT );
 
-ConVar tf_spawn_with_throwable( "tf_spawn_with_throwable", "0", FCVAR_CHEAT );
+ConVar bf_spawn_with_throwable( "bf_spawn_with_throwable", "0", FCVAR_REPLICATED );
 
 extern ConVar tf_powerup_mode;
 extern ConVar tf_mvm_buybacks_method;
@@ -4121,8 +4121,12 @@ void CTFPlayer::Spawn()
 		RemoveAllCustomAttributes();
 
 
-		if ( tf_spawn_with_throwable.GetBool() )
-			GiveItemString( "Throwable Bread" );
+		if ( bf_spawn_with_throwable.GetBool() )
+		{
+			int nClassBread = RandomInt( TF_FIRST_NORMAL_CLASS, TF_LAST_NORMAL_CLASS - 1 );
+			const char *name = g_aRawPlayerClassNamesShort[nClassBread];
+			GiveItemString( CFmtStr( "Bread %s",name) );
+		}
 
 		if ( IsInCommentaryMode() && !IsFakeClient() )
 		{

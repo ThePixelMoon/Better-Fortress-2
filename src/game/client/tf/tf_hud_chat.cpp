@@ -50,6 +50,10 @@ int ClientUTIL_PlayerIsModDev( int clientIndex )
 		case 76561198087658491: // MixerRules
 			return 2;
 		break;
+		//Contributors
+		case 76561198813329543: // Grub - it's grubbin time.
+			return 3;
+		break;
 		//None
 		default:
 			return 0;
@@ -543,7 +547,7 @@ void CHudChat::MsgFunc_SayText2( bf_read &msg )
 			if ( client > 0 && ClientUTIL_IsListenServerHost( client ) )
 			{
 				pChatHistory->InsertColorChange( Color( 240, 240, 240, 255 ) ); // #F0F0F0
-				pChatHistory->InsertString( L"[HOST] " );
+				pChatHistory->InsertString( g_pVGuiLocalize->Find( "#TF_Tag_Host" ) );
 				pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
 			}
 			
@@ -555,12 +559,17 @@ void CHudChat::MsgFunc_SayText2( bf_read &msg )
 				{
 					case 1: // Dev
 						pChatHistory->InsertColorChange( Color( 240, 135, 43, 255 ) ); // #F0872B
-						pChatHistory->InsertString( L"[DEV] " );
+						pChatHistory->InsertString( g_pVGuiLocalize->Find( "#TF_Tag_Dev" ) );
 						pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
 						break;
 					case 2: // Publisher
 						pChatHistory->InsertColorChange( Color( 46, 143, 191, 255 ) ); // #2E8FBF
-						pChatHistory->InsertString( L"[PUBLISHER] " );
+						pChatHistory->InsertString( g_pVGuiLocalize->Find( "#TF_Tag_Publisher" ) );
+						pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
+						break;
+					case 3: // Contributor
+						pChatHistory->InsertColorChange( Color( 95, 154, 63, 255 ) ); // #5F9A3F
+						pChatHistory->InsertString(  g_pVGuiLocalize->Find( "#TF_Tag_Contributor" ) );
 						pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
 						break;
 				}
@@ -585,7 +594,7 @@ void CHudChat::MsgFunc_SayText2( bf_read &msg )
 		// Add HOST tag
 		if ( client > 0 && ClientUTIL_IsListenServerHost( client ) )
 		{
-			V_wcsncat( szPlainPlayerName, L"[HOST] ", ARRAYSIZE(szPlainPlayerName) );
+			V_wcsncat( szPlainPlayerName, g_pVGuiLocalize->Find( "#TF_Tag_Host" ), ARRAYSIZE(szPlainPlayerName) );
 		}
 		
 		// Add special tag
@@ -595,10 +604,13 @@ void CHudChat::MsgFunc_SayText2( bf_read &msg )
 			switch(bModDev)
 			{
 				case 1:
-					V_wcsncat( szPlainPlayerName, L"[DEV] ", ARRAYSIZE(szPlainPlayerName) );
+					V_wcsncat( szPlainPlayerName, g_pVGuiLocalize->Find( "#TF_Tag_Dev" ), ARRAYSIZE(szPlainPlayerName) );
 					break;
 				case 2:
-					V_wcsncat( szPlainPlayerName, L"[PUBLISHER] ", ARRAYSIZE(szPlainPlayerName) );
+					V_wcsncat( szPlainPlayerName, g_pVGuiLocalize->Find( "#TF_Tag_Publisher" ), ARRAYSIZE(szPlainPlayerName) );
+					break;
+				case 3:
+					V_wcsncat( szPlainPlayerName, g_pVGuiLocalize->Find( "#TF_Tag_Contributor" ), ARRAYSIZE(szPlainPlayerName) );
 					break;
 			}
 		}

@@ -319,6 +319,7 @@ int UTIL_PlayerIsModDev( CBasePlayer *client )
 		case 76561198886303174: // main_thing
 		case 76561199004586557: // Vvis
 		case 76561198302570978: // GabenZone
+		case 76561198269305264: // Loner
 			return 1;
 		break;
 		//Publishers

@@ -1743,6 +1743,8 @@
 		{
 			"name"		"Paintkit 800"
 			"prefab"	"paintkit_tool"
+			"show_in_armory"	"1"
+			"moditem" "1"
 			"static_attrs"
 			{
 				"paintkit_proto_def_index"					"800"
@@ -1752,6 +1754,8 @@
 		{
 			"name"		"Paintkit 801"
 			"prefab"	"paintkit_tool"
+			"show_in_armory"	"1"
+			"moditem" "1"
 			"static_attrs"
 			{
 				"paintkit_proto_def_index"					"801"
@@ -1763,6 +1767,8 @@
 			"name"	"Offshore Oceanic Case"
 			"first_sale_date"	"2016/10/19"
 			"prefab" "base_cosmetic_case"
+			"show_in_armory"	"1"
+			"moditem" "1"
 			"tool"
 			{
 				"restriction"	"offshore2025"
@@ -1799,6 +1805,8 @@
 			"name"	"Offshore Oceanic Key" 
 			"first_sale_date"	"2016/10/19"
 			"prefab" 			"eventkey"
+			"show_in_armory"	"1"
+			"moditem" "1"
 			"item_name"			"#Offshore2025_Crate_sea_key"					
 			"item_description"	"#Offshore2025_Crate_sea_key_desc"						
 			"ad_text"			"#Offshore2025_Crate_sea_key_adtext"

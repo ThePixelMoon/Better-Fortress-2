@@ -222,6 +222,66 @@ ConVar tf_romevision_skip_prompt( "tf_romevision_skip_prompt", "0", FCVAR_ARCHIV
 
 ConVar tf_robot_cosmetic_opt_in( "tf_robot_cosmetic_opt_in", "1", FCVAR_USERINFO | FCVAR_ARCHIVE, "When set to 0, Robot models will not be used." );
 
+// Callback functions for cosmetic ConVars to update visibility immediately
+void bf_disable_cosmetics_changed( IConVar *var, const char *pOldValue, float flOldValue );
+void bf_disable_unusual_effects_changed( IConVar *var, const char *pOldValue, float flOldValue );
+
+ConVar bf_disable_cosmetics( "bf_disable_cosmetics", "0", FCVAR_ARCHIVE, "When set to 1, all cosmetic items (hats, misc items) will be hidden.", bf_disable_cosmetics_changed );
+ConVar bf_disable_unusual_effects( "bf_disable_unusual_effects", "0", FCVAR_ARCHIVE, "When set to 1, all unusual particle effects will be hidden.", bf_disable_unusual_effects_changed );
+
+//-----------------------------------------------------------------------------
+// Purpose: Callback functions to immediately update wearable visibility
+//-----------------------------------------------------------------------------
+void bf_disable_cosmetics_changed( IConVar *var, const char *pOldValue, float flOldValue )
+{
+	// Force all wearables to re-evaluate their visibility
+	C_TFPlayer *pLocalPlayer = C_TFPlayer::GetLocalTFPlayer();
+	if ( pLocalPlayer )
+	{
+		// Update all players' wearables
+		for ( int i = 1; i <= MAX_PLAYERS; i++ )
+		{
+			C_TFPlayer *pPlayer = ToTFPlayer( UTIL_PlayerByIndex( i ) );
+			if ( pPlayer )
+			{
+				for ( int j = 0; j < pPlayer->GetNumWearables(); j++ )
+				{
+					C_EconWearable *pWearable = pPlayer->GetWearable( j );
+					if ( pWearable )
+					{
+						pWearable->UpdateVisibility();
+					}
+				}
+			}
+		}
+	}
+}
+
+void bf_disable_unusual_effects_changed( IConVar *var, const char *pOldValue, float flOldValue )
+{
+	// Force all wearables to re-evaluate their particle systems
+	C_TFPlayer *pLocalPlayer = C_TFPlayer::GetLocalTFPlayer();
+	if ( pLocalPlayer )
+	{
+		// Update all players' wearables
+		for ( int i = 1; i <= MAX_PLAYERS; i++ )
+		{
+			C_TFPlayer *pPlayer = ToTFPlayer( UTIL_PlayerByIndex( i ) );
+			if ( pPlayer )
+			{
+				for ( int j = 0; j < pPlayer->GetNumWearables(); j++ )
+				{
+					C_EconWearable *pWearable = pPlayer->GetWearable( j );
+					if ( pWearable )
+					{
+						pWearable->UpdateVisibility();
+					}
+				}
+			}
+		}
+	}
+}
+
 #define BDAY_HAT_MODEL		"models/effects/bday_hat.mdl"
 #define BOMB_HAT_MODEL		"models/props_lakeside_event/bomb_temp_hat.mdl"
 #define BOMBONOMICON_MODEL  "models/props_halloween/bombonomicon.mdl"

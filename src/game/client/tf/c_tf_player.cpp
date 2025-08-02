@@ -9064,9 +9064,30 @@ void C_TFPlayer::ValidateModelIndex( void )
 		TFPlayerClassData_t *pData = GetPlayerClassData( m_Shared.GetDisguiseClass() );
 		const char *pszModelName = pData->GetModelName();
 		
+		bool bUseRobotModel = false;
+		
 		// Check if this is MvM Versus mode and the spy is disguised as the robot team
 		if ( TFGameRules() && TFGameRules()->IsMannVsMachineMode() && 
 			 m_Shared.GetDisguiseTeam() == TF_TEAM_PVE_INVADERS )
+		{
+			bUseRobotModel = true;
+		}
+		// Check if the disguise target is using the Robot Cosmetic attribute
+		else
+		{
+			C_TFPlayer *pDisguiseTarget = ToTFPlayer( m_Shared.GetDisguiseTarget() );
+			if ( pDisguiseTarget )
+			{
+				int usingRobotCosmetic = 0;
+				CALL_ATTRIB_HOOK_INT_ON_OTHER( pDisguiseTarget, usingRobotCosmetic, robotrobotrobotrobot );
+				if ( usingRobotCosmetic && tf_robot_cosmetic_opt_in.GetBool() )
+				{
+					bUseRobotModel = true;
+				}
+			}
+		}
+		
+		if ( bUseRobotModel )
 		{
 			// Use robot model for the disguised class
 			int nDisguiseClass = m_Shared.GetDisguiseClass();
@@ -10736,6 +10757,21 @@ void C_TFPlayer::UpdateMVMEyeGlowEffect( bool bVisible )
 	{
 		bShouldHaveEyeGlow = true;
 	}
+	// Spies disguised as players using robot cosmetic (outside MvM)
+	else if ( IsPlayerClass( TF_CLASS_SPY ) && m_Shared.InCond( TF_COND_DISGUISED ) )
+	{
+		C_TFPlayer *pDisguiseTarget = ToTFPlayer( m_Shared.GetDisguiseTarget() );
+		if ( pDisguiseTarget )
+		{
+			int targetUsingRobotCosmetic = 0;
+			CALL_ATTRIB_HOOK_INT_ON_OTHER( pDisguiseTarget, targetUsingRobotCosmetic, robotrobotrobotrobot );
+			if ( targetUsingRobotCosmetic && tf_robot_cosmetic_opt_in.GetBool() )
+			{
+				bShouldHaveEyeGlow = true;
+				usingRobotCosmetic = targetUsingRobotCosmetic; // Use target's cosmetic value for color determination
+			}
+		}
+	}
 	
 	if ( !bShouldHaveEyeGlow )
 	{
@@ -10753,7 +10789,13 @@ void C_TFPlayer::UpdateMVMEyeGlowEffect( bool bVisible )
 		Vector vColor = Vector( 255, 255, 255 );
 		if( usingRobotCosmetic != 0)
 		{
-			vColor = GetTeamNumber() ==  TF_TEAM_RED ? Vector( 255, 0, 0 ) : Vector( 0, 240, 255 );
+			// For disguised spies, use disguise team color instead of spy's team
+			int teamForColor = GetTeamNumber();
+			if ( IsPlayerClass( TF_CLASS_SPY ) && m_Shared.InCond( TF_COND_DISGUISED ) )
+			{
+				teamForColor = m_Shared.GetDisguiseTeam();
+			}
+			vColor = teamForColor == TF_TEAM_RED ? Vector( 255, 0, 0 ) : Vector( 0, 240, 255 );
 		}
 		else
 		{

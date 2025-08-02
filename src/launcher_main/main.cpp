@@ -87,9 +87,10 @@ static void *Launcher_GetProcAddress( void *pHandle, const char *pszName )
 #endif
 
 //static const AppId_t k_unSDK2013MPAppId = 243750;
+static const AppId_t k_unBetterFortressAppId = 3768450;
 
 #ifdef MOD_LAUNCHER
-static const AppId_t k_unMyModAppid = 3768450;
+static const AppId_t k_unMyModAppid = k_unBetterFortressAppId;
 #else
 static const AppId_t k_unMyModAppid = k_unSDK2013MPAppId;
 #endif

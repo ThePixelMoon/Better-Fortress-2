@@ -1813,8 +1813,8 @@ const char *CPauseGameIssue::GetDetailsString( void )
 	return (m_sRetString.String());
 }
 
-ConVar sv_vote_issue_toggle_versus_allowed( "sv_vote_issue_toggle_versus_allowed", "0", FCVAR_NONE, "Can players call votes to toggle versus mode?" );
-ConVar sv_vote_issue_toggle_versus_cooldown( "sv_vote_issue_toggle_versus_cooldown", "300", FCVAR_NONE, "Minimum time before another toggle versus vote can occur (in seconds)." );
+ConVar sv_vote_issue_toggle_versus_allowed( "sv_vote_issue_toggle_versus_allowed", "1", FCVAR_NONE, "Can players call votes to toggle versus mode?" );
+ConVar sv_vote_issue_toggle_versus_cooldown( "sv_vote_issue_toggle_versus_cooldown", "150", FCVAR_NONE, "Minimum time before another toggle versus vote can occur (in seconds)." );
 
 
 void CToggleVersusIssue::ExecuteCommand( void )

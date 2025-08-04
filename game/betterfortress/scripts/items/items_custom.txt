@@ -203,6 +203,15 @@
 			}
 		}
 		
+		"weapon_grenade_launcher"
+		{
+			"visuals_mvm_boss"
+			{
+				"sound_single_shot"		"MVM.GiantDemoman_Grenadeshoot"
+				"sound_burst"			"MVM.GiantDemoman_Grenadeshoot"
+			}
+		}
+		
 		"weapon_swordfish"
 		{
 			"prefab"	"weapon_sword"

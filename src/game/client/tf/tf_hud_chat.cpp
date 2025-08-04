@@ -79,6 +79,8 @@ DECLARE_HUD_MESSAGE( CHudChat, TextMsg );
 DECLARE_HUD_MESSAGE( CHudChat, VoiceSubtitle );
 
 extern ConVar hud_saytext_time;
+extern ConVar bf_sound_chatping;
+extern ConVar bf_sound_chatping_file;
 
 void RenderPartyChatMessage( const ChatMessage_t& message,
 							 RichText* pRichText,
@@ -633,8 +635,12 @@ void CHudChat::MsgFunc_SayText2( bf_read &msg )
 
 		Msg( "%s\n", RemoveColorMarkup(ansiString) );
 
-		CLocalPlayerFilter filter;
-		C_BaseEntity::EmitSound( filter, SOUND_FROM_LOCAL_PLAYER, "HudChat.Message" );
+
+		if ( bf_sound_chatping.GetBool() )
+		{ 
+			CLocalPlayerFilter filter;
+			C_BaseEntity::EmitSound( filter, SOUND_FROM_LOCAL_PLAYER, bf_sound_chatping_file.GetString() );
+		}
 	}
 	else
 	{

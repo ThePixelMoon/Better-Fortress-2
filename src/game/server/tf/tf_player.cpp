@@ -209,7 +209,7 @@ ConVar tf_damage_multiplier_red( "tf_damage_multiplier_red", "1.0", FCVAR_CHEAT,
 
 
 ConVar tf_max_voice_speak_delay( "tf_max_voice_speak_delay", "1.5", FCVAR_NOTIFY, "Max time after a voice command until player can do another one");
-extern ConVar tf_voicespam;
+extern ConVar bf_voicespam;
 
 ConVar tf_allow_player_use( "tf_allow_player_use", "0", FCVAR_NOTIFY, "Allow players to execute +use while playing." );
 
@@ -253,10 +253,12 @@ extern ConVar tf_powerup_mode;
 extern ConVar tf_mvm_buybacks_method;
 extern ConVar tf_mvm_buybacks_per_wave;
 extern ConVar tf_mvm_bot_flag_carrier_interval_to_1st_upgrade;
+extern ConVar bf_gamemode_mvmvs;
 extern ConVar tf_mvm_bot_flag_carrier_interval_to_2nd_upgrade;
 extern ConVar tf_mvm_bot_flag_carrier_interval_to_3rd_upgrade;
 extern ConVar tf_mvm_bot_flag_carrier_health_regen;
 extern ConVar bf_mvmvs_playstyle;
+extern ConVar bf_mvmvs_restrict_slots;
 
 #define TF_CANNONBALL_FORCE_SCALE	80.f
 #define TF_CANNONBALL_FORCE_UPWARD	300.f
@@ -1027,6 +1029,11 @@ bool ApplySpawnerTemplate( CTFPlayer *pPlayer, IPopulationSpawner *pSpawner )
 	if ( pBotSpawner->IsMiniBoss() )
 	{
 		pPlayer->SetIsMiniBoss( true );
+		// Apply the tf_mvm_miniboss_scale for giants that don't have explicit scale
+		if ( pBotSpawner->m_scale <= 0.0f )
+		{
+			pPlayer->SetModelScale( tf_mvm_miniboss_scale.GetFloat(), 0 );
+		}
 		pPlayer->MVM_StartIdleSound();
 		TFGameRules()->HaveAllPlayersSpeakConceptIfAllowed( MP_CONCEPT_MVM_GIANT_CALLOUT, TF_TEAM_PVE_DEFENDERS );
 	}
@@ -1489,6 +1496,7 @@ CTFPlayer::CTFPlayer()
 	m_flNextScorePointForPD = -1;
 
 	m_iPlayerSkinOverride = 0;
+	m_iWeaponSlotRestrictions = 0;
 
 	m_nPrevRoundTeamNum = TEAM_UNASSIGNED;
 	m_flLastDamageResistSoundTime = -1.f;
@@ -2160,7 +2168,7 @@ void CTFPlayer::TFPlayerThink()
 	SetContextThink( &CTFPlayer::TFPlayerThink, gpGlobals->curtime, "TFPlayerThink" );
 	//MVM Versus - Spawn Protection 
 	// TODO: why does this function get called effectively twice? (one here and in MvMDeployBombThink) - main_thing
-	if( TFGameRules()->IsMannVsMachineMode() && tf_gamemode_mvmvs.GetBool() && GetTeamNumber() == TF_TEAM_PVE_INVADERS && !IsBot() )
+	if( TFGameRules()->IsMannVsMachineMode() && bf_gamemode_mvmvs.GetBool() && GetTeamNumber() == TF_TEAM_PVE_INVADERS && !IsBot() )
 	{
 		bool bInRespawnRoom = PointInRespawnRoom(this, WorldSpaceCenter(), true);
 		if( bInRespawnRoom )
@@ -2173,7 +2181,7 @@ void CTFPlayer::TFPlayerThink()
 				AddCustomAttribute( "no_attack", 1, 1.0f );
 		}
 	}
-	if( TFGameRules()->IsMannVsMachineMode() && tf_gamemode_mvmvs.GetBool() && GetTeamNumber() == TF_TEAM_PVE_INVADERS && !IsBot() && !TFGameRules()->InSetup() )
+	if( TFGameRules()->IsMannVsMachineMode() && bf_gamemode_mvmvs.GetBool() && GetTeamNumber() == TF_TEAM_PVE_INVADERS && !IsBot() && !TFGameRules()->InSetup() )
 	{
 		SetContextThink( &CTFPlayer::MvMDeployBombThink, gpGlobals->curtime, "MvMDeployBombThink" );
 	}
@@ -4484,6 +4492,7 @@ void CTFPlayer::Spawn()
 					if( random->RandomInt(0,1) == 1 && iCurrentGiants < iMaxGiants )
 					{
 						SetIsMiniBoss( true );
+						MVM_SetMinibossType(); // Apply giant attributes and scaling
 						MVM_StartIdleSound();
 						TFGameRules()->HaveAllPlayersSpeakConceptIfAllowed(MP_CONCEPT_MVM_GIANT_CALLOUT,TF_TEAM_PVE_DEFENDERS);
 						DevMsg( "(VERSUS) Spawned as giant in classic mode (giants: %d/%d)\n", iCurrentGiants + 1, iMaxGiants );
@@ -4627,6 +4636,17 @@ void CTFPlayer::Spawn()
 								{
 									DevMsg( "(VERSUS) Successfully applied popfile robot template (bosses: %d/%d, giants: %d/%d)\n", 
 										iCurrentBosses, iMaxBosses, iCurrentGiants, iMaxGiants );
+									
+									// Apply weapon slot restrictions if enabled
+									if ( bf_mvmvs_restrict_slots.GetBool() && bf_mvmvs_playstyle.GetInt() == 1 )
+									{
+										CTFBotSpawner *pBotSpawner = dynamic_cast< CTFBotSpawner * >( pSelectedSpawner );
+										if ( pBotSpawner )
+										{
+											ApplyWeaponSlotRestrictionsFromTemplate( pBotSpawner );
+										}
+									}
+									
 									break; // Success, don't fall back to default
 								}
 								else
@@ -5100,16 +5120,24 @@ void CTFPlayer::InitClass( void )
 	m_PlayerAnimState->SetWalkSpeed( GetPlayerClass()->GetMaxSpeed() * 0.5 );
 
 	// Give default items for class.
-	// We want to prevent giving items in versus.
-	if( !( TFGameRules() && TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_INVADERS && tf_gamemode_mvmvs.GetBool() && !tf_mvmvs_use_loadout.GetBool() ) || IsFakeClient() )
+	// We want to prevent giving items in versus when using popfile playstyle (1) with bf_mvmvs_use_loadout disabled
+	bool bIsVersusWithPopfileAndNoLoadout = ( TFGameRules() && TFGameRules()->IsMannVsMachineMode() && 
+											  GetTeamNumber() == TF_TEAM_PVE_INVADERS && 
+											  bf_gamemode_mvmvs.GetBool() && 
+											  bf_mvmvs_playstyle.GetInt() == 1 && 
+											  !bf_mvmvs_use_loadout.GetBool() );
+	
+	if( !bIsVersusWithPopfileAndNoLoadout || IsFakeClient() )
 	{
 		//DevMsg( "Giving items...\n" );
 		GiveDefaultItems();
 	}
-	else if( TFGameRules() && TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_INVADERS && tf_gamemode_mvmvs.GetBool() && !tf_mvmvs_use_loadout.GetBool() )
+	else if( bIsVersusWithPopfileAndNoLoadout )
 	{
 		//DevMsg( "Removing items...\n" );
 		RemoveAllItems();
+		// Give basic stock weapons when using popfile mode with no loadout
+		GiveDefaultItems();
 	}
 	// Set initial health and armor based on class.
 	// Do it after items have been delivered, so items can modify it
@@ -5774,6 +5802,13 @@ void CTFPlayer::ManageRegularWeapons( TFPlayerClassData_t *pData )
 
 	if ( TFGameRules() && TFGameRules()->GameModeUsesUpgrades() && !IsBot() ) 
 	{
+		// Check if this is MvM Versus mode and player is on Invaders team - clear upgrades before reapplying
+		extern ConVar bf_gamemode_mvmvs;
+		if ( bf_gamemode_mvmvs.GetBool() && GetTeamNumber() == TF_TEAM_PVE_INVADERS && g_pPopulationManager )
+		{
+			g_pPopulationManager->RemovePlayerAndItemUpgradesFromHistory( this );
+		}
+
 		if (  m_Inventory.ClassLoadoutHasChanged( GetPlayerClass()->GetClassIndex() ) 
 		   || ( m_bSwitchedClass )
 		   || ( g_pPopulationManager && g_pPopulationManager->IsRestoringCheckpoint() ) )
@@ -7081,7 +7116,7 @@ int CTFPlayer::GetAutoTeam( int nPreferedTeam /*= TF_TEAM_AUTOASSIGN*/ )
 						}
 					}
 				}
-					return TFGameRules()->GetTeamAssignmentOverride( this, tf_gamemode_mvmvs.GetBool() ? TF_TEAM_PVE_DEFENDERS : nPreferedTeam );
+					return TFGameRules()->GetTeamAssignmentOverride( this, bf_gamemode_mvmvs.GetBool() ? TF_TEAM_PVE_DEFENDERS : nPreferedTeam );
 			}
 		}
 
@@ -7204,7 +7239,7 @@ bool CTFPlayer::ShouldForceAutoTeam( void )
 	if ( mp_forceautoteam.GetBool() )
 		return true;
 
-	if ( TFGameRules() && TFGameRules()->IsMannVsMachineMode() && !tf_gamemode_mvmvs.GetBool() )
+	if ( TFGameRules() && TFGameRules()->IsMannVsMachineMode() && !bf_gamemode_mvmvs.GetBool() )
 		return true;
 
 	if ( TFGameRules() && TFGameRules()->IsCompetitiveMode() )
@@ -7659,6 +7694,13 @@ void CTFPlayer::ChangeTeam( int iTeamNum, bool bAutoTeam, bool bSilent, bool bAu
 	}
 
 	BaseClass::ChangeTeam( iTeamNum, bAutoTeam, bSilent, bAutoBalance );
+
+	// Additional safety check: Clear upgrades when humans join Invaders team in MvM Versus
+	if ( TFGameRules() && TFGameRules()->IsMannVsMachineMode() && bf_gamemode_mvmvs.GetBool() && 
+		 !IsBot() && iTeamNum == TF_TEAM_PVE_INVADERS && g_pPopulationManager )
+	{
+		g_pPopulationManager->RemovePlayerAndItemUpgradesFromHistory( this );
+	}
 
 	if ( TFGameRules() && TFGameRules()->IsInHighlanderMode() )
 	{
@@ -8662,7 +8704,7 @@ bool CTFPlayer::ClientCommand( const CCommand &args )
 
 			if ( bArgsChecked )
 			{
-				if ( TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_INVADERS && tf_gamemode_mvmvs.GetBool() && iBuilding == OBJ_TELEPORTER && iMode == MODE_TELEPORTER_ENTRANCE )
+				if ( TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_INVADERS && bf_gamemode_mvmvs.GetBool() && iBuilding == OBJ_TELEPORTER && iMode == MODE_TELEPORTER_ENTRANCE )
 					return true;
 
 				StartBuildingObjectOfType( iBuilding, iMode );
@@ -20959,7 +21001,7 @@ bool CTFPlayer::CanHearAndReadChatFrom( CBasePlayer *pPlayer )
 		if ( IsHLTV() || IsReplay() )
 			return true;
 		
-		return ( GetTeamNumber() == pPlayer->GetTeamNumber() || tf_gamemode_mvmvs.GetBool() );
+		return ( GetTeamNumber() == pPlayer->GetTeamNumber() || bf_gamemode_mvmvs.GetBool() );
 	}
 
 	if ( pPlayer->m_lifeState != LIFE_ALIVE && m_lifeState == LIFE_ALIVE )
@@ -21221,7 +21263,7 @@ void CTFPlayer::NoteSpokeVoiceCommand(const char* pszScenePlayed)
 	{
 		m_iVoiceSpamCounter++;
 	}
-	if (tf_voicespam.GetBool())
+	if (bf_voicespam.GetBool())
 	{
 		m_flNextVoiceCommandTime = gpGlobals->curtime + tf_max_voice_speak_delay.GetFloat();
 	}
@@ -21788,6 +21830,175 @@ void CTFPlayer::MVM_StopIdleSound(void)
 //-----------------------------------------------------------------------------
 // MVM Versus - Placeholder boss list
 // ----------------------------------------------------------------------------
+void CTFPlayer::MVM_SetMinibossType(void)
+{
+    SetIsMiniBoss(true);
+    if(IsMiniBoss())
+    {
+        AddTag("bot_giant");
+        int iClass = GetPlayerClass()->GetClassIndex();
+        switch(iClass)
+        {
+            case TF_CLASS_HEAVYWEAPONS:
+            {
+                SetHealth(5000);
+                AddCustomAttribute("override footstep sound set",2,-1);
+                AddCustomAttribute("move speed bonus",0.5,-1);
+                AddCustomAttribute("max health additive bonus",4700,-1);
+                AddCustomAttribute("damage force reduction",0.3,-1);
+                AddCustomAttribute("airblast vulnerability multiplier",0.3,-1);
+                break;
+            }
+            case TF_CLASS_SOLDIER:
+            {
+                SetHealth(3800);
+                AddCustomAttribute("override footstep sound set",3,-1);
+                AddCustomAttribute("move speed bonus",0.5,-1);
+                AddCustomAttribute("max health additive bonus",3600,-1);
+                AddCustomAttribute("damage force reduction",0.4,-1);
+                AddCustomAttribute("airblast vulnerability multiplier",0.4,-1);
+                break;
+            }
+            case TF_CLASS_DEMOMAN:
+            {
+                SetHealth(3000);
+                AddCustomAttribute("override footstep sound set",4,-1);
+                AddCustomAttribute("move speed bonus",0.5,-1);
+                AddCustomAttribute("max health additive bonus",2825,-1);
+                AddCustomAttribute("damage force reduction",0.5,-1);
+                AddCustomAttribute("airblast vulnerability multiplier",0.5,-1);
+                break;
+            }
+            case TF_CLASS_SCOUT:
+            {
+                SetHealth(1600);
+                AddCustomAttribute("override footstep sound set",5,-1);
+                AddCustomAttribute("move speed bonus",2,-1);
+                AddCustomAttribute("max health additive bonus",1475,-1);
+                AddCustomAttribute("damage force reduction",0.7,-1);
+                AddCustomAttribute("airblast vulnerability multiplier",0.7,-1);
+                break;
+            }
+            case TF_CLASS_PYRO:
+            {
+                SetHealth(3000);
+                AddCustomAttribute("override footstep sound set",6,-1);
+                AddCustomAttribute("move speed bonus",0.4,-1);
+                AddCustomAttribute("max health additive bonus",2825,-1);
+                AddCustomAttribute("damage force reduction",0.6,-1);
+                AddCustomAttribute("airblast vulnerability multiplier",0.6,-1);
+                break;
+            }
+            default:
+            {
+                return;
+                SetIsMiniBoss(false);
+                break;
+            }
+        }
+        SetModelScale( tf_mvm_miniboss_scale.GetFloat() , 0 );
+    }
+}
+
+
+//-----------------------------------------------------------------------------
+// MVM Versus - Weapon slot restriction functions
+// ----------------------------------------------------------------------------
+bool CTFPlayer::IsWeaponSlotRestricted( int slot ) const
+{
+    // Convert loadout position to restriction flag
+    int slotFlag = 0;
+    switch ( slot )
+    {
+        case LOADOUT_POSITION_PRIMARY:
+            slotFlag = 0x01;
+            break;
+        case LOADOUT_POSITION_SECONDARY:
+            slotFlag = 0x02;
+            break;
+        case LOADOUT_POSITION_MELEE:
+            slotFlag = 0x04;
+            break;
+        default:
+            return false; // Other slots are not restricted
+    }
+    
+    // If no restrictions are set, allow all slots
+    if ( m_iWeaponSlotRestrictions == 0 )
+        return false;
+        
+    // Check if this slot is allowed (bit is set in restrictions)
+    return !(m_iWeaponSlotRestrictions & slotFlag);
+}
+
+void CTFPlayer::RemoveRestrictedWeapons( void )
+{
+    // Remove weapons from restricted slots
+    for ( int iSlot = LOADOUT_POSITION_PRIMARY; iSlot <= LOADOUT_POSITION_MELEE; iSlot++ )
+    {
+        if ( IsWeaponSlotRestricted( iSlot ) )
+        {
+            CTFWeaponBase *pWeapon = dynamic_cast<CTFWeaponBase*>( GetEntityForLoadoutSlot( iSlot ) );
+            if ( pWeapon )
+            {
+                RemovePlayerItem( pWeapon );
+                UTIL_Remove( pWeapon );
+            }
+        }
+    }
+}
+
+void CTFPlayer::ApplyWeaponSlotRestrictionsFromTemplate( CTFBotSpawner *pSpawner )
+{
+    if ( !pSpawner )
+        return;
+        
+    CTFBotSpawner *pBotSpawner = dynamic_cast< CTFBotSpawner * >( pSpawner );
+    if ( !pBotSpawner )
+        return;
+        
+    // Analyze which weapon slots the template uses
+    int nAllowedSlots = 0; // Bitflags for allowed slots
+    const CTFBot::EventChangeAttributes_t &attributes = pBotSpawner->m_defaultAttributes;
+    
+    // Check each item in the template to see which slots it occupies
+    for ( int i = 0; i < attributes.m_items.Count(); ++i )
+    {
+        const char *pszItemName = attributes.m_items[i];
+        if ( pszItemName && *pszItemName )
+        {
+            // Find the item definition to determine its slot
+            CSchemaItemDefHandle itemDef( pszItemName );
+            if ( itemDef )
+            {
+                // Create a CEconItemView to get slot information
+                CEconItemView tempItem;
+                tempItem.Init( itemDef->GetDefinitionIndex(), AE_NORMAL, AE_NORMAL, true );
+                
+                // Cast to CTFItemDefinition to access TF-specific methods
+                const CTFItemDefinition *pTFItemDef = dynamic_cast<const CTFItemDefinition*>( tempItem.GetItemDefinition() );
+                if ( pTFItemDef )
+                {
+                    int iSlot = pTFItemDef->GetLoadoutSlot( GetPlayerClass()->GetClassIndex() );
+                    if ( iSlot >= LOADOUT_POSITION_PRIMARY && iSlot <= LOADOUT_POSITION_MELEE )
+                    {
+                        // Mark this slot as allowed
+                        nAllowedSlots |= (1 << iSlot);
+                        DevMsg( "(VERSUS) Template item '%s' uses slot %d\n", pszItemName, iSlot );
+                    }
+                }
+            }
+        }
+    }
+    
+    // Set weapon slot restrictions based on template
+    SetWeaponSlotRestrictions( nAllowedSlots );
+    DevMsg( "(VERSUS) Set weapon slot restrictions: 0x%02X\n", nAllowedSlots );
+    
+    // Remove weapons from restricted slots
+    RemoveRestrictedWeapons();
+    DevMsg( "(VERSUS) Removed weapons from restricted slots\n" );
+}
 
 void CTFPlayer::ClearTags(void)
 {

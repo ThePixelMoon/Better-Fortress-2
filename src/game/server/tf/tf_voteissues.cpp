@@ -1823,13 +1823,13 @@ void CToggleVersusIssue::ExecuteCommand( void )
 	{
 		SetIssueCooldownDuration( sv_vote_issue_toggle_versus_cooldown.GetFloat() );
 	}
-	if ( tf_gamemode_mvmvs.GetBool() )
+	if ( bf_gamemode_mvmvs.GetBool() )
 	{ 
-		engine->ServerCommand( "tf_gamemode_mvmvs 0;" );
+		engine->ServerCommand( "bf_gamemode_mvmvs 0;" );
 	}
 	else
 	{
-		engine->ServerCommand( "tf_gamemode_mvmvs 1;" );
+		engine->ServerCommand( "bf_gamemode_mvmvs 1;" );
 	}
 }
 
@@ -1869,7 +1869,7 @@ bool CToggleVersusIssue::RequestCallVote( int iEntIndex, const char *pszDetails,
 const char *CToggleVersusIssue::GetDisplayString( void )
 {
 	// Disable
-	if ( tf_gamemode_mvmvs.GetBool() )
+	if ( bf_gamemode_mvmvs.GetBool() )
 		return "#TF_vote_versus_disable";
 
 	// Enable
@@ -1882,7 +1882,7 @@ const char *CToggleVersusIssue::GetDisplayString( void )
 const char *CToggleVersusIssue::GetVotePassedString( void )
 {
 	// Disable
-	if ( tf_gamemode_mvmvs.GetBool() )
+	if ( bf_gamemode_mvmvs.GetBool() )
 		return "#TF_vote_passed_versus_disable";
 
 	// Enable

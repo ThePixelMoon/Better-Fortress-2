@@ -891,6 +891,9 @@ ConVar tf_mvm_buybacks_per_wave( "tf_mvm_buybacks_per_wave", "3", FCVAR_REPLICAT
 ConVar tf_gamemode_mvmvs( "tf_gamemode_mvmvs", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "Enable versus in MvM");
 ConVar tf_mvmvs_robot_stations( "tf_mvmvs_robot_stations", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Allow Robots to use upgrade stations");
 ConVar tf_mvmvs_use_loadout( "tf_mvmvs_use_loadout", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "Robot players will spawn with their loadout items, if not, will be picked from the robot selection list file");
+ConVar bf_mvmvs_playstyle( "bf_mvmvs_playstyle", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "MvM Versus playstyle: 0 = Classic (spawn with loadout, random giants/gatebots), 1 = Popfile List (load robots from current wave)" );
+ConVar bf_mvmvs_max_bosses( "bf_mvmvs_max_bosses", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "Maximum number of human-controlled Boss Robots allowed on the Invader team" );
+ConVar bf_mvmvs_max_giants( "bf_mvmvs_max_giants", "3", FCVAR_REPLICATED | FCVAR_NOTIFY, "Maximum number of human-controlled Giant Robots allowed on the Invader team" );
 
 #ifdef GAME_DLL
 enum { kMVM_CurrencyPackMinSize = 1, };

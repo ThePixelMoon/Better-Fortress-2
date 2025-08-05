@@ -540,58 +540,7 @@ void CHudChat::MsgFunc_SayText2( bf_read &msg )
 			iFilter = CHAT_FILTER_PUBLICCHAT;
 		}
 
-		// Build custom colored chat message directly in chat history
-		CHudChatHistory *pChatHistory = GetChatHistory();
-		if ( pChatHistory )
-		{
-			// Insert linebreak first
-			pChatHistory->InsertString( L"\n" );
-			
-			// Add HOST tag if they're the server host
-			if ( client > 0 && ClientUTIL_IsListenServerHost( client ) )
-			{
-				pChatHistory->InsertColorChange( Color( 240, 240, 240, 255 ) ); // #F0F0F0
-				pChatHistory->InsertString( g_pVGuiLocalize->Find( "#TF_Tag_Host" ) );
-				pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
-			}
-			
-			// Add special tag (DEV/Publisher)
-			if ( client > 0 )
-			{
-				int bModDev = ClientUTIL_PlayerIsModDev( client );
-				switch(bModDev)
-				{
-					case 1: // Dev
-						pChatHistory->InsertColorChange( Color( 240, 135, 43, 255 ) ); // #F0872B
-						pChatHistory->InsertString( g_pVGuiLocalize->Find( "#TF_Tag_Dev" ) );
-						pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
-						break;
-					case 2: // Publisher
-						pChatHistory->InsertColorChange( Color( 46, 143, 191, 255 ) ); // #2E8FBF
-						pChatHistory->InsertString( g_pVGuiLocalize->Find( "#TF_Tag_Publisher" ) );
-						pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
-						break;
-					case 3: // Contributor
-						pChatHistory->InsertColorChange( Color( 95, 154, 63, 255 ) ); // #5F9A3F
-						pChatHistory->InsertString(  g_pVGuiLocalize->Find( "#TF_Tag_Contributor" ) );
-						pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
-						break;
-				}
-			}
-			
-			// Add player name with team color
-			pChatHistory->InsertColorChange( GetClientColor( client ) );
-			pChatHistory->InsertString( szBuf[1] );
-			pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
-			
-			// Add separator and chat text
-			pChatHistory->InsertColorChange( GetTextColorForClient( COLOR_NORMAL, client ) );
-			pChatHistory->InsertString( L" : " );
-			pChatHistory->InsertString( szBuf[2] );
-			pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
-		}
-
-		// Also build message for console/ansi output without color codes
+		// Build player name with custom tags
 		wchar_t szPlainPlayerName[512];
 		Q_wcsncpy( szPlainPlayerName, L"", sizeof(szPlainPlayerName) );
 		
@@ -621,9 +570,189 @@ void CHudChat::MsgFunc_SayText2( bf_read &msg )
 		
 		// Add player name
 		V_wcsncat( szPlainPlayerName, szBuf[1], ARRAYSIZE(szPlainPlayerName) );
-		
-		// Build for console output
+
+		// Use the format string to construct the complete message with DEAD/TEAM prefixes
 		g_pVGuiLocalize->ConstructString_safe( szBuf[5], msg_text, 4, szPlainPlayerName, szBuf[2], szBuf[3], szBuf[4] );
+
+		// Build custom colored chat message for history display
+		CHudChatHistory *pChatHistory = GetChatHistory();
+		if ( pChatHistory )
+		{
+			// Parse the constructed message to colorize it properly
+			wchar_t *pszMessage = szBuf[5];
+			
+			// Insert linebreak first
+			pChatHistory->InsertString( L"\n" );
+			
+			// Look for prefixes in the message and colorize them
+			wchar_t *pszStart = pszMessage;
+			wchar_t *pszPlayerStart = NULL;
+			
+			// Find where the player name starts (after any prefixes)
+			if ( wcsstr( pszMessage, L"*DEAD*" ) )
+			{
+				pChatHistory->InsertColorChange( Color( 255, 30, 30, 255 ) );  // Red for DEAD
+				if ( wcsstr( pszMessage, L"*DEAD*(TEAM)" ) )
+				{
+					pChatHistory->InsertString( L"*DEAD*" );
+					pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
+					pChatHistory->InsertColorChange( Color( 160, 160, 160, 255 ) );  // Gray for TEAM
+					pChatHistory->InsertString( L"(TEAM) " );
+					pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
+					pszPlayerStart = wcsstr( pszMessage, L"(TEAM) " ) + 7;
+				}
+				else
+				{
+					pChatHistory->InsertString( L"*DEAD* " );
+					pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
+					pszPlayerStart = wcsstr( pszMessage, L"*DEAD* " ) + 7;
+				}
+			}
+			else if ( wcsstr( pszMessage, L"*SPEC*" ) )
+			{
+				pChatHistory->InsertColorChange( Color( 160, 160, 160, 255 ) );  // Gray for SPEC
+				if ( wcsstr( pszMessage, L"*SPEC*(TEAM)" ) )
+				{
+					pChatHistory->InsertString( L"*SPEC*(TEAM) " );
+					pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
+					pszPlayerStart = wcsstr( pszMessage, L"*SPEC*(TEAM) " ) + 13;
+				}
+				else
+				{
+					pChatHistory->InsertString( L"*SPEC* " );
+					pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
+					pszPlayerStart = wcsstr( pszMessage, L"*SPEC* " ) + 7;
+				}
+			}
+			else if ( wcsstr( pszMessage, L"(TEAM)" ) )
+			{
+				pChatHistory->InsertColorChange( Color( 160, 160, 160, 255 ) );  // Gray for TEAM
+				pChatHistory->InsertString( L"(TEAM) " );
+				pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
+				pszPlayerStart = wcsstr( pszMessage, L"(TEAM) " ) + 7;
+			}
+			else if ( wcsstr( pszMessage, L"(COACH)" ) )
+			{
+				pChatHistory->InsertColorChange( Color( 153, 204, 255, 255 ) );  // Blue for COACH
+				pChatHistory->InsertString( L"(COACH) " );
+				pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
+				pszPlayerStart = wcsstr( pszMessage, L"(COACH) " ) + 8;
+			}
+			else
+			{
+				pszPlayerStart = pszMessage;
+			}
+
+			if ( pszPlayerStart )
+			{
+				// Find the player name and message separator
+				wchar_t *pszColon = wcsstr( pszPlayerStart, L" :" );
+				if ( pszColon )
+				{
+					// Parse and colorize the player name section which contains HOST/DEV tags
+					wchar_t *pszNameSection = pszPlayerStart;
+					*pszColon = L'\0';  // Temporarily null-terminate at colon
+					
+					// Look for and colorize HOST tag
+					wchar_t *pszHostTag = wcsstr( pszNameSection, L"[HOST]" );
+					if ( pszHostTag )
+					{
+						// Display text before HOST tag (if any)
+						if ( pszHostTag > pszNameSection )
+						{
+							*pszHostTag = L'\0';
+							pChatHistory->InsertColorChange( GetClientColor( client ) );
+							pChatHistory->InsertString( pszNameSection );
+							pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
+							*pszHostTag = L'[';
+						}
+						
+						// Display HOST tag
+						pChatHistory->InsertColorChange( Color( 240, 240, 240, 255 ) ); // #F0F0F0
+						pChatHistory->InsertString( L"[HOST] " );
+						pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
+						pszNameSection = pszHostTag + 7; // Skip past "[HOST] "
+					}
+					
+					// Look for and colorize DEV/Publisher/Contributor tags
+					wchar_t *pszDevTag = wcsstr( pszNameSection, L"[DEV]" );
+					wchar_t *pszPubTag = wcsstr( pszNameSection, L"[Publisher]" );
+					wchar_t *pszContribTag = wcsstr( pszNameSection, L"[Contributor]" );
+					
+					if ( pszDevTag )
+					{
+						// Display text before DEV tag (if any)
+						if ( pszDevTag > pszNameSection )
+						{
+							*pszDevTag = L'\0';
+							pChatHistory->InsertColorChange( GetClientColor( client ) );
+							pChatHistory->InsertString( pszNameSection );
+							pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
+							*pszDevTag = L'[';
+						}
+						
+						// Display DEV tag
+						pChatHistory->InsertColorChange( Color( 240, 135, 43, 255 ) ); // #F0872B
+						pChatHistory->InsertString( L"[DEV] " );
+						pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
+						pszNameSection = pszDevTag + 6; // Skip past "[DEV] "
+					}
+					else if ( pszPubTag )
+					{
+						// Display text before Publisher tag (if any)
+						if ( pszPubTag > pszNameSection )
+						{
+							*pszPubTag = L'\0';
+							pChatHistory->InsertColorChange( GetClientColor( client ) );
+							pChatHistory->InsertString( pszNameSection );
+							pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
+							*pszPubTag = L'[';
+						}
+						
+						// Display Publisher tag
+						pChatHistory->InsertColorChange( Color( 46, 143, 191, 255 ) ); // #2E8FBF
+						pChatHistory->InsertString( L"[Publisher] " );
+						pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
+						pszNameSection = pszPubTag + 12; // Skip past "[Publisher] "
+					}
+					else if ( pszContribTag )
+					{
+						// Display text before Contributor tag (if any)
+						if ( pszContribTag > pszNameSection )
+						{
+							*pszContribTag = L'\0';
+							pChatHistory->InsertColorChange( GetClientColor( client ) );
+							pChatHistory->InsertString( pszNameSection );
+							pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
+							*pszContribTag = L'[';
+						}
+						
+						// Display Contributor tag
+						pChatHistory->InsertColorChange( Color( 95, 154, 63, 255 ) ); // #5F9A3F
+						pChatHistory->InsertString( L"[Contributor] " );
+						pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
+						pszNameSection = pszContribTag + 14; // Skip past "[Contributor] "
+					}
+					
+					// Display remaining player name with team color
+					if ( *pszNameSection )
+					{
+						pChatHistory->InsertColorChange( GetClientColor( client ) );
+						pChatHistory->InsertString( pszNameSection );
+					}
+					
+					pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
+					*pszColon = L' ';  // Restore the space
+					
+					// Add separator and chat text
+					pChatHistory->InsertColorChange( GetTextColorForClient( COLOR_NORMAL, client ) );
+					pChatHistory->InsertString( L" : " );
+					pChatHistory->InsertString( pszColon + 3 );  // Skip past " : "
+					pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
+				}
+			}
+		}
+
 		char ansiString[512];
 		g_pVGuiLocalize->ConvertUnicodeToANSI( ConvertCRtoNL( szBuf[ 5 ] ), ansiString, sizeof( ansiString ) );
 
@@ -634,7 +763,7 @@ void CHudChat::MsgFunc_SayText2( bf_read &msg )
 			return;
 		}
 
-		Msg( "%s\n", RemoveColorMarkup(ansiString) );
+		Msg( "%s\n", (const char*)RemoveColorMarkup(ansiString) );
 
 
 		if ( bf_sound_chatping.GetBool() )

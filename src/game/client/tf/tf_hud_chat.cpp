@@ -25,6 +25,7 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
+extern ConVar is_dedicated;
 //-----------------------------------------------------------------------------
 // Client-side role detection functions
 //-----------------------------------------------------------------------------
@@ -65,7 +66,7 @@ int ClientUTIL_PlayerIsModDev( int clientIndex )
 bool ClientUTIL_IsListenServerHost( int clientIndex )
 {
 	// On dedicated servers, there's no listen server host
-	if ( engine->IsPlayingDemo() || engine->IsPlayingTimeDemo() )
+	if ( engine->IsPlayingDemo() || engine->IsPlayingTimeDemo() || is_dedicated.GetBool() )
 		return false;
 		
 	// The listen server host is always player index 1

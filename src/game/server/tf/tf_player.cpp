@@ -17465,21 +17465,21 @@ int CTFPlayer::BuildObservableEntityList( void )
 	}
 
 	//[VSCRIPT] Generic Observable
-	/*
-	CBaseEntity* pGenericObservable;
-	if ( pGenericObservable )
-	{ 
-		if ( pGenericObservable->m_bCanBeObserved )
+	CBaseEntity *pEntity = gEntList.FirstEnt();
+	while ( pEntity )
+	{
+		if( pEntity->m_bCanBeObserved )
 		{
+			m_hObservableEntities.AddToTail( pEntity );
 
-			m_hObservableEntities.AddToTail( pGenericObservable );
-
-			if (m_hObserverTarget.Get() == pGenericObservable)
+			if ( m_hObserverTarget.Get() == pEntity )
 			{
-				iCurrentIndex = (m_hObservableEntities.Count() - 1);
+				iCurrentIndex = (m_hObservableEntities.Count()-1);
 			}
+
+			pEntity = gEntList.NextEnt( pEntity );
 		}
-	}*/
+	}
 	return iCurrentIndex;
 }
 
@@ -17597,18 +17597,6 @@ bool CTFPlayer::IsValidObserverTarget( CBaseEntity * target )
 				return false;
 		}
 
-		// [VSCRIPT] Custom observable 		
-		/*CBaseEntity* pGenericObservable = dynamic_cast<CBaseEntity*>(target);
-		if ( pGenericObservable )
-		{ 
-			if ( pGenericObservable->m_bCanBeObserved )
-				return true;
-		}
-		*/
-
-		if ( GetTeamNumber() == TEAM_SPECTATOR )
-			return true;
-
 		// active bosses should be valid targets
 		if ( target == TFGameRules()->GetActiveBoss() )
 		{
@@ -17621,6 +17609,13 @@ bool CTFPlayer::IsValidObserverTarget( CBaseEntity * target )
 
 			return true;
 		}
+
+		// [VSCRIPT] Generic observable 		
+		if ( !target->m_bCanBeObserved )
+			return false;
+
+		if ( GetTeamNumber() == TEAM_SPECTATOR )
+			return true;
 		
 		switch ( mp_forcecamera.GetInt() )	
 		{
@@ -17880,6 +17875,9 @@ void CTFPlayer::ValidateCurrentObserverTarget( void )
 		{
 			ForceObserverMode( OBS_MODE_CHASE );
 		}
+		//[VSCRIPT] Generic Observable
+		if ( !m_hObserverTarget->m_bCanBeObserved && !IsValidObserverTarget( m_hObserverTarget ))
+			FindInitialObserverTarget();
 	}
 
 	BaseClass::ValidateCurrentObserverTarget();

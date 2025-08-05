@@ -671,7 +671,7 @@ BEGIN_ENT_SCRIPTDESC( CTFPlayer, CBaseMultiplayerPlayer , "Team Fortress 2 Playe
 	DEFINE_SCRIPTFUNC( AddCurrency, "Kaching! Give the player some cash for game modes with upgrades, ie. MvM" )
 	DEFINE_SCRIPTFUNC( RemoveCurrency, "Take away money from a player for reasons such as ie. spending." )
 
-	DEFINE_SCRIPTFUNC( IgnitePlayer, "" )
+
 	DEFINE_SCRIPTFUNC( SetCustomModel, "" )
 	DEFINE_SCRIPTFUNC( SetCustomModelWithClassAnimations, "" )
 	DEFINE_SCRIPTFUNC( SetCustomModelOffset, "" )
@@ -733,6 +733,7 @@ BEGIN_ENT_SCRIPTDESC( CTFPlayer, CBaseMultiplayerPlayer , "Team Fortress 2 Playe
 	DEFINE_SCRIPTFUNC_NAMED( ScriptGetCustomAttribute, "GetCustomAttribute", "Get a custom attribute float from the player" )
 
 	DEFINE_SCRIPTFUNC_WRAPPED( StunPlayer, "" )
+	DEFINE_SCRIPTFUNC_WRAPPED( IgnitePlayer, "" )
 	DEFINE_SCRIPTFUNC_WRAPPED( PlayGesture, "Plays a gesture" )
 	DEFINE_SCRIPTFUNC_WRAPPED( PlaySpecificSequence, "Plays a Sequence" )
 END_SCRIPTDESC();
@@ -22452,7 +22453,7 @@ void CTFPlayer::Internal_HandleMapEvent( inputdata_t &inputdata )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CTFPlayer::IgnitePlayer()
+void CTFPlayer::InputIgnitePlayer( inputdata_t &inputdata )
 {
 	if ( FStrEq( "sd_doomsday", STRING( gpGlobals->mapname ) ) )
 	{
@@ -22463,12 +22464,7 @@ void CTFPlayer::IgnitePlayer()
 		}
 	}
 
-	m_Shared.Burn( this, NULL );
-}
-
-void CTFPlayer::InputIgnitePlayer( inputdata_t &inputdata )
-{
-	IgnitePlayer();
+	m_Shared.Burn( this, NULL, inputdata.value.Float() > 0 ? inputdata.value.Float() : TF_BURNING_FLAME_LIFE );
 }
 
 //-----------------------------------------------------------------------------
@@ -25042,6 +25038,13 @@ void CTFPlayer::ScriptEquipWearableViewModel( HSCRIPT hWearableViewModel )
 void CTFPlayer::ScriptStunPlayer( float flTime, float flReductionAmount, int iStunFlags /* = TF_STUN_MOVEMENT */, HSCRIPT hAttacker /* = NULL */ )
 {
 	m_Shared.StunPlayer( flTime, flReductionAmount, iStunFlags, ScriptToEntClass< CTFPlayer >( hAttacker ) );
+}
+
+void CTFPlayer::ScriptIgnitePlayer( float flBurningTime, HSCRIPT hAttacker /* = NULL */, HSCRIPT hWeapon /* = NULL */ )
+{
+	CTFPlayer *pAttacker = ScriptToEntClass< CTFPlayer >( hAttacker );
+	CTFWeaponBase *pWeapon = ScriptToEntClass< CTFWeaponBase >( hWeapon );
+	m_Shared.Burn( pAttacker ? pAttacker : this, pWeapon, flBurningTime );
 }
 
 bool CTFPlayer::ScriptPlayGesture(const char* pGestureName)

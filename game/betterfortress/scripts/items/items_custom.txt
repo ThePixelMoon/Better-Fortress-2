@@ -493,6 +493,15 @@
 			"effect_type"	"negative"
 			"stored_as_integer"	"0"
 		}
+		"4011"
+		{
+			"name"	"has infinite ammo"
+			"attribute_class"	"has_infinite_ammo"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"stored_as_integer"	"1"
+		}
 	}
 	"items"
 	{

@@ -17609,9 +17609,6 @@ bool CTFPlayer::IsValidObserverTarget( CBaseEntity * target )
 			return true;
 		}
 
-		// [VSCRIPT] Generic observable 		
-		if ( !target->m_bCanBeObserved )
-			return false;
 
 		if ( GetTeamNumber() == TEAM_SPECTATOR )
 			return true;

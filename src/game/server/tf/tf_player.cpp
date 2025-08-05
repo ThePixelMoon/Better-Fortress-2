@@ -17476,9 +17476,8 @@ int CTFPlayer::BuildObservableEntityList( void )
 			{
 				iCurrentIndex = (m_hObservableEntities.Count()-1);
 			}
-
-			pEntity = gEntList.NextEnt( pEntity );
 		}
+		pEntity = gEntList.NextEnt( pEntity );
 	}
 	return iCurrentIndex;
 }

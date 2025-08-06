@@ -1893,3 +1893,13 @@
 		"wave"		"^mvm/giant_common/giant_common_step_08.wav"
 	}
 }
+
+"HudChat.Message"
+{
+	"channel"	"CHAN_STREAM"
+	"volume"	"VOL_NORM"
+	"soundlevel"  "SNDLVL_NONE"
+	"pitch"	"PITCH_NORM"
+
+	"wave"	"ui/chat_display_text.wav"
+}

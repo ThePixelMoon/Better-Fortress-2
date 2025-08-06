@@ -8347,106 +8347,8 @@ bool CTFPlayer::ClientCommand( const CCommand &args )
 	
 	m_flLastAction = gpGlobals->curtime;
 
-	if ( FStrEq( pcmd, "addcond" ) )
-	{
-		if ( UTIL_HandleCheatCmdForPlayer( this ) && args.ArgC() >= 2 )
-		{
-			CTFPlayer *pTargetPlayer = this;
-			if ( args.ArgC() >= 4 )
-			{
-				// Find the matching netname
-				for ( int i = 1; i <= gpGlobals->maxClients; i++ )
-				{
-					CBasePlayer *pPlayer = ToBasePlayer( UTIL_PlayerByIndex(i) );
-					if ( pPlayer )
-					{
-						if ( Q_strstr( pPlayer->GetPlayerName(), args[3] ) )
-						{
-							pTargetPlayer = ToTFPlayer(pPlayer);
-							break;
-						}
-					}
-				}
-			}
-
-			int iCond = atoi( args[1] );
-			if ( args[1][0] != '0' && iCond == 0 )
-			{
-				iCond = GetTFConditionFromName( args[1] );
-			}
-
-			ETFCond eCond = TF_COND_INVALID;
-			if ( iCond >= 0 && iCond < TF_COND_LAST )
-			{
-				eCond = ( ETFCond )iCond;
-			}
-			else
-			{
-				Warning( "Failed to addcond %s to player %s\n", args[1], pTargetPlayer->GetPlayerName() );
-				return true;
-			}
-
-			if ( args.ArgC() >= 3 )
-			{
-				float flDuration = atof( args[2] );
-				pTargetPlayer->m_Shared.AddCond( eCond, flDuration );
-			}
-			else
-			{
-				pTargetPlayer->m_Shared.AddCond( eCond );
-			}
-		}
-		return true;
-	}
-	else if ( FStrEq( pcmd, "removecond" ) )
-	{
-		if ( UTIL_HandleCheatCmdForPlayer( this ) && args.ArgC() >= 2 )
-		{
-			CTFPlayer *pTargetPlayer = this;
-			if ( args.ArgC() >= 3 )
-			{
-				// Find the matching netname
-				for ( int i = 1; i <= gpGlobals->maxClients; i++ )
-				{
-					CBasePlayer *pPlayer = ToBasePlayer( UTIL_PlayerByIndex(i) );
-					if ( pPlayer )
-					{
-						if ( Q_strstr( pPlayer->GetPlayerName(), args[2] ) )
-						{
-							pTargetPlayer = ToTFPlayer(pPlayer);
-							break;
-						}
-					}
-				}
-			}
-
-			if ( FStrEq( args[1], "all" ) )
-			{
-				pTargetPlayer->m_Shared.RemoveAllCond();
-			}
-			else
-			{
-				int iCond = atoi( args[1] );
-				if ( args[1][0] != '0' && iCond == 0 )
-				{
-					iCond = GetTFConditionFromName( args[1] );
-				}
-
-				if ( iCond >= 0 && iCond < TF_COND_LAST )
-				{
-					ETFCond eCond = (ETFCond)iCond;
-					pTargetPlayer->m_Shared.RemoveCond( eCond );
-				}
-				else
-				{
-					Warning( "Failed to removecond %s from player %s\n", args[1], pTargetPlayer->GetPlayerName() );
-				}
-			}
-		}
-		return true;
-	}
 	// Better Fortress - Add attribute shortcuts
-	else if ( FStrEq( pcmd, "addgunattr" ) )
+	if ( FStrEq( pcmd, "addgunattr" ) )
 	{
 		if ( UTIL_HandleCheatCmdForPlayer( this ) && args.ArgC() >= 2 )
 		{
@@ -25167,3 +25069,216 @@ bool CTFPlayer::ScriptPlaySpecificSequence(const char* pAnimationName)
 {
 	return this->PlaySpecificSequence(pAnimationName);
 }
+
+//-----------------------------------------------------------------------------
+// Autocompletion function for addcond command
+//-----------------------------------------------------------------------------
+static int AddCondAutocomplete( const char *partial, char commands[ COMMAND_COMPLETION_MAXITEMS ][ COMMAND_COMPLETION_ITEM_LENGTH ] )
+{
+	if ( Q_strlen( partial ) >= COMMAND_COMPLETION_ITEM_LENGTH )
+	{
+		return 0;
+	}
+	
+	char command[ COMMAND_COMPLETION_ITEM_LENGTH+1 ];
+	Q_strncpy( command, partial, sizeof( command ) );
+	
+	// skip to start of argument
+	char *partialArg = Q_strrchr( command, ' ' );
+	if ( partialArg == NULL )
+	{
+		return 0;
+	}
+	
+	// chop command from partial argument
+	*partialArg = '\000';
+	++partialArg;
+	
+	int partialArgLength = Q_strlen( partialArg );
+
+	int count = 0;
+	for( int i = 0; i < TF_COND_LAST && count < COMMAND_COMPLETION_MAXITEMS; ++i )
+	{
+		const char *conditionName = GetTFConditionName( (ETFCond)i );
+		if ( conditionName && *conditionName && Q_strnicmp( conditionName, partialArg, partialArgLength ) == 0 )
+		{
+			Q_snprintf( commands[count], sizeof( commands[count] ), "%s %s", command, conditionName );
+			count++;
+		}
+	}
+
+	return count;
+}
+
+//-----------------------------------------------------------------------------
+// Autocompletion function for removecond command
+//-----------------------------------------------------------------------------
+static int RemoveCondAutocomplete( const char *partial, char commands[ COMMAND_COMPLETION_MAXITEMS ][ COMMAND_COMPLETION_ITEM_LENGTH ] )
+{
+	if ( Q_strlen( partial ) >= COMMAND_COMPLETION_ITEM_LENGTH )
+	{
+		return 0;
+	}
+	
+	char command[ COMMAND_COMPLETION_ITEM_LENGTH+1 ];
+	Q_strncpy( command, partial, sizeof( command ) );
+	
+	// skip to start of argument
+	char *partialArg = Q_strrchr( command, ' ' );
+	if ( partialArg == NULL )
+	{
+		return 0;
+	}
+	
+	// chop command from partial argument
+	*partialArg = '\000';
+	++partialArg;
+	
+	int partialArgLength = Q_strlen( partialArg );
+
+	int count = 0;
+	
+	// Add "all" option first
+	if ( Q_strnicmp( "all", partialArg, partialArgLength ) == 0 )
+	{
+		Q_snprintf( commands[count], sizeof( commands[count] ), "%s all", command );
+		count++;
+	}
+	
+	// Add condition names
+	for( int i = 0; i < TF_COND_LAST && count < COMMAND_COMPLETION_MAXITEMS; ++i )
+	{
+		const char *conditionName = GetTFConditionName( (ETFCond)i );
+		if ( conditionName && *conditionName && Q_strnicmp( conditionName, partialArg, partialArgLength ) == 0 )
+		{
+			Q_snprintf( commands[count], sizeof( commands[count] ), "%s %s", command, conditionName );
+			count++;
+		}
+	}
+
+	return count;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Add condition to player
+//-----------------------------------------------------------------------------
+void CC_AddCond( const CCommand &args )
+{
+	CTFPlayer *pPlayer = ToTFPlayer( UTIL_GetCommandClient() );
+	if ( !pPlayer )
+		return;
+
+	if ( !UTIL_HandleCheatCmdForPlayer( pPlayer ) || args.ArgC() < 2 )
+		return;
+
+	CTFPlayer *pTargetPlayer = pPlayer;
+	if ( args.ArgC() >= 4 )
+	{
+		// Find the matching netname
+		for ( int i = 1; i <= gpGlobals->maxClients; i++ )
+		{
+			CBasePlayer *pTestPlayer = ToBasePlayer( UTIL_PlayerByIndex(i) );
+			if ( pTestPlayer )
+			{
+				if ( Q_strstr( pTestPlayer->GetPlayerName(), args[3] ) )
+				{
+					pTargetPlayer = ToTFPlayer(pTestPlayer);
+					break;
+				}
+			}
+		}
+	}
+
+	int iCond = atoi( args[1] );
+	if ( args[1][0] != '0' && iCond == 0 )
+	{
+		iCond = GetTFConditionFromName( args[1] );
+		if ( iCond == TF_COND_INVALID )
+		{
+			Warning( "Failed to addcond - invalid condition name: %s\n", args[1] );
+			return;
+		}
+	}
+
+	ETFCond eCond = TF_COND_INVALID;
+	if ( iCond >= 0 && iCond < TF_COND_LAST )
+	{
+		eCond = ( ETFCond )iCond;
+	}
+	else
+	{
+		Warning( "Failed to addcond %s to player %s\n", args[1], pTargetPlayer->GetPlayerName() );
+		return;
+	}
+
+	if ( args.ArgC() >= 3 )
+	{
+		float flDuration = atof( args[2] );
+		pTargetPlayer->m_Shared.AddCond( eCond, flDuration );
+	}
+	else
+	{
+		pTargetPlayer->m_Shared.AddCond( eCond );
+	}
+}
+static ConCommand addcond( "addcond", CC_AddCond, "Usage: addcond <condition name/id> [duration] [player name]. Add a condition to the player.", FCVAR_CHEAT, AddCondAutocomplete );
+
+//-----------------------------------------------------------------------------
+// Purpose: Remove condition from player
+//-----------------------------------------------------------------------------
+void CC_RemoveCond( const CCommand &args )
+{
+	CTFPlayer *pPlayer = ToTFPlayer( UTIL_GetCommandClient() );
+	if ( !pPlayer )
+		return;
+
+	if ( !UTIL_HandleCheatCmdForPlayer( pPlayer ) || args.ArgC() < 2 )
+		return;
+
+	CTFPlayer *pTargetPlayer = pPlayer;
+	if ( args.ArgC() >= 3 )
+	{
+		// Find the matching netname
+		for ( int i = 1; i <= gpGlobals->maxClients; i++ )
+		{
+			CBasePlayer *pTestPlayer = ToBasePlayer( UTIL_PlayerByIndex(i) );
+			if ( pTestPlayer )
+			{
+				if ( Q_strstr( pTestPlayer->GetPlayerName(), args[2] ) )
+				{
+					pTargetPlayer = ToTFPlayer(pTestPlayer);
+					break;
+				}
+			}
+		}
+	}
+
+	if ( FStrEq( args[1], "all" ) )
+	{
+		pTargetPlayer->m_Shared.RemoveAllCond();
+	}
+	else
+	{
+		int iCond = atoi( args[1] );
+		if ( args[1][0] != '0' && iCond == 0 )
+		{
+			iCond = GetTFConditionFromName( args[1] );
+			if ( iCond == TF_COND_INVALID )
+			{
+				Warning( "Failed to removecond - invalid condition name: %s\n", args[1] );
+				return;
+			}
+		}
+
+		if ( iCond >= 0 && iCond < TF_COND_LAST )
+		{
+			ETFCond eCond = (ETFCond)iCond;
+			pTargetPlayer->m_Shared.RemoveCond( eCond );
+		}
+		else
+		{
+			Warning( "Failed to removecond %s from player %s\n", args[1], pTargetPlayer->GetPlayerName() );
+		}
+	}
+}
+static ConCommand removecond( "removecond", CC_RemoveCond, "Usage: removecond <condition name/id/all> [player name]. Remove a condition from the player.", FCVAR_CHEAT, RemoveCondAutocomplete );

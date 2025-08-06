@@ -202,7 +202,7 @@
 				"heavy" "secondary"
 			}
 		}
-		
+
 		//Big tex
 		"weapon_revolver_secondary"
 		{
@@ -246,6 +246,7 @@
 			"xifier_class_remap"	"weapon_revolver"
 			"particle_suffix"		"revolver"
 		}
+
 		// BMMH
 		"weapon_bmmh"
 		{
@@ -480,6 +481,7 @@
 			"description_format"	"value_is_percentage"
 			"hidden"	"0"
 			"effect_type"	"positive"
+			"stored_as_integer"	"0"
 		}
 		"483"
 		{
@@ -742,10 +744,10 @@
 		//------------------------
 		// CUSTOM TAUNTS
 		//------------------------
-		"40000"
+		"29000"
 		{
 			"name"	"Taunt: Gangnam Mercs"
-			"prefab"	"bf_community_taunt"
+			"prefab"	"valve bf_community_taunt"
 			"first_sale_date"		"2014/06/17"
 			"item_name"	"#TBF_TauntGangnam"
 			"item_description"	"#TBF_TauntGangnam_Desc"
@@ -822,10 +824,10 @@
 				"custom_sound0"		"music.gangnam_loop"
 			}
 		}
-		"40001"
+		"29001"
 		{
 			"name"	"Taunt: Explosive Masterpiece"
-			"prefab"	"bf_community_taunt"
+			"prefab"	"valve bf_community_taunt"
 			"first_sale_date"		"2014/06/17"
 			"item_name"			"#TBF_TauntArtBoom"
 			"item_description"			"#TBF_TauntArtBoom_Desc"
@@ -852,10 +854,10 @@
 				}
 			}
 		}
-		"40002"
+		"29002"
 		{
 			"name"	"Taunt: Dirtkick "
-			"prefab"	"bf_community_taunt"
+			"prefab"	"valve bf_community_taunt"
 			"item_name"			"#OFFSHORE_TauntDirtkick"
 			"item_description"			"#OFFSHORE_TauntDirtkick_Desc"
 			"image_inventory"	"backpack/player/taunts/taunt_scoutkick"
@@ -877,10 +879,10 @@
 				}
 			}
 		}
-		"40003"
+		"29003"
 		{
 			"name"	"Taunt: Trust Fall"
-			"prefab"	"bf_community_taunt"
+			"prefab"	"valve bf_community_taunt"
 			"first_sale_date"		"2014/06/17"
 			"item_name"			"#TBF_TauntKill_Trustfall"
 			"item_description"			"#TBF_TauntKill_Trustfall_Desc"
@@ -917,7 +919,7 @@
 				}
 			}
 		}
-		"40004"
+		"29004"
 		{
 			"name"	"Taunt: Texan Tacklin"
 			"prefab"	"no_craft bf_community_taunt"
@@ -998,7 +1000,7 @@
 				}
 			}
 		}
-		"40005"
+		"29005"
 		{
 			"name"	"Taunt: Texan Tacklin (Box)"
 			"prefab"	"no_craft bf_community_taunt"
@@ -1080,7 +1082,7 @@
 			}
 		}
 		//COSMETICS
-		"40006"
+		"35099"
 		{
 			"name"		"The Soviet Unit"
 			"prefab"		"misc"
@@ -1132,7 +1134,7 @@
 			"drop_sound"		"ui/item_gooey_pickup.wav"
 		}
 		//MVM SKIN
-		"40007"
+		"35100"
 		{
 			"name"		"Metallic Soul (Armory)"
 			"prefab"	"mvm_robotskin"
@@ -1152,7 +1154,7 @@
 			"item_description"	"#TF_Item_Zombie_Armory_Desc"
 			"image_inventory"	"backpack/player/items/engineer/engineer_zombie"
 		}
-		"40008"
+		"35101"
 		{
 			"name"		"MVM Robot Scout"
 			"prefab"	"mvm_robotskin"
@@ -1168,7 +1170,7 @@
 			}
 			"image_inventory"	"backpack/player/mvm/robot_scout"
 		}
-		"40009"
+		"35102"
 		{
 			"name"		"MVM Robot Soldier"
 			"prefab"	"mvm_robotskin"
@@ -1185,7 +1187,7 @@
 			}
 			"image_inventory"	"backpack/player/mvm/robot_soldier"
 		}
-		"40010"
+		"35103"
 		{
 			"name"		"MVM Robot Pyro"
 			"prefab"	"mvm_robotskin"
@@ -1202,7 +1204,7 @@
 			}
 			"image_inventory"	"backpack/player/mvm/robot_pyro"
 		}
-		"40011"
+		"35104"
 		{
 			"name"		"MVM Robot Demoman"
 			"prefab"	"mvm_robotskin"
@@ -1219,7 +1221,7 @@
 			}
 			"image_inventory"	"backpack/player/mvm/robot_demo"
 		}
-		"40012"
+		"35105"
 		{
 			"name"		"MVM Robot Heavy"
 			"prefab"	"mvm_robotskin"
@@ -1237,7 +1239,7 @@
 			}
 			"image_inventory"	"backpack/player/mvm/robot_heavy"
 		}
-		"40013"
+		"35106"
 		{
 			"name"		"MVM Robot Engineer"
 			"prefab"	"mvm_robotskin"
@@ -1255,7 +1257,7 @@
 			}
 			"image_inventory"	"backpack/player/mvm/robot_engineer"
 		}
-		"40014"
+		"35107"
 		{
 			"name"		"MVM Robot Medic"
 			"prefab"	"mvm_robotskin"
@@ -1272,7 +1274,7 @@
 			}
 			"image_inventory"	"backpack/player/mvm/robot_medic"
 		}
-		"40015"
+		"35108"
 		{
 			"name"		"MVM Robot Sniper"
 			"prefab"	"mvm_robotskin"
@@ -1289,7 +1291,7 @@
 			}
 			"image_inventory"	"backpack/player/mvm/robot_sniper"
 		}
-		"40016"
+		"35109"
 		{
 			"name"		"MVM Robot Spy"
 			"prefab"	"mvm_robotskin"
@@ -1307,7 +1309,7 @@
 			"image_inventory"	"backpack/player/mvm/robot_spy"
 		}
 		//SWORDFISH
-		"40017"
+		"32000"
 		{
 			"name"	"The Holy Marlin"
 			"prefab"	"valve weapon_swordfish"
@@ -1319,7 +1321,7 @@
 			}
 		}	
 		//VEGETABLE WRENCH
-		"40018"
+		"32002"
 		{
 			"name"	"The Vegetable Mario"
 			"first_sale_date"	"2010/09/29"
@@ -1409,7 +1411,7 @@
 			"drop_sound"		"ui/item_metal_weapon_drop.wav"
 		}
 		//PDA TEST
-		"40019"
+		"32003"
 		{
 			"name"	"TF_WEAPON_PDA_BUILD_MINIDISPENSER"
 			"capabilities"
@@ -1481,7 +1483,7 @@
 			}
 		}
 		//Baleful beacon
-		"40020"
+		"32004"
 		{
 			"name"	"TF_WEAPON_TORCHLIGHT"
 			"prefab"	"weapon_fireaxe bf_restored_item"
@@ -1508,7 +1510,7 @@
 				}
 			}
 		}
-		"40021"
+		"32005"
 		{
 			"name"	"The Hell Beneath"
 			"item_class"	"tf_weapon_pipebomblauncher"
@@ -1591,7 +1593,7 @@
 			"drop_sound"		"ui/item_heavy_gun_drop.wav"
 		}
 		// Throwable Bread
-		"40022"
+		"32006"
 		{
 			"name"	"Bread Scout"
 			"item_name" "#TF_Throwable_Bread"
@@ -1622,7 +1624,7 @@
 				}
 			}
 		}
-		"40023"
+		"32007"
 		{
 			"name"	"Bread Soldier"
 			"item_name" "#TF_Throwable_Bread"
@@ -1653,7 +1655,7 @@
 				}
 			}
 		}
-		"40024"
+		"32008"
 		{
 			"name"	"Bread Pyro"
 			"item_name" "#TF_Throwable_Bread"
@@ -1684,7 +1686,7 @@
 				}
 			}
 		}
-		"40025"
+		"32009"
 		{
 			"name"	"Bread Demo"
 			"item_name" "#TF_Throwable_Bread"
@@ -1715,7 +1717,7 @@
 				}
 			}
 		}
-		"40026"
+		"32010"
 		{
 			"name"	"Bread Heavy"
 			"item_name" "#TF_Throwable_Bread"
@@ -1746,7 +1748,7 @@
 				}
 			}
 		}
-		"40027"
+		"32011"
 		{
 			"name"	"Bread Engineer"
 			"item_name" "#TF_Throwable_Bread"
@@ -1777,7 +1779,7 @@
 				}
 			}
 		}
-		"40028"
+		"32012"
 		{
 			"name"	"Bread Medic"
 			"item_name" "#TF_Throwable_Bread"
@@ -1808,7 +1810,7 @@
 				}
 			}
 		}
-		"40029"
+		"32013"
 		{
 			"name"	"Bread Sniper"
 			"item_name" "#TF_Throwable_Bread"
@@ -1839,7 +1841,7 @@
 				}
 			}
 		}
-		"40030"
+		"32014"
 		{
 			"name"	"Bread Spy"
 			"item_name" "#TF_Throwable_Bread"
@@ -1871,7 +1873,7 @@
 			}
 		}
 		//The big bang - PERMISSION GRANTED FROM AUTHOR
-		"40035"
+		"32015"
 		{
 			"name"	"The Big Bang"
 			"item_class"	"tf_weapon_wrench"
@@ -1960,7 +1962,7 @@
 			"drop_sound"		"ui/item_metal_weapon_drop.wav"
 		}
 		//The big Tex - PERMISSION GRANTED
-		"40036"
+		"32016"
 		{
 			"name"	"The Big Tex"
 			"prefab"	"weapon_revolver_secondary"
@@ -2007,7 +2009,7 @@
 			"drop_sound"		"ui/item_light_gun_drop.wav"
 		}
 		//BMMH - PERMISSION GRANTED
-		"40037"
+		"32017"
 		{
 			"name"	"The Big Mean Mother Hubbard"
 			"prefab"	"valve weapon_bmmh"
@@ -2037,7 +2039,7 @@
 			"xifier_class_remap"	"frontier_justice"
 		}
 		// WARPAINT ITEMS
-		"40031" 
+		"34000" 
 		{
 			"name"		"Paintkit 800"
 			"prefab"	"paintkit_tool"
@@ -2048,7 +2050,7 @@
 				"paintkit_proto_def_index"					"800"
 			}
 		}
-		"40032" 
+		"34001" 
 		{
 			"name"		"Paintkit 801"
 			"prefab"	"paintkit_tool"
@@ -2060,7 +2062,7 @@
 			}
 		}
 		// CRATES & KEYS
-		"40033" 
+		"33000" 
 		{
 			"name"	"Offshore Oceanic Case"
 			"first_sale_date"	"2016/10/19"
@@ -2097,7 +2099,7 @@
 				}
 			}
 		}
-		"40034"
+		"33001"
 		{
 			"name"	"Offshore Oceanic Key" 
 			"first_sale_date"	"2016/10/19"
@@ -2141,7 +2143,6 @@
 			"5"			"#Attrib_UGCW_OFFSHORE_Wrench"
 			"6"			"#Attrib_UGCW_PDA_Mini"
 			"7"			"#Attrib_UGCW_BBeacon"
-			"8"			"#Attrib_UGCW_BigTex_Set"
 		}
 	}
 	"client_loot_lists"

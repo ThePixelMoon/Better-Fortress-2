@@ -243,6 +243,9 @@ void bf_disable_cosmetics_changed( IConVar *var, const char *pOldValue, float fl
 			C_TFPlayer *pPlayer = ToTFPlayer( UTIL_PlayerByIndex( i ) );
 			if ( pPlayer )
 			{
+				// Force bodygroups to recalculate to reset to defaults when cosmetics are disabled
+				pPlayer->SetBodygroupsDirty();
+				
 				for ( int j = 0; j < pPlayer->GetNumWearables(); j++ )
 				{
 					C_EconWearable *pWearable = pPlayer->GetWearable( j );

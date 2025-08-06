@@ -4530,7 +4530,7 @@ bool ValidateModItems(const CUtlHashMapLarge<int, CEconItemDefinition*>& mapItem
 			// SECURITY: Only allow moditem=1 on items with definition index >= 40000
 			// Items below 40000 are typically base TF2 items and setting moditem=1 on them
 			// allows players to get Live TF2 items for free, which is a critical exploit
-			if (nDefIndex < 40000)
+			if (nDefIndex < 39999)
 			{
 				// Exception list: Allow specific items that we know are legitimate custom overrides
 				// These are items that Better Fortress 2 legitimately needs to modify

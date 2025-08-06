@@ -6428,7 +6428,11 @@ void CTFPlayer::PostInventoryApplication( void )
 		if ( !m_bIsRobot )
 		{
 			GetPlayerClass()->SetCustomModel(NULL, USE_CLASS_ANIMATIONS);
-			UpdateModel();
+			//UpdateModel();
+		}
+		else
+		{
+			MVM_TurnIntoRobot();
 		}
 	}
 
@@ -18846,6 +18850,9 @@ bool CTFPlayer::PlayTauntSceneFromItem( const CEconItemView *pEconItemView )
 				if ( pProp )
 				{
 					pProp->SetModel( pszTauntProp );
+
+					//Scale props to player scale
+					pProp->SetModelScale( this->GetModelScale() );
 
 					pProp->m_nSkin = GetTeamNumber() == TF_TEAM_RED ? 0 : 1;
 					DispatchSpawn( pProp );

@@ -584,3 +584,8 @@ game/betterfortress/materials/vgui/logos/ui/spray.vmt
 game/betterfortress/cfg/tr_walkway_rc2.cfg
 game/Console.lnk
 /tools
+tools/create_items_signature.py
+tools/create_signature.bat
+tools/create_items_signature.py
+tools/create_signature.bat
+tools/create_items_signature.py

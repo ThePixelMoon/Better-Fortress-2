@@ -665,10 +665,10 @@ const char* CTFPowerupBottle::GetEffectIconName( void )
 		return "../hud/ico_powerup_building_instant_red";
 
 	case POWERUP_BOTTLE_RADIUS_STEALTH:
-		return "../vgui/achievements/tf_soldier_kill_spy_killer";
+		return "../hud/ico_powerup_radius_stealth";
 
 	case POWERUP_BOTTLE_SEE_CASH_THROUGH_WALL:
-		return "../vgui/achievements/tf_mvm_earn_money_bonus";
+		return "../hud/ico_powerup_xray_cash";
 	}
 
 	return "../hud/ico_powerup_critboost_red";

@@ -203,6 +203,121 @@
 			}
 		}
 		
+		//Big tex
+		"weapon_revolver_secondary"
+		{
+			"enabled"	"1"
+			"item_class"	"tf_weapon_revolver"
+			"craft_material_type"	"weapon"
+			"capabilities"
+			{
+				"nameable"		"1"
+			}
+			"tags"
+			{
+				"can_deal_damage"			"1"
+				"can_deal_critical_damage"	"1"
+				"can_deal_mvm_penetration_damage"	"1"
+				"can_deal_long_distance_damage"	"1"
+			}
+			"base_item_name"	"TF_WEAPON_REVOLVER"
+			"show_in_armory"	"1"
+			"item_type_name"	"#TF_Weapon_Revolver"
+			"item_name"	"#TF_Weapon_Revolver"
+			"item_slot"	"secondary"
+			"item_quality"	"unique"
+			"min_ilevel"	"1"
+			"max_ilevel"	"99"
+			"image_inventory"	"backpack/weapons/w_models/w_revolver"
+			"model_player"	"models/weapons/c_models/c_revolver/c_revolver.mdl"
+			"attach_to_hands"	"1"
+			"inspect_panel_dist" "31"
+			"used_by_classes"
+			{
+				"engineer"	"1"
+			}
+			"static_attrs"
+			{
+				"weapon_stattrak_module_scale"			"0.497"
+				"min_viewmodel_offset"					"10 0 -6"
+			}
+			"mouse_pressed_sound"	"ui/item_light_gun_pickup.wav"
+			"drop_sound"		"ui/item_light_gun_drop.wav"
+			"xifier_class_remap"	"weapon_revolver"
+			"particle_suffix"		"revolver"
+		}
+		// BMMH
+		"weapon_bmmh"
+		{
+			"enabled"	"1"
+			"item_class"	"tf_weapon_sentry_revenge"
+			"craft_class"	"weapon"
+			"craft_material_type"	"weapon"
+			"capabilities"
+			{
+				"nameable"		"1"
+			}
+			"tags"
+			{
+				"can_deal_damage"			"1"
+				"can_deal_critical_damage"	"1"
+				"can_deal_mvm_penetration_damage"	"1"
+				"can_deal_long_distance_damage"	"1"
+				"can_deal_taunt_damage"		"1"
+			}
+			"base_item_name"	"The Frontier Justice"
+			"show_in_armory"	"1"
+			"item_type_name"	"#TF_Weapon_Shotgun"
+			"item_name"	"#TF_Unique_Sentry_Shotgun"
+			"item_slot"	"primary"
+			"item_quality"	"community"
+			"moditem" "1"
+			"min_ilevel"	"5"
+			"max_ilevel"	"5"
+			"item_logname"	"frontier_justice"
+			"item_iconname"	"frontier_kill"
+			"image_inventory"	"backpack/weapons/c_models/c_frontierjustice/c_frontierjustice"
+			"image_inventory_size_w"		"128"
+			"image_inventory_size_h"		"82"
+			"model_player"	"models/weapons/c_models/c_big_mean_mother_hubbard/c_big_mean.mdl"
+			"attach_to_hands" "1"
+			"inspect_panel_dist" "60"
+			"used_by_classes"
+			{
+				"engineer"	"1"
+			}
+			"attributes"
+			{
+				"mod ammo per shot"
+				{
+					"attribute_class"	"mod_ammo_per_shot"
+					"value"	"40"
+				}
+				"mod use metal ammo type"
+				{
+					"attribute_class"	"mod_use_metal_ammo_type"
+					"value"	"1"
+				}
+				"mod max primary clip override"
+				{
+					"attribute_class"	"mod_max_primary_clip_override"
+					"value"	"-1"
+				}
+				"damage penalty"
+				{
+					"attribute_class"	"mult_dmg"
+					"value"	"0.4"
+				}
+			}
+			"visuals"
+			{
+				"sound_single_shot"	"Weapon_FrontierJustice.Single"
+				"sound_burst"	"Weapon_FrontierJustice.SingleCrit"
+			}			
+			"mouse_pressed_sound"	"ui/item_heavy_gun_pickup.wav"
+			"drop_sound"		"ui/item_heavy_gun_drop.wav"
+		}
+		
 		"weapon_grenade_launcher"
 		{
 			"visuals_mvm_boss"
@@ -364,8 +479,7 @@
 			"description_string"	"#Attrib_Radius_Stealth"
 			"description_format"	"value_is_percentage"
 			"hidden"	"0"
-			"effect_type"	"negative"
-			"stored_as_integer"	"0"
+			"effect_type"	"positive"
 		}
 		"483"
 		{
@@ -631,7 +745,7 @@
 		"40000"
 		{
 			"name"	"Taunt: Gangnam Mercs"
-			"prefab"	"valve bf_community_taunt"
+			"prefab"	"bf_community_taunt"
 			"first_sale_date"		"2014/06/17"
 			"item_name"	"#TBF_TauntGangnam"
 			"item_description"	"#TBF_TauntGangnam_Desc"
@@ -711,7 +825,7 @@
 		"40001"
 		{
 			"name"	"Taunt: Explosive Masterpiece"
-			"prefab"	"valve bf_community_taunt"
+			"prefab"	"bf_community_taunt"
 			"first_sale_date"		"2014/06/17"
 			"item_name"			"#TBF_TauntArtBoom"
 			"item_description"			"#TBF_TauntArtBoom_Desc"
@@ -741,7 +855,7 @@
 		"40002"
 		{
 			"name"	"Taunt: Dirtkick "
-			"prefab"	"valve bf_community_taunt"
+			"prefab"	"bf_community_taunt"
 			"item_name"			"#OFFSHORE_TauntDirtkick"
 			"item_description"			"#OFFSHORE_TauntDirtkick_Desc"
 			"image_inventory"	"backpack/player/taunts/taunt_scoutkick"
@@ -766,7 +880,7 @@
 		"40003"
 		{
 			"name"	"Taunt: Trust Fall"
-			"prefab"	"valve bf_community_taunt"
+			"prefab"	"bf_community_taunt"
 			"first_sale_date"		"2014/06/17"
 			"item_name"			"#TBF_TauntKill_Trustfall"
 			"item_description"			"#TBF_TauntKill_Trustfall_Desc"
@@ -1756,6 +1870,172 @@
 				}
 			}
 		}
+		//The big bang - PERMISSION GRANTED FROM AUTHOR
+		"40035"
+		{
+			"name"	"The Big Bang"
+			"item_class"	"tf_weapon_wrench"
+			"craft_class"	"weapon"
+			"craft_material_type"	"weapon"
+			"capabilities"
+			{
+				"nameable"		"1"
+			}
+			"tags"
+			{
+				"can_deal_damage"				"1"
+				"can_deal_posthumous_damage"	"1"
+				"can_destroy_sappers"			"1"
+			}
+			"show_in_armory"	"1"
+			"moditem" "1"
+			"item_type_name"	"#TF_Weapon_Hammer"
+			"item_name"	"#TFCW_Pipewrench"
+			"item_description"	"#TFCW_Pipewrench_Desc"
+			"item_slot"	"melee"
+			"item_quality"	"community"
+			"min_ilevel"	"20"
+			"max_ilevel"	"20"
+			"propername"	"1"
+			"item_logname"	"necro_smasher"
+			"item_iconname"	"necro_smasher"
+			"image_inventory"	"backpack/weapons/custommade/c_pipewrench"
+			"image_inventory_size_w"		"128"
+			"image_inventory_size_h"		"82"
+			"inspect_panel_dist" 			"45"
+			"model_player"	"models/weapons/c_models/c_the_big_bang/c_the_big_bang.mdl"
+			"attach_to_hands" "1"
+			"used_by_classes"
+			{
+				"engineer"	"1"
+			}
+			"static_attrs"
+			{
+				"min_viewmodel_offset"		"10 -2 -9"				
+			}
+			"attributes"
+			{
+				"crit mod disabled"
+				{
+					"attribute_class"	"mult_crit_chance"
+					"value"	"0"
+				}
+				"engy sentry damage bonus"
+				{
+					"attribute_class"	"mult_engy_sentry_damage"
+					"value" "1.25"
+				}
+				"fire rate penalty"
+				{
+					"attribute_class"	"mult_postfiredelay"
+					"value"	"1.2"
+				}
+				"kill eater score type"
+				{
+					"attribute_class"	"kill_eater_score_type"
+					"value" 	"0"									
+				}
+				"kill eater score type 2"
+				{
+					"attribute_class"	"kill_eater_score_type_2"
+					"value" 	"3"									
+				}
+				"is community contributed item"
+				{
+					"attribute_class"  "is_community_contributed_item"
+					"value"							"8"
+				}
+			}
+			"visuals"
+			{
+				"animation_replacement"
+				{
+					"ACT_VM_IDLE"	"ACT_ITEM3_VM_IDLE"
+					"ACT_VM_DRAW"	"ACT_ITEM3_VM_DRAW"
+					"ACT_VM_HITCENTER"	"ACT_ITEM3_VM_HITCENTER"
+					"ACT_VM_SWINGHARD"	"ACT_ITEM3_VM_SWINGHARD"
+				}
+			}
+			"mouse_pressed_sound"	"ui/item_metal_weapon_pickup.wav"
+			"drop_sound"		"ui/item_metal_weapon_drop.wav"
+		}
+		//The big Tex - PERMISSION GRANTED
+		"40036"
+		{
+			"name"	"The Big Tex"
+			"prefab"	"weapon_revolver_secondary"
+			"capabilities"
+			{
+				"nameable"		"1"
+			}
+			"tags"
+			{
+				"can_deal_damage"			"1"
+				"can_deal_mvm_penetration_damage"	"1"
+				"can_deal_long_distance_damage"	"1"
+			}
+			"item_class"	"tf_weapon_revolver_secondary"
+			"craft_class"	"weapon"
+			"craft_material_type"	"weapon"
+			"item_type_name"	"#TF_Weapon_Revolver"
+			"item_name"	"#TF_Weapon_Revolver"
+			"item_slot"	"secondary"
+			"item_quality"	"community"
+			"moditem" "1"
+			"min_ilevel"	"1"
+			"max_ilevel"	"1"
+			"image_inventory"	"backpack/weapons/w_models/w_revolver"
+			"image_inventory_size_w"		"128"
+			"image_inventory_size_h"		"82"
+			"model_player"	"models/weapons/c_models/c_big_tex/c_big_tex.mdl"
+			"attach_to_hands" "1"
+			"used_by_classes"
+			{
+				"engineer"	"1"
+			}
+			"visuals"
+			{
+				"animation_replacement"
+				{
+					"ACT_VM_DRAW"							"ACT_ENGINEER_REVOLVER_DRAW"
+					"ACT_VM_IDLE"							"ACT_ENGINEER_REVOLVER_IDLE"
+					"ACT_VM_PRIMARYATTACK"					"ACT_ENGINEER_REVOLVER_PRIMARYATTACK"
+					"ACT_VM_RELOAD"							"ACT_ENGINEER_REVOLVER_RELOAD"
+				}
+			}
+			"mouse_pressed_sound"	"ui/item_light_gun_pickup.wav"
+			"drop_sound"		"ui/item_light_gun_drop.wav"
+		}
+		//BMMH - PERMISSION GRANTED
+		"40037"
+		{
+			"name"	"The Big Mean Mother Hubbard"
+			"prefab"	"valve weapon_bmmh"
+			"static_attrs"
+			{
+				"min_viewmodel_offset"		"10 0 -9"
+			}
+			"visuals"
+			{
+				"styles"
+				{
+					"0"
+					{
+						"skin_red" "0"
+						"skin_blu" "1"
+						"selectable"	"0"
+					}
+					"1"
+					{
+						"skin_red"	"2"
+						"skin_blu"	"3"
+						"selectable"	"0"
+						"image_inventory"	"backpack/weapons/c_models/c_frontierjustice/c_frontierjustice_gold"
+					}
+				}
+			}
+			"xifier_class_remap"	"frontier_justice"
+		}
 		// WARPAINT ITEMS
 		"40031" 
 		{
@@ -1861,6 +2141,7 @@
 			"5"			"#Attrib_UGCW_OFFSHORE_Wrench"
 			"6"			"#Attrib_UGCW_PDA_Mini"
 			"7"			"#Attrib_UGCW_BBeacon"
+			"8"			"#Attrib_UGCW_BigTex_Set"
 		}
 	}
 	"client_loot_lists"

@@ -9176,20 +9176,10 @@ void C_TFPlayer::ValidateModelIndex( void )
 	}
 	else
 	{
-		int usingRobotCosmetic = 0;
-		CALL_ATTRIB_HOOK_INT( usingRobotCosmetic, robotrobotrobotrobot );
 		C_TFPlayerClass *pClass = GetPlayerClass();
-
-		// MVM Versus - use robot model when using robot cosmetics
-		if ( usingRobotCosmetic && pClass )
+		if ( pClass )
 		{
-			int nRobotClassIndex = GetPlayerClass()->GetClassIndex();
-			SetModelIndex( modelinfo->GetModelIndex( g_szBotModels[ nRobotClassIndex ] ) );
-			SetBloodColor( DONT_BLEED );
-		}
-		else if ( pClass )
-		{
-			SetModelIndex( modelinfo->GetModelIndex( pClass->GetModelName() ) );
+			m_nModelIndex = modelinfo->GetModelIndex( pClass->GetModelName() );
 		}
 	}
 

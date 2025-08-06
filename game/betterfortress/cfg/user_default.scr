@@ -470,14 +470,6 @@ DESCRIPTION INFO_OPTIONS
 		{ "0" }
 	}
 
-	"tf_robot_cosmetic_opt_in"
-	{
-		"#TF_RobotVisionOptIn"
-		"#Tooltip_RobotVisionOptIn"
-		{ BOOL }
-		{ "1" }
-	}
-
 	"tf_hud_target_id_disable_floating_health"
 	{
 		"#TF_TargetID_Disable_Floating"

@@ -628,7 +628,7 @@
 		//------------------------
 		// CUSTOM TAUNTS
 		//------------------------
-		"29000"
+		"40000"
 		{
 			"name"	"Taunt: Gangnam Mercs"
 			"prefab"	"valve bf_community_taunt"
@@ -708,7 +708,7 @@
 				"custom_sound0"		"music.gangnam_loop"
 			}
 		}
-		"29001"
+		"40001"
 		{
 			"name"	"Taunt: Explosive Masterpiece"
 			"prefab"	"valve bf_community_taunt"
@@ -738,7 +738,7 @@
 				}
 			}
 		}
-		"29002"
+		"40002"
 		{
 			"name"	"Taunt: Dirtkick "
 			"prefab"	"valve bf_community_taunt"
@@ -763,7 +763,7 @@
 				}
 			}
 		}
-		"29003"
+		"40003"
 		{
 			"name"	"Taunt: Trust Fall"
 			"prefab"	"valve bf_community_taunt"
@@ -803,7 +803,7 @@
 				}
 			}
 		}
-		"29004"
+		"40004"
 		{
 			"name"	"Taunt: Texan Tacklin"
 			"prefab"	"no_craft bf_community_taunt"
@@ -884,7 +884,7 @@
 				}
 			}
 		}
-		"29005"
+		"40005"
 		{
 			"name"	"Taunt: Texan Tacklin (Box)"
 			"prefab"	"no_craft bf_community_taunt"
@@ -966,7 +966,7 @@
 			}
 		}
 		//COSMETICS
-		"35099"
+		"40006"
 		{
 			"name"		"The Soviet Unit"
 			"prefab"		"misc"
@@ -1018,7 +1018,7 @@
 			"drop_sound"		"ui/item_gooey_pickup.wav"
 		}
 		//MVM SKIN
-		"35100"
+		"40007"
 		{
 			"name"		"Metallic Soul (Armory)"
 			"prefab"	"mvm_robotskin"
@@ -1038,7 +1038,7 @@
 			"item_description"	"#TF_Item_Zombie_Armory_Desc"
 			"image_inventory"	"backpack/player/items/engineer/engineer_zombie"
 		}
-		"35101"
+		"40008"
 		{
 			"name"		"MVM Robot Scout"
 			"prefab"	"mvm_robotskin"
@@ -1054,7 +1054,7 @@
 			}
 			"image_inventory"	"backpack/player/mvm/robot_scout"
 		}
-		"35102"
+		"40009"
 		{
 			"name"		"MVM Robot Soldier"
 			"prefab"	"mvm_robotskin"
@@ -1071,7 +1071,7 @@
 			}
 			"image_inventory"	"backpack/player/mvm/robot_soldier"
 		}
-		"35103"
+		"40010"
 		{
 			"name"		"MVM Robot Pyro"
 			"prefab"	"mvm_robotskin"
@@ -1088,7 +1088,7 @@
 			}
 			"image_inventory"	"backpack/player/mvm/robot_pyro"
 		}
-		"35104"
+		"40011"
 		{
 			"name"		"MVM Robot Demoman"
 			"prefab"	"mvm_robotskin"
@@ -1105,7 +1105,7 @@
 			}
 			"image_inventory"	"backpack/player/mvm/robot_demo"
 		}
-		"35105"
+		"40012"
 		{
 			"name"		"MVM Robot Heavy"
 			"prefab"	"mvm_robotskin"
@@ -1123,7 +1123,7 @@
 			}
 			"image_inventory"	"backpack/player/mvm/robot_heavy"
 		}
-		"35106"
+		"40013"
 		{
 			"name"		"MVM Robot Engineer"
 			"prefab"	"mvm_robotskin"
@@ -1141,7 +1141,7 @@
 			}
 			"image_inventory"	"backpack/player/mvm/robot_engineer"
 		}
-		"35107"
+		"40014"
 		{
 			"name"		"MVM Robot Medic"
 			"prefab"	"mvm_robotskin"
@@ -1158,7 +1158,7 @@
 			}
 			"image_inventory"	"backpack/player/mvm/robot_medic"
 		}
-		"35108"
+		"40015"
 		{
 			"name"		"MVM Robot Sniper"
 			"prefab"	"mvm_robotskin"
@@ -1175,7 +1175,7 @@
 			}
 			"image_inventory"	"backpack/player/mvm/robot_sniper"
 		}
-		"35109"
+		"40016"
 		{
 			"name"		"MVM Robot Spy"
 			"prefab"	"mvm_robotskin"
@@ -1193,7 +1193,7 @@
 			"image_inventory"	"backpack/player/mvm/robot_spy"
 		}
 		//SWORDFISH
-		"32000"
+		"40017"
 		{
 			"name"	"The Holy Marlin"
 			"prefab"	"valve weapon_swordfish"
@@ -1205,7 +1205,7 @@
 			}
 		}	
 		//VEGETABLE WRENCH
-		"32002"
+		"40018"
 		{
 			"name"	"The Vegetable Mario"
 			"first_sale_date"	"2010/09/29"
@@ -1295,7 +1295,7 @@
 			"drop_sound"		"ui/item_metal_weapon_drop.wav"
 		}
 		//PDA TEST
-		"32003"
+		"40019"
 		{
 			"name"	"TF_WEAPON_PDA_BUILD_MINIDISPENSER"
 			"capabilities"
@@ -1367,7 +1367,7 @@
 			}
 		}
 		//Baleful beacon
-		"32004"
+		"40020"
 		{
 			"name"	"TF_WEAPON_TORCHLIGHT"
 			"prefab"	"weapon_fireaxe bf_restored_item"
@@ -1394,7 +1394,7 @@
 				}
 			}
 		}
-		"32005"
+		"40021"
 		{
 			"name"	"The Hell Beneath"
 			"item_class"	"tf_weapon_pipebomblauncher"
@@ -1477,7 +1477,7 @@
 			"drop_sound"		"ui/item_heavy_gun_drop.wav"
 		}
 		// Throwable Bread
-		"32006"
+		"40022"
 		{
 			"name"	"Bread Scout"
 			"item_name" "#TF_Throwable_Bread"
@@ -1508,7 +1508,7 @@
 				}
 			}
 		}
-		"32007"
+		"40023"
 		{
 			"name"	"Bread Soldier"
 			"item_name" "#TF_Throwable_Bread"
@@ -1539,7 +1539,7 @@
 				}
 			}
 		}
-		"32008"
+		"40024"
 		{
 			"name"	"Bread Pyro"
 			"item_name" "#TF_Throwable_Bread"
@@ -1570,7 +1570,7 @@
 				}
 			}
 		}
-		"32009"
+		"40025"
 		{
 			"name"	"Bread Demo"
 			"item_name" "#TF_Throwable_Bread"
@@ -1601,7 +1601,7 @@
 				}
 			}
 		}
-		"32010"
+		"40026"
 		{
 			"name"	"Bread Heavy"
 			"item_name" "#TF_Throwable_Bread"
@@ -1632,7 +1632,7 @@
 				}
 			}
 		}
-		"32011"
+		"40027"
 		{
 			"name"	"Bread Engineer"
 			"item_name" "#TF_Throwable_Bread"
@@ -1663,7 +1663,7 @@
 				}
 			}
 		}
-		"32012"
+		"40028"
 		{
 			"name"	"Bread Medic"
 			"item_name" "#TF_Throwable_Bread"
@@ -1694,7 +1694,7 @@
 				}
 			}
 		}
-		"32013"
+		"40029"
 		{
 			"name"	"Bread Sniper"
 			"item_name" "#TF_Throwable_Bread"
@@ -1725,7 +1725,7 @@
 				}
 			}
 		}
-		"32014"
+		"40030"
 		{
 			"name"	"Bread Spy"
 			"item_name" "#TF_Throwable_Bread"
@@ -1757,7 +1757,7 @@
 			}
 		}
 		// WARPAINT ITEMS
-		"34000" 
+		"40031" 
 		{
 			"name"		"Paintkit 800"
 			"prefab"	"paintkit_tool"
@@ -1768,7 +1768,7 @@
 				"paintkit_proto_def_index"					"800"
 			}
 		}
-		"34001" 
+		"40032" 
 		{
 			"name"		"Paintkit 801"
 			"prefab"	"paintkit_tool"
@@ -1780,7 +1780,7 @@
 			}
 		}
 		// CRATES & KEYS
-		"33000" 
+		"40033" 
 		{
 			"name"	"Offshore Oceanic Case"
 			"first_sale_date"	"2016/10/19"
@@ -1817,7 +1817,7 @@
 				}
 			}
 		}
-		"33001"
+		"40034"
 		{
 			"name"	"Offshore Oceanic Key" 
 			"first_sale_date"	"2016/10/19"

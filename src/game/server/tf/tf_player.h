@@ -1158,6 +1158,7 @@ protected:
 	void				GiveDefaultItems();
 	bool				SelectSpawnSpotByType( const char *pEntClassName, CBaseEntity* &pSpot );	// "info_player_teamspawn"
 	bool				SelectSpawnSpotByName( const char *pEntName, CBaseEntity* &pSpot );			// named info_player_teamspawn, i.e. "my_blue_offense_respawns"
+	CBaseEntity*		FindTeleporterSpawnOverride( void );											// Find teleporter exit to use as spawn point
 	void				RemoveNemesisRelationships();
 	void				RemoveAllItems();
 

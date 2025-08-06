@@ -588,55 +588,75 @@ void CHudChat::MsgFunc_SayText2( bf_read &msg )
 			wchar_t *pszStart = pszMessage;
 			wchar_t *pszPlayerStart = NULL;
 			
+			// Get localized prefix strings
+			const wchar_t *pszDeadPrefix = g_pVGuiLocalize->Find( "#TF_Chat_Dead" );
+			const wchar_t *pszSpecPrefix = g_pVGuiLocalize->Find( "#TF_Chat_Spec" );
+			const wchar_t *pszTeamPrefix = g_pVGuiLocalize->Find( "#TF_Chat_TeamPrefix" );
+			const wchar_t *pszCoachPrefix = g_pVGuiLocalize->Find( "#TF_Chat_CoachPrefix" );
+			
 			// Find where the player name starts (after any prefixes)
-			if ( wcsstr( pszMessage, L"*DEAD*" ) )
+			if ( wcsstr( pszMessage, pszDeadPrefix ) )
 			{
 				pChatHistory->InsertColorChange( Color( 255, 30, 30, 255 ) );  // Red for DEAD
-				if ( wcsstr( pszMessage, L"*DEAD*(TEAM)" ) )
+				
+				// Check for combined DEAD+TEAM prefix
+				wchar_t szDeadTeamPrefix[64];
+				V_swprintf_safe( szDeadTeamPrefix, L"%s%s", pszDeadPrefix, pszTeamPrefix );
+				if ( wcsstr( pszMessage, szDeadTeamPrefix ) )
 				{
-					pChatHistory->InsertString( L"*DEAD*" );
+					pChatHistory->InsertString( pszDeadPrefix );
 					pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
 					pChatHistory->InsertColorChange( Color( 160, 160, 160, 255 ) );  // Gray for TEAM
-					pChatHistory->InsertString( L"(TEAM) " );
+					pChatHistory->InsertString( pszTeamPrefix );
+					pChatHistory->InsertString( L" " );
 					pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
-					pszPlayerStart = wcsstr( pszMessage, L"(TEAM) " ) + 7;
+					pszPlayerStart = wcsstr( pszMessage, szDeadTeamPrefix ) + wcslen( szDeadTeamPrefix ) + 1; // +1 for space
 				}
 				else
 				{
-					pChatHistory->InsertString( L"*DEAD* " );
+					pChatHistory->InsertString( pszDeadPrefix );
+					pChatHistory->InsertString( L" " );
 					pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
-					pszPlayerStart = wcsstr( pszMessage, L"*DEAD* " ) + 7;
+					pszPlayerStart = wcsstr( pszMessage, pszDeadPrefix ) + wcslen( pszDeadPrefix ) + 1; // +1 for space
 				}
 			}
-			else if ( wcsstr( pszMessage, L"*SPEC*" ) )
+			else if ( wcsstr( pszMessage, pszSpecPrefix ) )
 			{
 				pChatHistory->InsertColorChange( Color( 160, 160, 160, 255 ) );  // Gray for SPEC
-				if ( wcsstr( pszMessage, L"*SPEC*(TEAM)" ) )
+				
+				// Check for combined SPEC+TEAM prefix
+				wchar_t szSpecTeamPrefix[64];
+				V_swprintf_safe( szSpecTeamPrefix, L"%s%s", pszSpecPrefix, pszTeamPrefix );
+				if ( wcsstr( pszMessage, szSpecTeamPrefix ) )
 				{
-					pChatHistory->InsertString( L"*SPEC*(TEAM) " );
+					pChatHistory->InsertString( szSpecTeamPrefix );
+					pChatHistory->InsertString( L" " );
 					pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
-					pszPlayerStart = wcsstr( pszMessage, L"*SPEC*(TEAM) " ) + 13;
+					pszPlayerStart = wcsstr( pszMessage, szSpecTeamPrefix ) + wcslen( szSpecTeamPrefix ) + 1; // +1 for space
 				}
 				else
 				{
-					pChatHistory->InsertString( L"*SPEC* " );
+					pChatHistory->InsertString( pszSpecPrefix );
+					pChatHistory->InsertString( L" " );
 					pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
-					pszPlayerStart = wcsstr( pszMessage, L"*SPEC* " ) + 7;
+					pszPlayerStart = wcsstr( pszMessage, pszSpecPrefix ) + wcslen( pszSpecPrefix ) + 1; // +1 for space
 				}
 			}
-			else if ( wcsstr( pszMessage, L"(TEAM)" ) )
+			else if ( wcsstr( pszMessage, pszTeamPrefix ) )
 			{
 				pChatHistory->InsertColorChange( Color( 160, 160, 160, 255 ) );  // Gray for TEAM
-				pChatHistory->InsertString( L"(TEAM) " );
+				pChatHistory->InsertString( pszTeamPrefix );
+				pChatHistory->InsertString( L" " );
 				pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
-				pszPlayerStart = wcsstr( pszMessage, L"(TEAM) " ) + 7;
+				pszPlayerStart = wcsstr( pszMessage, pszTeamPrefix ) + wcslen( pszTeamPrefix ) + 1; // +1 for space
 			}
-			else if ( wcsstr( pszMessage, L"(COACH)" ) )
+			else if ( wcsstr( pszMessage, pszCoachPrefix ) )
 			{
 				pChatHistory->InsertColorChange( Color( 153, 204, 255, 255 ) );  // Blue for COACH
-				pChatHistory->InsertString( L"(COACH) " );
+				pChatHistory->InsertString( pszCoachPrefix );
+				pChatHistory->InsertString( L" " );
 				pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
-				pszPlayerStart = wcsstr( pszMessage, L"(COACH) " ) + 8;
+				pszPlayerStart = wcsstr( pszMessage, pszCoachPrefix ) + wcslen( pszCoachPrefix ) + 1; // +1 for space
 			}
 			else
 			{
@@ -654,84 +674,93 @@ void CHudChat::MsgFunc_SayText2( bf_read &msg )
 					*pszColon = L'\0';  // Temporarily null-terminate at colon
 					
 					// Look for and colorize HOST tag
-					wchar_t *pszHostTag = wcsstr( pszNameSection, L"[HOST]" );
+					const wchar_t *pszHostTagText = g_pVGuiLocalize->Find( "#TF_Tag_Host" );
+					wchar_t *pszHostTag = wcsstr( pszNameSection, pszHostTagText );
 					if ( pszHostTag )
 					{
 						// Display text before HOST tag (if any)
 						if ( pszHostTag > pszNameSection )
 						{
+							wchar_t wcTemp = *pszHostTag;
 							*pszHostTag = L'\0';
 							pChatHistory->InsertColorChange( GetClientColor( client ) );
 							pChatHistory->InsertString( pszNameSection );
 							pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
-							*pszHostTag = L'[';
+							*pszHostTag = wcTemp;
 						}
 						
 						// Display HOST tag
 						pChatHistory->InsertColorChange( Color( 240, 240, 240, 255 ) ); // #F0F0F0
-						pChatHistory->InsertString( L"[HOST] " );
+						pChatHistory->InsertString( pszHostTagText );
 						pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
-						pszNameSection = pszHostTag + 7; // Skip past "[HOST] "
+						pszNameSection = pszHostTag + wcslen( pszHostTagText ); // Skip past the HOST tag
 					}
 					
 					// Look for and colorize DEV/Publisher/Contributor tags
-					wchar_t *pszDevTag = wcsstr( pszNameSection, L"[DEV]" );
-					wchar_t *pszPubTag = wcsstr( pszNameSection, L"[Publisher]" );
-					wchar_t *pszContribTag = wcsstr( pszNameSection, L"[Contributor]" );
+					const wchar_t *pszDevTagText = g_pVGuiLocalize->Find( "#TF_Tag_Dev" );
+					const wchar_t *pszPubTagText = g_pVGuiLocalize->Find( "#TF_Tag_Publisher" );
+					const wchar_t *pszContribTagText = g_pVGuiLocalize->Find( "#TF_Tag_Contributor" );
+					
+					wchar_t *pszDevTag = wcsstr( pszNameSection, pszDevTagText );
+					wchar_t *pszPubTag = wcsstr( pszNameSection, pszPubTagText );
+					wchar_t *pszContribTag = wcsstr( pszNameSection, pszContribTagText );
 					
 					if ( pszDevTag )
 					{
 						// Display text before DEV tag (if any)
 						if ( pszDevTag > pszNameSection )
 						{
+							wchar_t wcTemp = *pszDevTag;
 							*pszDevTag = L'\0';
 							pChatHistory->InsertColorChange( GetClientColor( client ) );
 							pChatHistory->InsertString( pszNameSection );
 							pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
-							*pszDevTag = L'[';
+							*pszDevTag = wcTemp;
 						}
 						
 						// Display DEV tag
 						pChatHistory->InsertColorChange( Color( 240, 135, 43, 255 ) ); // #F0872B
-						pChatHistory->InsertString( L"[DEV] " );
+						pChatHistory->InsertString( pszDevTagText );
 						pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
-						pszNameSection = pszDevTag + 6; // Skip past "[DEV] "
+						pszNameSection = pszDevTag + wcslen( pszDevTagText ); // Skip past the DEV tag
 					}
 					else if ( pszPubTag )
 					{
 						// Display text before Publisher tag (if any)
 						if ( pszPubTag > pszNameSection )
 						{
+							wchar_t wcTemp = *pszPubTag;
 							*pszPubTag = L'\0';
 							pChatHistory->InsertColorChange( GetClientColor( client ) );
 							pChatHistory->InsertString( pszNameSection );
 							pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
-							*pszPubTag = L'[';
+							*pszPubTag = wcTemp;
 						}
 						
 						// Display Publisher tag
 						pChatHistory->InsertColorChange( Color( 46, 143, 191, 255 ) ); // #2E8FBF
-						pChatHistory->InsertString( L"[Publisher] " );
+						pChatHistory->InsertString( pszPubTagText );
 						pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
-						pszNameSection = pszPubTag + 12; // Skip past "[Publisher] "
+						pszNameSection = pszPubTag + wcslen( pszPubTagText ); // Skip past the Publisher tag
 					}
 					else if ( pszContribTag )
 					{
 						// Display text before Contributor tag (if any)
 						if ( pszContribTag > pszNameSection )
 						{
+							wchar_t wcTemp = *pszContribTag;
 							*pszContribTag = L'\0';
 							pChatHistory->InsertColorChange( GetClientColor( client ) );
 							pChatHistory->InsertString( pszNameSection );
 							pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
-							*pszContribTag = L'[';
+							*pszContribTag = wcTemp;
 						}
 						
 						// Display Contributor tag
 						pChatHistory->InsertColorChange( Color( 95, 154, 63, 255 ) ); // #5F9A3F
-						pChatHistory->InsertString( L"[Contributor] " );
+						pChatHistory->InsertString( pszContribTagText );
 						pChatHistory->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
-						pszNameSection = pszContribTag + 14; // Skip past "[Contributor] "
+						pszNameSection = pszContribTag + wcslen( pszContribTagText ); // Skip past the Contributor tag
 					}
 					
 					// Display remaining player name with team color

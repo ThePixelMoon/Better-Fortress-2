@@ -716,6 +716,8 @@ int CTFPowerupBottle::GetWorldModelIndex( void )
 			return modelinfo->GetModelIndex( "models/player/items/mvm_loot/all_class/mvm_flask_build.mdl" );
 
 		case POWERUP_BOTTLE_RADIUS_STEALTH:
+			return modelinfo->GetModelIndex( "models/player/items/mvm_loot/all_class/mvm_flask_tele.mdl" );
+
 		case POWERUP_BOTTLE_SEE_CASH_THROUGH_WALL:
 			return modelinfo->GetModelIndex( "models/player/items/mvm_loot/all_class/mvm_flask_tele.mdl" );
 		}

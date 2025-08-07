@@ -6482,17 +6482,16 @@ void CTFPlayer::PostInventoryApplication( void )
 
 	//MVM Versus - Remove the robo cosmetic if we are not a bot
 	//TODO - Optimize this to only get called if your playermodel is a Robot
-	if ( !TFGameRules()->IsMannVsMachineMode() )
+
+	bool bRealRobot = TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_INVADERS;
+	if ( !m_bIsRobot && !bRealRobot )
 	{
-		if ( !m_bIsRobot )
-		{
-			GetPlayerClass()->SetCustomModel(NULL, USE_CLASS_ANIMATIONS);
-			//UpdateModel();
-		}
-		else
-		{
-			MVM_TurnIntoRobot();
-		}
+		GetPlayerClass()->SetCustomModel(NULL, USE_CLASS_ANIMATIONS);
+		UpdateModel();
+	}
+	else
+	{
+		MVM_TurnIntoRobot();
 	}
 
 	m_Inventory.ClearClassLoadoutChangeTracking();

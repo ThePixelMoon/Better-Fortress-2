@@ -10788,7 +10788,7 @@ void C_TFPlayer::UpdateMVMEyeGlowEffect( bool bVisible )
 	if ( TFGameRules() && TFGameRules()->IsMannVsMachineMode() )
 	{
 		// Actual robots (bots on invader team)
-		if ( GetTeamNumber() == TF_TEAM_PVE_INVADERS )
+		if ( GetTeamNumber() == TF_TEAM_PVE_INVADERS || usingRobotCosmetic )
 		{
 			bShouldHaveEyeGlow = true;
 		}

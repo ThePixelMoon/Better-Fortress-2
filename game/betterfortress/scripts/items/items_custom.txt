@@ -493,7 +493,6 @@
 			"description_format"	"value_is_additive"
 			"hidden"	"0"
 			"effect_type"	"positive"
-			"stored_as_integer"	"0"
 		}
 		"483"
 		{
@@ -2043,22 +2042,18 @@
 			}
 			"visuals"
 			{
-				"styles"
+
+				"animation_replacement"
 				{
-					"0"
-					{
-						"skin_red" "0"
-						"skin_blu" "1"
-						"selectable"	"0"
-					}
-					"1"
-					{
-						"skin_red"	"2"
-						"skin_blu"	"3"
-						"selectable"	"0"
-						"image_inventory"	"backpack/weapons/c_models/c_frontierjustice/c_frontierjustice_gold"
-					}
+					"ACT_VM_IDLE"	"ACT_SECONDARY2_VM_IDLE"
+					"ACT_VM_DRAW"	"ACT_SECONDARY2_VM_DRAW"
+					"ACT_VM_PRIMARYATTACK"	"ACT_SECONDARY2_VM_PRIMARYATTACK"
+					"ACT_PRIMARY_VM_INSPECT_START"	"ACT_SECONDARY_ALT1_VM_INSPECT_START"
+					"ACT_PRIMARY_VM_INSPECT_IDLE"	"ACT_SECONDARY_ALT1_VM_INSPECT_IDLE"
+					"ACT_PRIMARY_VM_INSPECT_END"	"ACT_SECONDARY_ALT1_VM_INSPECT_END"
 				}
+				"sound_single_shot"	"Weapon_Bmmh.Single"
+				"sound_burst"	"Weapon_Bmmh.Single"
 			}
 			"xifier_class_remap"	"frontier_justice"
 		}

@@ -5923,12 +5923,12 @@ void CC_Ent_SetName( const CCommand& args )
 {
 	CBaseEntity *pEntity = NULL;
 
+	CBasePlayer *pPlayer = ToBasePlayer( UTIL_GetCommandClient() );
+	if( !UTIL_HandleCheatCmdForPlayer(pPlayer) ) 
+		return;
+
 	if ( args.ArgC() < 1 )
 	{
-		CBasePlayer *pPlayer = ToBasePlayer( UTIL_GetCommandClient() );
-		if (!pPlayer)
-			return;
-
 		ClientPrint( pPlayer, HUD_PRINTCONSOLE, "Usage:\n   ent_setname <new name> <entity name>\n" );
 	}
 	else
@@ -5962,7 +5962,7 @@ void CC_Ent_SetName( const CCommand& args )
 		}
 	}
 }
-static ConCommand ent_setname("ent_setname", CC_Ent_SetName, "Sets the targetname of the given entity(s)\n\tArguments:   	{new entity name} {entity_name} / {class_name} / no argument picks what player is looking at ", FCVAR_CHEAT);
+static ConCommand ent_setname("ent_setname", CC_Ent_SetName, "Sets the targetname of the given entity(s)\n\tArguments:   	{new entity name} {entity_name} / {class_name} / no argument picks what player is looking at ", FCVAR_NONE );
 
 //------------------------------------------------------------------------------
 void CC_Find_Ent( const CCommand& args )

@@ -6130,11 +6130,6 @@ public:
 	virtual void CommandCallback( const CCommand &command )
 	{
 		CBasePlayer *pPlayer = ToBasePlayer( UTIL_GetCommandClient() );
-		if (!pPlayer)
-		{
-			return;
-		}
-
 		if( !UTIL_HandleCheatCmdForPlayer(pPlayer) ) 
 			return;
 
@@ -6161,6 +6156,7 @@ public:
 			//	  ent_create point_servercommand; ent_setname mine; ent_fire mine command "rcon_password mynewpassword"
 			// So, I'm removing the ability for anyone to execute ent_fires on dedicated servers (we can't check to see if
 			// this command is going to connect with a point_servercommand entity here, because they could delay the event and create it later).
+			/*
 			if ( engine->IsDedicatedServer() )
 			{
 				// We allow people with disabled autokick to do it, because they already have rcon.
@@ -6177,6 +6173,8 @@ public:
 						return;
 				}
 			}
+			*/
+			
 
 			if ( command.ArgC() >= 3 )
 			{
@@ -6363,11 +6361,8 @@ static ConCommand ent_fire("ent_fire", &g_EntFireAutoComplete, "Usage:\n   ent_f
 
 void CC_Ent_CancelPendingEntFires( const CCommand& args )
 {
-	if ( !UTIL_IsCommandIssuedByServerAdmin() )
-		return;
-
 	CBasePlayer *pPlayer = ToBasePlayer( UTIL_GetCommandClient() );
-	if (!pPlayer)
+	if( !UTIL_HandleCheatCmdForPlayer(pPlayer) ) 
 		return;
 
 	g_EventQueue.CancelEvents( pPlayer );

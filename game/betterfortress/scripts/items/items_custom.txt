@@ -2062,6 +2062,32 @@
 			}
 			"xifier_class_remap"	"frontier_justice"
 		}
+		//Go ahead, pee
+		"32018" 
+		{
+			"name"	"Customizable Targe"	
+			"prefab"	"no_craft weapon_targe"
+			"item_name"	"#TF_Weapon_FestiveTarge"
+			"image_inventory"	"backpack/weapons/c_models/c_targe/c_targe_xmas"
+			"model_player"	"models/weapons/c_models/c_targe/c_targe_user.mdl"
+			"propername"	"0"
+			"moditem" "1"
+			"armory_desc" "can_customize_texture"
+			"capabilities"
+			{
+				"nameable"		"1"
+				"can_customize_texture"	"1"
+				"can_craft_count"	"1"
+			}
+			"visuals_red"
+			{
+				"skin"	"0"
+			}
+			"visuals_blu"
+			{
+				"skin"	"1"
+			}
+		}
 		// WARPAINT ITEMS
 		"34000" 
 		{

@@ -106,4 +106,15 @@ DESCRIPTION INFO_OPTIONS
 		{ BOOL }
 		{ "1" }
 	}
+	"category6"
+	{
+		"WARPAINTS"
+		{ CATEGORY }
+	}	
+	"credit6_1"
+	{
+		"Purple Range MK2 - Meatwad"
+		{ BOOL }
+		{ "1" }
+	}
 }

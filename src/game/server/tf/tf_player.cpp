@@ -25165,10 +25165,10 @@ static int RemoveCondAutocomplete( const char *partial, char commands[ COMMAND_C
 void CC_AddCond( const CCommand &args )
 {
 	CTFPlayer *pPlayer = ToTFPlayer( UTIL_GetCommandClient() );
-	if ( !pPlayer )
+	if( !UTIL_HandleCheatCmdForPlayer(pPlayer) ) 
 		return;
 
-	if ( !UTIL_HandleCheatCmdForPlayer( pPlayer ) || args.ArgC() < 2 )
+	if ( args.ArgC() < 2 )
 		return;
 
 	CTFPlayer *pTargetPlayer = pPlayer;
@@ -25221,7 +25221,7 @@ void CC_AddCond( const CCommand &args )
 		pTargetPlayer->m_Shared.AddCond( eCond );
 	}
 }
-static ConCommand addcond( "addcond", CC_AddCond, "Usage: addcond <condition name/id> [duration] [player name]. Add a condition to the player.", FCVAR_CHEAT, AddCondAutocomplete );
+static ConCommand addcond( "addcond", CC_AddCond, "Usage: addcond <condition name/id> [duration] [player name]. Add a condition to the player.", FCVAR_NONE, AddCondAutocomplete );
 
 //-----------------------------------------------------------------------------
 // Purpose: Remove condition from player
@@ -25229,10 +25229,10 @@ static ConCommand addcond( "addcond", CC_AddCond, "Usage: addcond <condition nam
 void CC_RemoveCond( const CCommand &args )
 {
 	CTFPlayer *pPlayer = ToTFPlayer( UTIL_GetCommandClient() );
-	if ( !pPlayer )
+	if( !UTIL_HandleCheatCmdForPlayer(pPlayer) ) 
 		return;
 
-	if ( !UTIL_HandleCheatCmdForPlayer( pPlayer ) || args.ArgC() < 2 )
+	if ( args.ArgC() < 2 )
 		return;
 
 	CTFPlayer *pTargetPlayer = pPlayer;
@@ -25281,4 +25281,4 @@ void CC_RemoveCond( const CCommand &args )
 		}
 	}
 }
-static ConCommand removecond( "removecond", CC_RemoveCond, "Usage: removecond <condition name/id/all> [player name]. Remove a condition from the player.", FCVAR_CHEAT, RemoveCondAutocomplete );
+static ConCommand removecond( "removecond", CC_RemoveCond, "Usage: removecond <condition name/id/all> [player name]. Remove a condition from the player.", FCVAR_NONE, RemoveCondAutocomplete );

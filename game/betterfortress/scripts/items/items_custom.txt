@@ -186,6 +186,18 @@
 		}
 		"weapon_winger_pistol"
 		{
+			"visuals"
+			{
+				"styles"
+				{
+					"0"
+					{
+						"skin_red"	"0"
+						"skin_blu"	"1"
+						"selectable"	"0"
+					}
+				}
+			}
 			"used_by_classes"
 			{
 				"scout"	"1"
@@ -735,6 +747,18 @@
 		//Pretty boy pocket pistol
 		"773"
 		{
+			"visuals"
+			{
+				"styles"
+				{
+					"0"
+					{
+						"skin_red"	"0"
+						"skin_blu"	"1"
+						"selectable"	"0"
+					}
+				}
+			}
 			"used_by_classes"
 			{
 				"scout"	"1"

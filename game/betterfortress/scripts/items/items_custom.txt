@@ -490,7 +490,7 @@
 			"name"	"radius stealth"
 			"attribute_class"	"radius_stealth"
 			"description_string"	"#Attrib_Radius_Stealth"
-			"description_format"	"value_is_percentage"
+			"description_format"	"value_is_additive"
 			"hidden"	"0"
 			"effect_type"	"positive"
 			"stored_as_integer"	"0"

@@ -4349,6 +4349,36 @@ void CTFPlayer::Spawn()
 
 	SetMoveType( MOVETYPE_WALK );
 	BaseClass::Spawn();
+	
+	// Check if we should spawn at a teleporter for robot players (do this early before weapon initialization)
+	if ( GetTeamNumber() == TF_TEAM_PVE_INVADERS && TFGameRules() && TFGameRules()->IsMannVsMachineMode() )
+	{
+		// Get our current spawn point location and see if it's near a teleporter
+		Vector myOrigin = GetAbsOrigin();
+		
+		// Find teleporter exits on our team
+		for ( int i = 0; i < IBaseObjectAutoList::AutoList().Count(); ++i )
+		{
+			CBaseObject *pObj = static_cast< CBaseObject* >( IBaseObjectAutoList::AutoList()[i] );
+			if ( pObj->GetType() != OBJ_TELEPORTER || pObj->GetTeamNumber() != GetTeamNumber() )
+				continue;
+
+			CObjectTeleporter *pTeleporter = assert_cast< CObjectTeleporter* >( pObj );
+			if ( pTeleporter->IsEntrance() )
+				continue;
+				
+			// Check if we spawned at this teleporter's location (within a small radius)
+			Vector teleporterOrigin = pTeleporter->GetAbsOrigin();
+			if ( (myOrigin - teleporterOrigin).LengthSqr() < 64.0f * 64.0f ) // 64 unit radius for exact teleporter spawns
+			{
+				// We spawned at this teleporter, offset position above it
+				Vector spawnOrigin = teleporterOrigin;
+				spawnOrigin.z += 32.0f; // Offset 32 units above the teleporter
+				SetAbsOrigin( spawnOrigin );
+				break; // Only adjust position once
+			}
+		}
+	}
 
 	// We have to clear this early, so that the sword knows its max health in ManageRegularWeapons below
 	m_Shared.SetDecapitations( 0 );
@@ -4944,6 +4974,35 @@ void CTFPlayer::Spawn()
 	{
 		ResetMaxHealthDrain();
 		SetHealth( GetMaxHealth() );
+	}
+	
+	// Play teleporter effects for robot players who spawned at teleporters
+	if ( GetTeamNumber() == TF_TEAM_PVE_INVADERS && TFGameRules() && TFGameRules()->IsMannVsMachineMode() )
+	{
+		// Get our current spawn point location and see if it's near a teleporter
+		Vector myOrigin = GetAbsOrigin();
+		
+		// Find teleporter exits on our team
+		for ( int i = 0; i < IBaseObjectAutoList::AutoList().Count(); ++i )
+		{
+			CBaseObject *pObj = static_cast< CBaseObject* >( IBaseObjectAutoList::AutoList()[i] );
+			if ( pObj->GetType() != OBJ_TELEPORTER || pObj->GetTeamNumber() != GetTeamNumber() )
+				continue;
+
+			CObjectTeleporter *pTeleporter = assert_cast< CObjectTeleporter* >( pObj );
+			if ( pTeleporter->IsEntrance() )
+				continue;
+				
+			// Check if we spawned at this teleporter's location (within a small radius)
+			Vector teleporterOrigin = pTeleporter->GetAbsOrigin();
+			if ( (myOrigin - teleporterOrigin).LengthSqr() < 96.0f * 96.0f ) // Slightly larger radius to account for the offset
+			{
+				// We spawned at this teleporter, play effects
+				EmitSound( "MVM.Robot_Teleporter_Deliver" );
+				TeleportEffect();
+				break; // Only play effect once
+			}
+		}
 	}
 
 	SetContextThink( &CTFPlayer::PostSpawnThink, gpGlobals->curtime + 0.1f, "PostSpawnThink" );
@@ -6835,7 +6894,8 @@ CBaseEntity* CTFPlayer::EntSelectSpawnPoint()
 				if ( pTeleporterSpot )
 				{
 					pSpot = pTeleporterSpot;
-					m_pSpawnPoint = dynamic_cast<CTFTeamSpawn*>( pSpot );
+					// Store the teleporter reference directly since it's not a CTFTeamSpawn
+					m_pSpawnPoint = NULL; // Can't cast teleporter to CTFTeamSpawn
 					return pSpot;
 				}
 			}
@@ -7059,12 +7119,6 @@ CBaseEntity* CTFPlayer::FindTeleporterSpawnOverride( void )
 		// Pick a random teleporter if multiple are available
 		int which = RandomInt( 0, teleporterVector.Count() - 1 );
 		CObjectTeleporter *pChosenTeleporter = teleporterVector[ which ];
-		
-		// Play teleporter delivery sound for robot players
-		if ( IsFakeClient() || (TFGameRules() && TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_INVADERS) )
-		{
-			EmitSound( "MVM.Robot_Teleporter_Deliver" );
-		}
 		
 		// Create a temporary entity at the teleporter's location to use as spawn point
 		// We return the teleporter itself, which acts as a valid spawn point
@@ -18832,12 +18886,55 @@ bool CTFPlayer::PlayTauntSceneFromItem( const CEconItemView *pEconItemView )
 
 	return false;
 }
-//TODO - TAUNT COMMAND
-/*
-CON_COMMAND_F(give_taunt, "Taunt from ID", FCVAR_CHEAT)
+
+//-----------------------------------------------------------------------------
+// Purpose: Console command to force play taunt by item definition index
+//-----------------------------------------------------------------------------
+CON_COMMAND_F(test_taunt, "Force the player to play a taunt by item definition ID. Usage: test_taunt <id>", FCVAR_CHEAT)
 {
-	PlayTauntSceneFromItem( 1118 )
-}*/
+	if (args.ArgC() < 2)
+	{
+		Msg("Usage: test_taunt <item_definition_id>\n");
+		return;
+	}
+
+	// Check who is calling the command
+	CTFPlayer* pPlayer = ToTFPlayer(UTIL_GetCommandClient());
+	if (!UTIL_HandleCheatCmdForPlayer(pPlayer))
+		return;
+
+	if (!pPlayer)
+		return;
+
+	int iItemID = atoi(args[1]);
+	if (iItemID <= 0)
+	{
+		Msg("Invalid item definition ID: %d\n", iItemID);
+		return;
+	}
+
+	// Verify the item exists in the schema
+	CEconItemDefinition* pItemDef = GetItemSchema()->GetItemDefinition(iItemID);
+	if (!pItemDef)
+	{
+		Msg("Item definition ID %d not found in schema\n", iItemID);
+		return;
+	}
+
+	// Create an EconItemView for this item
+	CEconItemView econItem;
+	econItem.Init(iItemID, AE_UNIQUE, AE_USE_SCRIPT_VALUE, true);
+
+	// Attempt to play the taunt
+	if (!pPlayer->PlayTauntSceneFromItem(&econItem))
+	{
+		Msg("Failed to play taunt for item ID %d (may not be a taunt item or player cannot taunt)\n", iItemID);
+	}
+	else
+	{
+		Msg("Playing taunt for item ID %d\n", iItemID);
+	}
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -21610,6 +21707,7 @@ CON_COMMAND_F( tf_crashclients, "testing only, crashes about 50 percent of the c
 	}
 }
 #endif // _DEBUG
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------

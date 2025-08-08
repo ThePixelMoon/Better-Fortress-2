@@ -18902,8 +18902,11 @@ CON_COMMAND_F(give_taunt, "[TESTING ONLY] Force the player to play a taunt by it
 {
 	// Check who is calling the command
 	CTFPlayer* pPlayer = ToTFPlayer(UTIL_GetCommandClient());
-	if (!UTIL_HandleCheatCmdForPlayer(pPlayer))
+	if ( !UTIL_PlayerIsModDev(pPlayer) )
+	{ 
+		Msg("Sorry but your not a Dev team little timmy.\n");
 		return;
+	}
 
 	if (args.ArgC() < 2)
 	{

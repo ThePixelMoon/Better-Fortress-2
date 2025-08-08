@@ -83,8 +83,8 @@ extern ConVar cl_backspeed;
 extern ConVar cl_sidespeed;
 extern ConVar mp_tournament_readymode_countdown;
 
-ConVar  tf_max_speed( "tf_max_speed", "520", FCVAR_REPLICATED, "Max movement speed players are allowed to move at");	// 400 is Scout max speed, and we allow up to 3% movement bonus.
-ConVar tf_allow_ladders("tf_allow_ladders", "0", FCVAR_NOTIFY, "Allow players to climb Ladders.");
+ConVar  bf_max_speed( "bf_max_speed", "520", FCVAR_REPLICATED, "Max movement speed players are allowed to move at");	// 400 is Scout max speed, and we allow up to 3% movement bonus.
+ConVar bf_allow_ladders("bf_allow_ladders", "0", FCVAR_NOTIFY, "Allow players to climb Ladders.");
 
 #define TF_WATERJUMP_FORWARD	30
 #define TF_WATERJUMP_UP			300
@@ -310,7 +310,7 @@ void CTFGameMovement::ProcessMovement( CBasePlayer *pBasePlayer, CMoveData *pMov
 	mv = pMove;
 
 	// The max speed is currently set to the scout - if this changes we need to change this!
-	mv->m_flMaxSpeed = tf_max_speed.GetFloat();
+	mv->m_flMaxSpeed = bf_max_speed.GetFloat();
 
 	// Handle charging demomens
 	ChargeMove();
@@ -2932,7 +2932,7 @@ void CTFGameMovement::StepMove( Vector &vecDestination, trace_t &trace )
 //-----------------------------------------------------------------------------
 bool CTFGameMovement::GameHasLadders() const
 {
-	if ( !tf_allow_ladders.GetBool() )
+	if ( !bf_allow_ladders.GetBool() )
 		return false;
 	return true;
 }

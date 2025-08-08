@@ -3851,6 +3851,33 @@ void CTFPlayerShared::OnRemoveMadMilk( void )
 //-----------------------------------------------------------------------------
 CTFPlayerShared::taunt_particle_state_t CTFPlayerShared::GetClientTauntParticleDesiredState() const
 {
+	CEconItemAttributeDefinition *pAttrib = GetItemSchema()->GetAttributeDefinitionByName( "bf taunt attach particle index" );
+	CAttributeList *pAttrList = m_pOuter->GetAttributeList();
+	uint32 unUnusualEffectIndex;
+	if ( ::FindAttribute_UnsafeBitwiseCast<attrib_value_t>( pAttrList, pAttrib, &unUnusualEffectIndex ) )
+	{
+		const attachedparticlesystem_t *pParticleSystem = GetItemSchema()->GetAttributeControlledParticleSystem( unUnusualEffectIndex );
+		if ( pParticleSystem )
+		{
+			// TF Team Color Particles
+			if ( m_pOuter->GetTeamNumber() == TF_TEAM_BLUE && V_stristr( pParticleSystem->pszSystemName, "_teamcolor_red" ) )
+			{
+				static char pBlue[256];
+				V_StrSubst( pParticleSystem->pszSystemName, "_teamcolor_red", "_teamcolor_blue", pBlue, 256 );
+				pParticleSystem = GetItemSchema()->FindAttributeControlledParticleSystem( pBlue );
+			}
+			else if ( m_pOuter->GetTeamNumber() == TF_TEAM_RED && V_stristr( pParticleSystem->pszSystemName, "_teamcolor_blue" ) )
+			{
+				// Guard against accidentally giving out the blue team color (support tool)
+				static char pRed[256];
+				V_StrSubst( pParticleSystem->pszSystemName, "_teamcolor_blue", "_teamcolor_red", pRed, 256 );
+				pParticleSystem = GetItemSchema()->FindAttributeControlledParticleSystem( pRed );
+			}
+
+			return taunt_particle_state_t( pParticleSystem->pszSystemName, pParticleSystem->fRefireTime );
+		}
+	}
+
 	const itemid_t unTauntSourceItemID = GetTauntSourceItemID();
 	if ( unTauntSourceItemID != INVALID_ITEM_ID )
 	{

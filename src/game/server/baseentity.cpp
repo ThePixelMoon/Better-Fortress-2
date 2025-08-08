@@ -6470,12 +6470,17 @@ static ConCommand ent_pause("ent_pause", CC_Ent_Pause, "Toggles pausing of input
 //------------------------------------------------------------------------------
 void CC_Ent_Picker( void )
 {
+	//Check who is calling the command
+	CBasePlayer *pPlayer = UTIL_GetCommandClient();
+	if( !UTIL_HandleCheatCmdForPlayer(pPlayer) ) 
+		return;
+
 	CBaseEntity::m_bInDebugSelect = CBaseEntity::m_bInDebugSelect ? false : true;
 
 	// Remember the player that's making this request
 	CBaseEntity::m_nDebugPlayer = UTIL_GetCommandClientIndex();
 }
-static ConCommand picker("picker", CC_Ent_Picker, "Toggles 'picker' mode.  When picker is on, the bounding box, pivot and debugging text is displayed for whatever entity the player is looking at.\n\tArguments:	full - enables all debug information", FCVAR_CHEAT);
+static ConCommand picker("picker", CC_Ent_Picker, "Toggles 'picker' mode.  When picker is on, the bounding box, pivot and debugging text is displayed for whatever entity the player is looking at.\n\tArguments:	full - enables all debug information", FCVAR_NONE);
 
 //------------------------------------------------------------------------------
 // Purpose : 
@@ -6484,9 +6489,13 @@ static ConCommand picker("picker", CC_Ent_Picker, "Toggles 'picker' mode.  When 
 //------------------------------------------------------------------------------
 void CC_Ent_Pivot( const CCommand& args )
 {
-	SetDebugBits(UTIL_GetCommandClient(),args[1],OVERLAY_PIVOT_BIT);
+	//Check who is calling the command
+	CBasePlayer *pPlayer = UTIL_GetCommandClient();
+	if( !UTIL_HandleCheatCmdForPlayer(pPlayer) ) 
+		return;
+	SetDebugBits(pPlayer,args[1],OVERLAY_PIVOT_BIT);
 }
-static ConCommand ent_pivot("ent_pivot", CC_Ent_Pivot, "Displays the pivot for the given entity(ies).\n\t(y=up=green, z=forward=blue, x=left=red). \n\tArguments:   	{entity_name} / {class_name} / no argument picks what player is looking at ", FCVAR_CHEAT);
+static ConCommand ent_pivot("ent_pivot", CC_Ent_Pivot, "Displays the pivot for the given entity(ies).\n\t(y=up=green, z=forward=blue, x=left=red). \n\tArguments:   	{entity_name} / {class_name} / no argument picks what player is looking at ", FCVAR_NONE);
 
 //------------------------------------------------------------------------------
 // Purpose : 

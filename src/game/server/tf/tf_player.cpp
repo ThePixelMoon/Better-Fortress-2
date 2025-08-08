@@ -6,6 +6,8 @@
 //=============================================================================
 
 #include "cbase.h"
+#include "tier1/strtools.h"
+#include <cctype>
 #include "tf_player.h"
 #include "tf_gamerules.h"
 #include "tf_gamestats.h"
@@ -18897,23 +18899,57 @@ bool CTFPlayer::PlayTauntSceneFromItem( const CEconItemView *pEconItemView )
 //-----------------------------------------------------------------------------
 // Purpose: Console command to force play taunt by item definition index
 //-----------------------------------------------------------------------------
-CON_COMMAND_F(give_taunt, "[TESTING ONLY] Force the player to play a taunt by item definition ID. Usage: give_taunt <item_definition_id> <unusual_effect_id>", FCVAR_NONE )
+CON_COMMAND_F(give_taunt, "[TESTING ONLY] Force the player to play a taunt by item definition ID. Usage: give_taunt <item_definition_id> [unusual_effect_id] [player_name]", FCVAR_NONE )
 {
 	if (args.ArgC() < 2)
 	{
-		Msg("Usage: give_taunt <item_definition_id> <unusual_effect_id>\n");
+		Msg("Usage: give_taunt <item_definition_id> [unusual_effect_id] [player_name]\n");
 		return;
 	}
 
 	// Check who is calling the command
-	CTFPlayer* pPlayer = ToTFPlayer(UTIL_GetCommandClient());
-	if (!UTIL_HandleCheatCmdForPlayer(pPlayer))
+	CTFPlayer* pCommandClient = ToTFPlayer(UTIL_GetCommandClient());
+	if (!UTIL_HandleCheatCmdForPlayer(pCommandClient))
 		return;
 
-	if (args.ArgC() < 2)
+	// Determine target player
+	CTFPlayer* pPlayer = pCommandClient;
+	if (args.ArgC() > 3)
 	{
-		Msg("Usage: give_taunt <item_definition_id>\n");
-		return;
+		// Player name specified, find the target
+		const char* pszPlayerName = args[3];
+		pPlayer = NULL;
+		
+		// Search for player by name
+		for (int i = 1; i <= gpGlobals->maxClients; i++)
+		{
+			CBasePlayer* pTestPlayer = UTIL_PlayerByIndex(i);
+			if (pTestPlayer && !pTestPlayer->IsBot() && Q_stristr(pTestPlayer->GetPlayerName(), pszPlayerName))
+			{
+				pPlayer = ToTFPlayer(pTestPlayer);
+				break;
+			}
+		}
+		
+		// If no human player found, search bots
+		if (!pPlayer)
+		{
+			for (int i = 1; i <= gpGlobals->maxClients; i++)
+			{
+				CBasePlayer* pTestPlayer = UTIL_PlayerByIndex(i);
+				if (pTestPlayer && pTestPlayer->IsBot() && Q_stristr(pTestPlayer->GetPlayerName(), pszPlayerName))
+				{
+					pPlayer = ToTFPlayer(pTestPlayer);
+					break;
+				}
+			}
+		}
+		
+		if (!pPlayer)
+		{
+			Msg("Player '%s' not found\n", pszPlayerName);
+			return;
+		}
 	}
 
 	int iItemID = atoi(args[1]);
@@ -18934,24 +18970,24 @@ CON_COMMAND_F(give_taunt, "[TESTING ONLY] Force the player to play a taunt by it
 	// Create an EconItemView for this item
 	CEconItemView econItem;
 	econItem.Init(iItemID, AE_UNIQUE, AE_USE_SCRIPT_VALUE, true);
-	if( args.ArgC() > 2 )
+	if( args.ArgC() > 2 && Q_strlen(args[2]) > 0 && isdigit(args[2][0]) )
 	{
 		int iUnusualID = atoi(args[2]);
 		float fUnusualID; 
 		memcpy(&fUnusualID, &iUnusualID, sizeof(float) ); // this is stupid
 		static CSchemaAttributeDefHandle pAttrDef_TauntAttachParticleIndex( "bf taunt attach particle index" );
 		pPlayer->GetAttributeList()->SetRuntimeAttributeValue(pAttrDef_TauntAttachParticleIndex, fUnusualID );
-		Msg("Attempting to use unusual effect %i with value %f\n", atoi(args[2]), fUnusualID );
+		Msg("Attempting to use unusual effect %i with value %f on player %s\n", iUnusualID, fUnusualID, pPlayer->GetPlayerName());
 	}
 
 	// Attempt to play the taunt
 	if (!pPlayer->PlayTauntSceneFromItem(&econItem))
 	{
-		Msg("Failed to play taunt for item ID %d (may not be a taunt item or player cannot taunt)\n", iItemID);
+		Msg("Failed to play taunt for item ID %d on player %s (may not be a taunt item or player cannot taunt)\n", iItemID, pPlayer->GetPlayerName());
 	}
 	else
 	{
-		Msg("Playing taunt for item ID %d\n", iItemID);
+		Msg("Playing taunt for item ID %d on player %s\n", iItemID, pPlayer->GetPlayerName());
 	}
 }
 
@@ -19633,6 +19669,34 @@ void CTFPlayer::HandleTauntCommand( int iTauntSlot )
 			}
 			else
 			{
+				// Before accepting partner taunt, try to find our own compatible taunt item
+				// to preserve our unusual effects during partner taunt
+				const GameItemDefinition_t *pInitiatorItemDef = initiator->m_TauntEconItemView.GetItemDefinition();
+				if ( pInitiatorItemDef && pInitiatorItemDef->GetTauntData() && pInitiatorItemDef->GetTauntData()->IsPartnerTaunt() )
+				{
+					// Look through our taunt slots for a matching partner taunt
+					for ( int iSlot = LOADOUT_POSITION_TAUNT; iSlot <= LOADOUT_POSITION_TAUNT8; iSlot++ )
+					{
+						CEconItemView* pOurTauntItem = GetEquippedItemForLoadoutSlot( iSlot );
+						if ( pOurTauntItem && pOurTauntItem->IsValid() )
+						{
+							const GameItemDefinition_t *pOurItemDef = pOurTauntItem->GetItemDefinition();
+							if ( pOurItemDef && pOurItemDef->GetTauntData() && pOurItemDef->GetTauntData()->IsPartnerTaunt() )
+							{
+								// Check if it's the same taunt type (same item def index or compatible partner taunt)
+								if ( pOurItemDef->GetDefinitionIndex() == pInitiatorItemDef->GetDefinitionIndex() ||
+									 (V_stristr(pInitiatorItemDef->GetDefinitionName(), "High Five") && V_stristr(pOurItemDef->GetDefinitionName(), "High Five")) )
+								{
+									// Set up our TauntEconItemView so we keep our unusual effects
+									m_TauntEconItemView = *pOurTauntItem;
+									m_iTauntItemDefIndex = pOurTauntItem->GetItemDefIndex();
+									break;
+								}
+							}
+						}
+					}
+				}
+				
 				AcceptTauntWithPartner( initiator );
 			}
 			return;
@@ -23809,43 +23873,12 @@ void CTFPlayer::AcceptTauntWithPartner( CTFPlayer *initiator )
 
 		return;
 	}
-	
-	// Check if the partner has their own version of this taunt item with unusual effects
-	// If so, use it instead of copying the initiator's item
-	bool bPartnerHasOwnTaunt = false;
-	CEconItemView *pPartnerTauntItem = GetEquippedItemForLoadoutSlot( LOADOUT_POSITION_TAUNT );
-	
-	if ( tf_highfive_debug.GetBool() )
-		Msg( " - Partner %s checking for own version of taunt %s...\n", GetPlayerName(), pItemDef->GetDefinitionName() );
-	
-	for ( int i = 0; i < 8 && !bPartnerHasOwnTaunt; i++ )
+	// Preserve each player's own TauntEconItemView for partner taunts
+	// so that unusual effects from both players can be displayed
+	// Don't copy the initiator's TauntEconItemView - keep our own if we have one
+	if ( !m_TauntEconItemView.IsValid() )
 	{
-		CEconItemView *pTauntSlotItem = GetEquippedItemForLoadoutSlot( LOADOUT_POSITION_TAUNT + i );
-		if ( pTauntSlotItem && pTauntSlotItem->IsValid() )
-		{
-			const GameItemDefinition_t *pPartnerItemDef = pTauntSlotItem->GetItemDefinition();
-			if ( tf_highfive_debug.GetBool() )
-				Msg( " - Checking slot %d: %s\n", i, pPartnerItemDef ? pPartnerItemDef->GetDefinitionName() : "NULL" );
-				
-			if ( pPartnerItemDef && pPartnerItemDef->GetTauntData() && 
-				 pPartnerItemDef->GetTauntData()->IsPartnerTaunt() &&
-				 Q_stricmp( pPartnerItemDef->GetDefinitionName(), pItemDef->GetDefinitionName() ) == 0 )
-			{
-				// Partner has their own version of the same taunt, use it to preserve their unusual effects
-				if ( tf_highfive_debug.GetBool() )
-					Msg( " - Found matching taunt in slot %d! Using partner's version to preserve effects.\n", i );
-				m_TauntEconItemView = *pTauntSlotItem;
-				bPartnerHasOwnTaunt = true;
-				break;
-			}
-		}
-	}
-	
-	// If partner doesn't have their own version, fall back to copying the initiator's
-	if ( !bPartnerHasOwnTaunt )
-	{
-		if ( tf_highfive_debug.GetBool() )
-			Msg( " - Partner doesn't have own version, copying from initiator %s.\n", initiator->GetPlayerName() );
+		// If we don't have our own taunt item, fall back to the initiator's
 		m_TauntEconItemView = initiator->m_TauntEconItemView;
 	}
 
@@ -23952,32 +23985,7 @@ void CTFPlayer::MimicTauntFromPartner( CTFPlayer *initiator )
 	Assert( initiator->m_bAllowMoveDuringTaunt );
 	if ( initiator->m_TauntEconItemView.IsValid() && initiator->m_TauntEconItemView.GetItemDefinition() != NULL )
 	{
-		const GameItemDefinition_t *pInitiatorItemDef = initiator->m_TauntEconItemView.GetItemDefinition();
-		
-		// Check if this player has their own version of the same taunt with unusual effects
-		bool bFoundOwnTaunt = false;
-		for ( int i = 0; i < 8; i++ )
-		{
-			CEconItemView *pTauntSlotItem = GetEquippedItemForLoadoutSlot( LOADOUT_POSITION_TAUNT + i );
-			if ( pTauntSlotItem && pTauntSlotItem->IsValid() )
-			{
-				const GameItemDefinition_t *pOwnItemDef = pTauntSlotItem->GetItemDefinition();
-				if ( pOwnItemDef && pOwnItemDef->GetTauntData() && 
-					 Q_stricmp( pOwnItemDef->GetDefinitionName(), pInitiatorItemDef->GetDefinitionName() ) == 0 )
-				{
-					// Use our own version to preserve unusual effects
-					PlayTauntSceneFromItem( pTauntSlotItem );
-					bFoundOwnTaunt = true;
-					break;
-				}
-			}
-		}
-		
-		// Fall back to using initiator's item if we don't have our own version
-		if ( !bFoundOwnTaunt )
-		{
-			PlayTauntSceneFromItem( &initiator->m_TauntEconItemView );
-		}
+		PlayTauntSceneFromItem( &initiator->m_TauntEconItemView );
 	}
 }
 

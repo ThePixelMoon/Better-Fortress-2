@@ -19126,29 +19126,6 @@ void CTFPlayer::OnTauntSucceeded( const char* pszSceneName, int iTauntIndex /*= 
 	const itemid_t unTauntSourceItemID = m_TauntEconItemView.IsValid() ? m_TauntEconItemView.GetItemID() : INVALID_ITEM_ID;
 	m_Shared.m_unTauntSourceItemID_Low = unTauntSourceItemID & 0xffffffff;
 	m_Shared.m_unTauntSourceItemID_High = (unTauntSourceItemID >> 32) & 0xffffffff;
-	
-	// Set unusual effect attribute for network synchronization
-	if ( m_TauntEconItemView.IsValid() )
-	{
-		CSteamID steamIDForPlayer;
-		GetSteamID( &steamIDForPlayer );
-		
-		CPlayerInventory *pInventory = InventoryManager()->GetInventoryForAccount( steamIDForPlayer.GetAccountID() );
-		CEconItemView *pTauntItem = pInventory ? pInventory->GetInventoryItemByItemID( unTauntSourceItemID ) : NULL;
-		
-    	static CSchemaAttributeDefHandle pAttrDef_TauntAttachParticleIndex( "taunt attach particle index" );
-		DevMsg( "Setting taunt attach particle index to %llu\n", unTauntSourceItemID );
-    	uint32 unUnusualEffectIndex = 0;
-    	if ( pTauntItem && pTauntItem->FindAttribute( pAttrDef_TauntAttachParticleIndex, &unUnusualEffectIndex ) && unUnusualEffectIndex > 0 )
-    	{
-			float fUnusualEffectIndex; 
-			memcpy(&fUnusualEffectIndex, &unUnusualEffectIndex, sizeof(float));
-        	static CSchemaAttributeDefHandle pAttrDef_PlayerTauntAttachParticleIndex( "bf taunt attach particle index" );
-			DevMsg( "Setting player taunt attach particle index to %u (as float: %f)\n", unUnusualEffectIndex, fUnusualEffectIndex );
-        	GetAttributeList()->SetRuntimeAttributeValue( pAttrDef_PlayerTauntAttachParticleIndex, fUnusualEffectIndex );
-    	}
-	}
-	
 	m_Shared.AddCond( TF_COND_TAUNTING );
 
 	if ( iTauntIndex == TAUNT_LONG )

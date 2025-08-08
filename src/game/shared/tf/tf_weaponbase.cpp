@@ -1524,6 +1524,12 @@ void CTFWeaponBase::PrimaryAttack( void )
 //-----------------------------------------------------------------------------
 void CTFWeaponBase::SecondaryAttack( void )
 {
+	// Check if this weapon has the attribute to disable alt-fire
+	int iAltFireDisabled = 0;
+	CALL_ATTRIB_HOOK_INT( iAltFireDisabled, unimplemented_altfire_disabled );
+	if ( iAltFireDisabled )
+		return;
+
 	// Set the weapon mode.
 	m_iWeaponMode = TF_WEAPON_SECONDARY_MODE;
 
@@ -2400,7 +2406,13 @@ void CTFWeaponBase::ItemBusyFrame( void )
 
 	if ( ( pOwner->m_nButtons & IN_ATTACK2 ) && /*m_bInReload == false &&*/ m_bInAttack2 == false )
 	{
-		pOwner->DoClassSpecialSkill();
+		// Check if this weapon has the attribute to disable alt-fire
+		int iAltFireDisabled = 0;
+		CALL_ATTRIB_HOOK_INT( iAltFireDisabled, unimplemented_altfire_disabled );
+		if ( !iAltFireDisabled )
+		{
+			pOwner->DoClassSpecialSkill();
+		}
 		m_bInAttack2 = true;
 	}
 	else if ( !(pOwner->m_nButtons & IN_ATTACK2) && m_bInAttack2 )
@@ -5782,6 +5794,12 @@ QAngle CTFWeaponBase::GetSpreadAngles( void )
 bool CTFWeaponBase::CanPerformSecondaryAttack() const
 {
 	CTFPlayer *pOwner = ToTFPlayer( GetOwner() );
+
+	// Check if this weapon has the attribute to disable alt-fire
+	int iAltFireDisabled = 0;
+	CALL_ATTRIB_HOOK_INT( iAltFireDisabled, unimplemented_altfire_disabled );
+	if ( iAltFireDisabled )
+		return false;
 
 	// Demo shields are allowed to charge whenever
 	if ( pOwner->m_Shared.HasDemoShieldEquipped() )

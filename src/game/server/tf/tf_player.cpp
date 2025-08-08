@@ -23786,7 +23786,45 @@ void CTFPlayer::AcceptTauntWithPartner( CTFPlayer *initiator )
 
 		return;
 	}
-	m_TauntEconItemView = initiator->m_TauntEconItemView;
+	
+	// Check if the partner has their own version of this taunt item with unusual effects
+	// If so, use it instead of copying the initiator's item
+	bool bPartnerHasOwnTaunt = false;
+	CEconItemView *pPartnerTauntItem = GetEquippedItemForLoadoutSlot( LOADOUT_POSITION_TAUNT );
+	
+	if ( tf_highfive_debug.GetBool() )
+		Msg( " - Partner %s checking for own version of taunt %s...\n", GetPlayerName(), pItemDef->GetDefinitionName() );
+	
+	for ( int i = 0; i < 8 && !bPartnerHasOwnTaunt; i++ )
+	{
+		CEconItemView *pTauntSlotItem = GetEquippedItemForLoadoutSlot( LOADOUT_POSITION_TAUNT + i );
+		if ( pTauntSlotItem && pTauntSlotItem->IsValid() )
+		{
+			const GameItemDefinition_t *pPartnerItemDef = pTauntSlotItem->GetItemDefinition();
+			if ( tf_highfive_debug.GetBool() )
+				Msg( " - Checking slot %d: %s\n", i, pPartnerItemDef ? pPartnerItemDef->GetDefinitionName() : "NULL" );
+				
+			if ( pPartnerItemDef && pPartnerItemDef->GetTauntData() && 
+				 pPartnerItemDef->GetTauntData()->IsPartnerTaunt() &&
+				 Q_stricmp( pPartnerItemDef->GetDefinitionName(), pItemDef->GetDefinitionName() ) == 0 )
+			{
+				// Partner has their own version of the same taunt, use it to preserve their unusual effects
+				if ( tf_highfive_debug.GetBool() )
+					Msg( " - Found matching taunt in slot %d! Using partner's version to preserve effects.\n", i );
+				m_TauntEconItemView = *pTauntSlotItem;
+				bPartnerHasOwnTaunt = true;
+				break;
+			}
+		}
+	}
+	
+	// If partner doesn't have their own version, fall back to copying the initiator's
+	if ( !bPartnerHasOwnTaunt )
+	{
+		if ( tf_highfive_debug.GetBool() )
+			Msg( " - Partner doesn't have own version, copying from initiator %s.\n", initiator->GetPlayerName() );
+		m_TauntEconItemView = initiator->m_TauntEconItemView;
+	}
 
 	int initiatorConcept = MP_CONCEPT_HIGHFIVE_SUCCESS_FULL;
 	int ourConcept = MP_CONCEPT_HIGHFIVE_SUCCESS;
@@ -23891,7 +23929,32 @@ void CTFPlayer::MimicTauntFromPartner( CTFPlayer *initiator )
 	Assert( initiator->m_bAllowMoveDuringTaunt );
 	if ( initiator->m_TauntEconItemView.IsValid() && initiator->m_TauntEconItemView.GetItemDefinition() != NULL )
 	{
-		PlayTauntSceneFromItem( &initiator->m_TauntEconItemView );
+		const GameItemDefinition_t *pInitiatorItemDef = initiator->m_TauntEconItemView.GetItemDefinition();
+		
+		// Check if this player has their own version of the same taunt with unusual effects
+		bool bFoundOwnTaunt = false;
+		for ( int i = 0; i < 8; i++ )
+		{
+			CEconItemView *pTauntSlotItem = GetEquippedItemForLoadoutSlot( LOADOUT_POSITION_TAUNT + i );
+			if ( pTauntSlotItem && pTauntSlotItem->IsValid() )
+			{
+				const GameItemDefinition_t *pOwnItemDef = pTauntSlotItem->GetItemDefinition();
+				if ( pOwnItemDef && pOwnItemDef->GetTauntData() && 
+					 Q_stricmp( pOwnItemDef->GetDefinitionName(), pInitiatorItemDef->GetDefinitionName() ) == 0 )
+				{
+					// Use our own version to preserve unusual effects
+					PlayTauntSceneFromItem( pTauntSlotItem );
+					bFoundOwnTaunt = true;
+					break;
+				}
+			}
+		}
+		
+		// Fall back to using initiator's item if we don't have our own version
+		if ( !bFoundOwnTaunt )
+		{
+			PlayTauntSceneFromItem( &initiator->m_TauntEconItemView );
+		}
 	}
 }
 

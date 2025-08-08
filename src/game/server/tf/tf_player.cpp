@@ -19127,6 +19127,21 @@ void CTFPlayer::OnTauntSucceeded( const char* pszSceneName, int iTauntIndex /*= 
 	const itemid_t unTauntSourceItemID = m_TauntEconItemView.IsValid() ? m_TauntEconItemView.GetItemID() : INVALID_ITEM_ID;
 	m_Shared.m_unTauntSourceItemID_Low = unTauntSourceItemID & 0xffffffff;
 	m_Shared.m_unTauntSourceItemID_High = (unTauntSourceItemID >> 32) & 0xffffffff;
+	
+	// Set unusual effect attribute for network synchronization
+	if ( m_TauntEconItemView.IsValid() )
+	{
+		static CSchemaAttributeDefHandle pAttrDef_TauntAttachParticleIndex( "taunt attach particle index" );
+		uint32 unUnusualEffectIndex = 0;
+		if ( m_TauntEconItemView.FindAttribute( pAttrDef_TauntAttachParticleIndex, &unUnusualEffectIndex ) && unUnusualEffectIndex > 0 )
+		{
+			float fUnusualEffectIndex; 
+			memcpy(&fUnusualEffectIndex, &unUnusualEffectIndex, sizeof(float));
+			static CSchemaAttributeDefHandle pAttrDef_PlayerTauntAttachParticleIndex( "bf taunt attach particle index" );
+			GetAttributeList()->SetRuntimeAttributeValue( pAttrDef_PlayerTauntAttachParticleIndex, fUnusualEffectIndex );
+		}
+	}
+	
 	m_Shared.AddCond( TF_COND_TAUNTING );
 
 	if ( iTauntIndex == TAUNT_LONG )

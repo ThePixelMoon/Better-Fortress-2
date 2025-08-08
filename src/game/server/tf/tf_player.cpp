@@ -1251,6 +1251,7 @@ CON_COMMAND_F(give_econ, "Give ECON item with specified ID from item schema.\nFo
 	}
 }
 
+
 enum eCoachCommand
 {
 	kCoachCommand_Look = 1, // slot1
@@ -18896,8 +18897,14 @@ bool CTFPlayer::PlayTauntSceneFromItem( const CEconItemView *pEconItemView )
 //-----------------------------------------------------------------------------
 // Purpose: Console command to force play taunt by item definition index
 //-----------------------------------------------------------------------------
-CON_COMMAND_F(give_taunt, "[TESTING ONLY] Force the player to play a taunt by item definition ID. Usage: give_taunt <id>", FCVAR_NONE)
+CON_COMMAND_F(give_taunt, "[TESTING ONLY] Force the player to play a taunt by item definition ID. Usage: give_taunt <item_definition_id> <unusual_effect_id>", FCVAR_NONE )
 {
+	if (args.ArgC() < 2)
+	{
+		Msg("Usage: give_taunt <item_definition_id> <unusual_effect_id>\n");
+		return;
+	}
+
 	// Check who is calling the command
 	CTFPlayer* pPlayer = ToTFPlayer(UTIL_GetCommandClient());
 	if (!UTIL_HandleCheatCmdForPlayer(pPlayer))
@@ -18927,6 +18934,15 @@ CON_COMMAND_F(give_taunt, "[TESTING ONLY] Force the player to play a taunt by it
 	// Create an EconItemView for this item
 	CEconItemView econItem;
 	econItem.Init(iItemID, AE_UNIQUE, AE_USE_SCRIPT_VALUE, true);
+	if( args.ArgC() > 2 )
+	{
+		int iUnusualID = atoi(args[2]);
+		float fUnusualID; 
+		memcpy(&fUnusualID, &iUnusualID, sizeof(float) ); // this is stupid
+		static CSchemaAttributeDefHandle pAttrDef_TauntAttachParticleIndex( "bf taunt attach particle index" );
+		pPlayer->GetAttributeList()->SetRuntimeAttributeValue(pAttrDef_TauntAttachParticleIndex, fUnusualID );
+		Msg("Attempting to use unusual effect %i with value %f\n", atoi(args[2]), fUnusualID );
+	}
 
 	// Attempt to play the taunt
 	if (!pPlayer->PlayTauntSceneFromItem(&econItem))
@@ -19501,6 +19517,9 @@ void CTFPlayer::StopTaunt( bool bForceRemoveProp /* = true */ )
 	m_nActiveTauntSlot = LOADOUT_POSITION_INVALID;
 	m_iTauntItemDefIndex = INVALID_ITEM_DEF_INDEX;
 	m_TauntStage = TAUNT_NONE;
+
+	static CSchemaAttributeDefHandle pAttrDef_TauntAttachParticleIndex( "bf taunt attach particle index" );
+	GetAttributeList()->RemoveAttribute( pAttrDef_TauntAttachParticleIndex );
 }
 
 //-----------------------------------------------------------------------------

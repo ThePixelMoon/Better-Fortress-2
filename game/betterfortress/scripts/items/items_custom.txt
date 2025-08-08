@@ -629,6 +629,16 @@
 			"effect_type"	"positive"
 			"stored_as_integer"	"1"
 		}
+		"4012"
+		{
+			"name"					"bf taunt attach particle index"
+			"hidden"				"0"
+			"description_string"	"#Attrib_AttachedParticle"
+			"description_format"	"value_is_particle_index"
+			"effect_type"			"unusual"
+			"stored_as_integer"		"1"
+			"can_affect_market_name"	"1"
+		}
 	}
 	"items"
 	{

@@ -18898,57 +18898,23 @@ bool CTFPlayer::PlayTauntSceneFromItem( const CEconItemView *pEconItemView )
 //-----------------------------------------------------------------------------
 // Purpose: Console command to force play taunt by item definition index
 //-----------------------------------------------------------------------------
-CON_COMMAND_F(give_taunt, "[TESTING ONLY] Force the player to play a taunt by item definition ID. Usage: give_taunt <item_definition_id> [unusual_effect_id] [player_name]", FCVAR_NONE )
+CON_COMMAND_F(give_taunt, "[TESTING ONLY] Force the player to play a taunt by item definition ID. Usage: give_taunt <item_definition_id> <unusual_effect_id>", FCVAR_NONE )
 {
 	if (args.ArgC() < 2)
 	{
-		Msg("Usage: give_taunt <item_definition_id> [unusual_effect_id] [player_name]\n");
+		Msg("Usage: give_taunt <item_definition_id> <unusual_effect_id>\n");
 		return;
 	}
 
 	// Check who is calling the command
-	CTFPlayer* pCommandClient = ToTFPlayer(UTIL_GetCommandClient());
-	if (!UTIL_HandleCheatCmdForPlayer(pCommandClient))
+	CTFPlayer* pPlayer = ToTFPlayer(UTIL_GetCommandClient());
+	if (!UTIL_HandleCheatCmdForPlayer(pPlayer))
 		return;
 
-	// Determine target player
-	CTFPlayer* pPlayer = pCommandClient;
-	if (args.ArgC() > 3)
+	if (args.ArgC() < 2)
 	{
-		// Player name specified, find the target
-		const char* pszPlayerName = args[3];
-		pPlayer = NULL;
-		
-		// Search for player by name
-		for (int i = 1; i <= gpGlobals->maxClients; i++)
-		{
-			CBasePlayer* pTestPlayer = UTIL_PlayerByIndex(i);
-			if (pTestPlayer && !pTestPlayer->IsBot() && Q_stristr(pTestPlayer->GetPlayerName(), pszPlayerName))
-			{
-				pPlayer = ToTFPlayer(pTestPlayer);
-				break;
-			}
-		}
-		
-		// If no human player found, search bots
-		if (!pPlayer)
-		{
-			for (int i = 1; i <= gpGlobals->maxClients; i++)
-			{
-				CBasePlayer* pTestPlayer = UTIL_PlayerByIndex(i);
-				if (pTestPlayer && pTestPlayer->IsBot() && Q_stristr(pTestPlayer->GetPlayerName(), pszPlayerName))
-				{
-					pPlayer = ToTFPlayer(pTestPlayer);
-					break;
-				}
-			}
-		}
-		
-		if (!pPlayer)
-		{
-			Msg("Player '%s' not found\n", pszPlayerName);
-			return;
-		}
+		Msg("Usage: give_taunt <item_definition_id>\n");
+		return;
 	}
 
 	int iItemID = atoi(args[1]);
@@ -18969,24 +18935,24 @@ CON_COMMAND_F(give_taunt, "[TESTING ONLY] Force the player to play a taunt by it
 	// Create an EconItemView for this item
 	CEconItemView econItem;
 	econItem.Init(iItemID, AE_UNIQUE, AE_USE_SCRIPT_VALUE, true);
-	if( args.ArgC() > 2 && Q_strlen(args[2]) > 0 && isdigit(args[2][0]) )
+	if( args.ArgC() > 2 )
 	{
 		int iUnusualID = atoi(args[2]);
 		float fUnusualID; 
 		memcpy(&fUnusualID, &iUnusualID, sizeof(float) ); // this is stupid
 		static CSchemaAttributeDefHandle pAttrDef_TauntAttachParticleIndex( "bf taunt attach particle index" );
 		pPlayer->GetAttributeList()->SetRuntimeAttributeValue(pAttrDef_TauntAttachParticleIndex, fUnusualID );
-		Msg("Attempting to use unusual effect %i with value %f on player %s\n", iUnusualID, fUnusualID, pPlayer->GetPlayerName());
+		Msg("Attempting to use unusual effect %i with value %f\n", atoi(args[2]), fUnusualID );
 	}
 
 	// Attempt to play the taunt
 	if (!pPlayer->PlayTauntSceneFromItem(&econItem))
 	{
-		Msg("Failed to play taunt for item ID %d on player %s (may not be a taunt item or player cannot taunt)\n", iItemID, pPlayer->GetPlayerName());
+		Msg("Failed to play taunt for item ID %d (may not be a taunt item or player cannot taunt)\n", iItemID);
 	}
 	else
 	{
-		Msg("Playing taunt for item ID %d on player %s\n", iItemID, pPlayer->GetPlayerName());
+		Msg("Playing taunt for item ID %d\n", iItemID);
 	}
 }
 

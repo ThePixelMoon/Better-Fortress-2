@@ -4975,6 +4975,9 @@ void CTFPlayer::Spawn()
 		ResetMaxHealthDrain();
 		SetHealth( GetMaxHealth() );
 	}
+
+	extern ConVar tf_teleporter_fov_time;
+	extern ConVar tf_teleporter_fov_start;
 	
 	// Play teleporter effects for robot players who spawned at teleporters
 	if ( GetTeamNumber() == TF_TEAM_PVE_INVADERS && TFGameRules() && TFGameRules()->IsMannVsMachineMode() )
@@ -5000,6 +5003,10 @@ void CTFPlayer::Spawn()
 				// We spawned at this teleporter, play effects
 				EmitSound( "MVM.Robot_Teleporter_Deliver" );
 				TeleportEffect();
+				SetFOV( this, 0, tf_teleporter_fov_time.GetFloat(), tf_teleporter_fov_start.GetInt() );
+				SpeakConceptIfAllowed( MP_CONCEPT_TELEPORTED );
+				color32 fadeColor = {255,255,255,100};
+				UTIL_ScreenFade( this, fadeColor, 0.25, 0.4, FFADE_IN );
 				break; // Only play effect once
 			}
 		}
@@ -18889,21 +18896,18 @@ bool CTFPlayer::PlayTauntSceneFromItem( const CEconItemView *pEconItemView )
 //-----------------------------------------------------------------------------
 // Purpose: Console command to force play taunt by item definition index
 //-----------------------------------------------------------------------------
-CON_COMMAND_F(test_taunt, "Force the player to play a taunt by item definition ID. Usage: test_taunt <id>", FCVAR_CHEAT)
+CON_COMMAND_F(give_taunt, "[TESTING ONLY] Force the player to play a taunt by item definition ID. Usage: give_taunt <id>", FCVAR_NONE)
 {
-	if (args.ArgC() < 2)
-	{
-		Msg("Usage: test_taunt <item_definition_id>\n");
-		return;
-	}
-
 	// Check who is calling the command
 	CTFPlayer* pPlayer = ToTFPlayer(UTIL_GetCommandClient());
 	if (!UTIL_HandleCheatCmdForPlayer(pPlayer))
 		return;
 
-	if (!pPlayer)
+	if (args.ArgC() < 2)
+	{
+		Msg("Usage: give_taunt <item_definition_id>\n");
 		return;
+	}
 
 	int iItemID = atoi(args[1]);
 	if (iItemID <= 0)

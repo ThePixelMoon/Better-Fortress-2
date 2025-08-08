@@ -1253,7 +1253,6 @@ CON_COMMAND_F(give_econ, "Give ECON item with specified ID from item schema.\nFo
 	}
 }
 
-
 enum eCoachCommand
 {
 	kCoachCommand_Look = 1, // slot1
@@ -19576,9 +19575,6 @@ void CTFPlayer::StopTaunt( bool bForceRemoveProp /* = true */ )
 	m_nActiveTauntSlot = LOADOUT_POSITION_INVALID;
 	m_iTauntItemDefIndex = INVALID_ITEM_DEF_INDEX;
 	m_TauntStage = TAUNT_NONE;
-
-	static CSchemaAttributeDefHandle pAttrDef_TauntAttachParticleIndex( "bf taunt attach particle index" );
-	GetAttributeList()->RemoveAttribute( pAttrDef_TauntAttachParticleIndex );
 }
 
 //-----------------------------------------------------------------------------

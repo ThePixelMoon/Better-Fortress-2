@@ -301,6 +301,72 @@ extern ConVar sv_vote_allow_spectators;
 ConVar sv_vote_late_join_time( "sv_vote_late_join_time", "90", FCVAR_NONE, "Grace period after the match starts before players who join the match receive a vote-creation cooldown" );
 ConVar sv_vote_late_join_cooldown( "sv_vote_late_join_cooldown", "300", FCVAR_NONE, "Length of the vote-creation cooldown when joining the server after the grace period has expired" );
 
+//-----------------------------------------------------------------------------
+// Purpose: Auto-completion function for attribute commands
+//-----------------------------------------------------------------------------
+static int AttributeCompletion( const char *partial, char commands[ COMMAND_COMPLETION_MAXITEMS ][ COMMAND_COMPLETION_ITEM_LENGTH ] )
+{
+	int current = 0;
+	
+	// Determine which command is being completed
+	const char *cmdname = "addgunattr";  // Default fallback
+	if ( Q_strstr( partial, "addgunattr" ) )
+		cmdname = "addgunattr";
+	else if ( Q_strstr( partial, "removegunattr" ) )
+		cmdname = "removegunattr";
+	else if ( Q_strstr( partial, "addattr" ) )
+		cmdname = "addattr";
+	else if ( Q_strstr( partial, "removeattr" ) )
+		cmdname = "removeattr";
+	
+	char *substring = NULL;
+	int substringLen = 0;
+	if ( Q_strstr( partial, cmdname ) && strlen(partial) > strlen(cmdname) + 1 )
+	{
+		substring = (char *)partial + strlen( cmdname ) + 1;
+		substringLen = strlen(substring);
+	}
+	
+	// Get all attribute definitions from the item schema
+	if ( GetItemSchema() )
+	{
+		const CUtlMap<int, CEconItemAttributeDefinition, int> &mapDefs = GetItemSchema()->GetAttributeDefinitionMap();
+		
+		FOR_EACH_MAP_FAST( mapDefs, i )
+		{
+			if ( current >= COMMAND_COMPLETION_MAXITEMS )
+				break;
+				
+			const CEconItemAttributeDefinition &attrDef = mapDefs[i];
+			const char *pAttrName = attrDef.GetDefinitionName();
+			
+			if ( pAttrName )
+			{
+				if ( !substring || !Q_strncasecmp( pAttrName, substring, substringLen ) )
+				{
+					Q_snprintf( commands[ current ], sizeof( commands[ current ] ), "%s %s", cmdname, pAttrName );
+					current++;
+				}
+			}
+		}
+	}
+	
+	return current;
+}
+
+// Console command stubs for auto-completion - these don't actually execute anything
+// The real command handling is done in CTFPlayer::ClientCommand
+static void AddGunAttr_f( const CCommand &args ) { /* Handled in ClientCommand */ }
+static void RemoveGunAttr_f( const CCommand &args ) { /* Handled in ClientCommand */ }
+static void AddAttr_f( const CCommand &args ) { /* Handled in ClientCommand */ }
+static void RemoveAttr_f( const CCommand &args ) { /* Handled in ClientCommand */ }
+
+// Declare the console commands with completion
+static ConCommand addgunattr_cmd( "addgunattr", AddGunAttr_f, "Add attribute to active weapon", FCVAR_CLIENTCMD_CAN_EXECUTE | FCVAR_CHEAT, AttributeCompletion );
+static ConCommand removegunattr_cmd( "removegunattr", RemoveGunAttr_f, "Remove attribute from active weapon", FCVAR_CLIENTCMD_CAN_EXECUTE | FCVAR_CHEAT, AttributeCompletion );
+static ConCommand addattr_cmd( "addattr", AddAttr_f, "Add custom attribute to player", FCVAR_CLIENTCMD_CAN_EXECUTE | FCVAR_CHEAT, AttributeCompletion );
+static ConCommand removeattr_cmd( "removeattr", RemoveAttr_f, "Remove custom attribute from player", FCVAR_CLIENTCMD_CAN_EXECUTE | FCVAR_CHEAT, AttributeCompletion );
+
 extern ConVar tf_voice_command_suspension_mode;
 extern ConVar tf_feign_death_duration;
 extern ConVar spec_freeze_time;
@@ -8409,45 +8475,6 @@ bool CTFPlayer::ClientCommand( const CCommand &args )
 	
 	m_flLastAction = gpGlobals->curtime;
 
-	// Better Fortress - Add attribute shortcuts
-	if ( FStrEq( pcmd, "addgunattr" ) )
-	{
-		if ( UTIL_HandleCheatCmdForPlayer( this ) && args.ArgC() >= 2 )
-		{
-			const CEconItemAttributeDefinition *pDef = GetItemSchema()->GetAttributeDefinitionByName( args[1] );
-			if ( !pDef )
-				return false;
-			GetActiveTFWeapon()->GetAttributeList()->SetRuntimeAttributeValue( pDef, atof(args[2]) );
-		}
-		return true;
-	}
-	else if ( FStrEq( pcmd, "removegunattr" ) )
-	{
-		if ( UTIL_HandleCheatCmdForPlayer( this ) && args.ArgC() >= 2 )
-		{
-			const CEconItemAttributeDefinition *pDef = GetItemSchema()->GetAttributeDefinitionByName( args[1] );
-			if ( !pDef )
-				return false;
-			GetActiveTFWeapon()->GetAttributeList()->RemoveAttribute( pDef );
-		}
-		return true;
-	}
-	else if ( FStrEq( pcmd, "addattr" ) )
-	{
-		if ( UTIL_HandleCheatCmdForPlayer( this )  && args.ArgC() >= 2 )
-		{
-			AddCustomAttribute( args[1],  atof(args[2]),  atof(args[3]) );
-		}
-		return true;
-	}
-	else if ( FStrEq( pcmd, "removeattr" ) )
-	{
-		if ( UTIL_HandleCheatCmdForPlayer( this ) && args.ArgC() >= 2 )
-		{
-			RemoveCustomAttribute( args[1] );
-		}
-		return true;
-	}
 	//else if ( FStrEq( pcmd, "burn" ) ) 
 	//{
 	//	m_Shared.Burn( this, GetActiveTFWeapon() );
@@ -8495,7 +8522,7 @@ bool CTFPlayer::ClientCommand( const CCommand &args )
 	//		pPlayer->m_Shared.Disguise( Q_atoi( args[2] ), Q_atoi( args[3] ) );
 	//		return true;
 	//	}
-	else if ( FStrEq( pcmd, "jointeam" ) )
+	if ( FStrEq( pcmd, "jointeam" ) )
 	{
 		// don't let them spam the server with changes
 		if ( GetNextChangeTeamTime() > gpGlobals->curtime )

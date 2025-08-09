@@ -140,6 +140,10 @@ private:
 	bool	FinishAttachAdditionalModel( const model_t *pModel );
 	void	RemoveAdditionalModels( void );
 
+	// Robot voice support
+	bool	ShouldUseRobotVoice( void ) const;
+	const char* GetSceneSoundToken( void ) const;
+
 	bool	UpdateCosmeticParticles( 
 		IMatRenderContext				*pRenderContext, 
 		CStudioHdr						*pStudioHdr, 

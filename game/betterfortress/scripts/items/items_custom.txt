@@ -438,6 +438,15 @@
 			"xifier_class_remap"	"eyelander"
 		}
 
+		"weapon_gunboats"
+		{
+			"used_by_classes"
+			{
+				"soldier"	"secondary"
+				"demoman" "primary" //Demo Gunboats
+			}
+		}
+
 		"zombie"
 		{
 			"prefab"		"base_misc"

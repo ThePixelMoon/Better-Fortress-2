@@ -141,8 +141,6 @@ void CExtraMapEntity::SpawnExtraModel( void )
 	if ( !pFileKV->LoadFromFile( g_pFullFileSystem, "scripts/bf_extra_models.txt", "GAME" ) )
 		return;
 
-
-
 	// See if we have an entry for this map.
 	KeyValues *pMapKV = pFileKV->FindKey( pszMapName );
 	if ( pMapKV )
@@ -189,13 +187,52 @@ void CExtraMapEntity::SpawnExtraModel( void )
 
 				if ( ( flChance > 0.0f ) && ( RandomFloat( 0, 1 ) < flChance ) )
 				{
-					//If MVM, but no MVM Sign
-					if ( !V_strcmp( "mvm", bf_teaserprops_type.GetString() ) && V_strcmp( "models/props_teaser/update_eotl_poster001.mdl", szModelName ) || V_strcmp( ENTITYCARRIER_DEFAULT_MODEL, szModelName ) )
-						return;
-
-					//if Grocket, but not Grocket
-					if ( !V_strcmp( "grocket", bf_teaserprops_type.GetString() ) && V_strcmp( ENTITYROCKET_DEFAULT_MODEL, szModelName ) )
-						return;
+					// Filter entities based on bf_teaserprops_type setting
+					const char* pszTeaserType = bf_teaserprops_type.GetString();
+					
+					// If Grocket type is selected, only allow rocket entities
+					if ( !V_strcmp( "grocket", pszTeaserType ) && V_strcmp( "entity_rocket", pszEntName ) )
+					{
+						continue; // Skip non-rocket entities
+					}
+					// If Invasion type is selected, only allow saucer entities and invasion poster signs
+					else if ( !V_strcmp( "invasion", pszTeaserType ) )
+					{
+						// Allow saucers
+						if ( !V_strcmp( "entity_saucer", pszEntName ) )
+						{
+							// Saucer is allowed
+						}
+						// Allow only specific sign models (invasion posters)
+						else if ( !V_strcmp( "entity_sign", pszEntName ) && 
+								( !V_strcmp( "models/props_teaser/update_invasion_poster001.mdl", szModelName ) ||
+								  !V_strcmp( "models/props_teaser/update_invasion_poster002.mdl", szModelName ) ) )
+						{
+							// Invasion poster signs are allowed
+						}
+						else
+						{
+							continue; // Skip all other entities for Invasion
+						}
+					}
+					// If MVM type is selected, only allow carrier entities and EOTL poster signs
+					else if ( !V_strcmp( "mvm", pszTeaserType ) )
+					{
+						// Allow carriers
+						if ( !V_strcmp( "entity_carrier", pszEntName ) )
+						{
+							// Carrier is allowed
+						}
+						// Allow only specific sign models (EOTL poster)
+						else if ( !V_strcmp( "entity_sign", pszEntName ) && !V_strcmp( "models/props_teaser/update_eotl_poster001.mdl", szModelName ) )
+						{
+							// EOTL poster sign is allowed
+						}
+						else
+						{
+							continue; // Skip all other entities for MVM
+						}
+					}
 
 					CExtraMapEntity *pExtraMapEntity = static_cast< CExtraMapEntity* >( CBaseEntity::CreateNoSpawn( pszEntName, loc, rot ) );
 					if ( pExtraMapEntity )

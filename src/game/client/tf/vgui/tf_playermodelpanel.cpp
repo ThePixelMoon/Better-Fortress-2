@@ -29,6 +29,7 @@
 #include "bone_setup.h"
 #include "halloween/tf_weapon_spellbook.h"
 #include "matsys_controls/matsyscontrols.h"
+#include "baseplayer_shared.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include <tier0/memdbgon.h>
@@ -154,6 +155,45 @@ CTFPlayerModelPanel::~CTFPlayerModelPanel( void )
 	{
 		SafeDeleteParticleData( &m_aParticleSystems[i] );
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Check if any equipped items have the robot attribute
+//-----------------------------------------------------------------------------
+bool CTFPlayerModelPanel::ShouldUseRobotVoice( void ) const
+{
+	static CSchemaAttributeDefHandle pAttrDef_RobotSkin( "robotrobotrobotrobot" );
+	if ( !pAttrDef_RobotSkin )
+		return false;
+
+	FOR_EACH_VEC( m_ItemsToCarry, i )
+	{
+		CEconItemView *pItem = m_ItemsToCarry[i];
+		if ( !pItem )
+			continue;
+			
+		float fRobotModel = 0.0f;
+		if ( FindAttribute_UnsafeBitwiseCast<attrib_value_t>( pItem, pAttrDef_RobotSkin, &fRobotModel ) && fRobotModel == 1.0f )
+		{
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Get the voice sound token like a real player would
+//-----------------------------------------------------------------------------
+const char* CTFPlayerModelPanel::GetSceneSoundToken( void ) const
+{
+	if ( ShouldUseRobotVoice() )
+	{
+		// Use "MVM_" prefix for robot voices, like in tf_player.cpp
+		return "MVM_";
+	}
+	
+	return "";
 }
 
 //-----------------------------------------------------------------------------
@@ -1943,7 +1983,17 @@ void CTFPlayerModelPanel::StartEvent( float currenttime, CChoreoScene *scene, CC
 			es.m_SoundLevel = iSoundlevel;
 			es.m_flSoundTime = soundtime;
 			es.m_bEmitCloseCaption = false;
-			es.m_pSoundName = event->GetParameters();
+			
+			// Check for robot voice like the server does
+			const char *pchToken = GetSceneSoundToken();
+			char szModifiedSound[512];
+			
+			// Use the same approach as sceneentity.cpp - check if we're an engineer with special handling
+			bool bIsEngineer = ( m_iCurrentClassIndex == TF_CLASS_ENGINEER && !V_strnicmp( event->GetParameters(), "engineer_", 9 ) );
+			
+			// Copy the sound name with modifier token (MVM_ prefix for robot voices)
+			CopySoundNameWithModifierToken( szModifiedSound, event->GetParameters(), sizeof( szModifiedSound ), pchToken, bIsEngineer );
+			es.m_pSoundName = szModifiedSound;
 
 			C_RecipientFilter filter;
 			C_BaseEntity::EmitSound( filter, SOUND_FROM_UI_PANEL, es );

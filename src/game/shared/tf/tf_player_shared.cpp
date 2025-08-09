@@ -124,7 +124,7 @@ ConVar tf_invuln_time( "tf_invuln_time", "1.0", FCVAR_DEVELOPMENTONLY | FCVAR_RE
 extern ConVar tf_player_movement_restart_freeze;
 extern ConVar mp_tournament_readymode_countdown;
 extern ConVar tf_max_charge_speed;
-ConVar tf_mvm_footstep_sounds( "tf_mvm_footstep_sounds", "1", FCVAR_REPLICATED, "Replaces the Giants footsteps with Unique unused ones" );
+ConVar bf_mvm_footstep_sounds( "bf_mvm_footstep_sounds", "1", FCVAR_REPLICATED, "Replaces the Giants footsteps with Unique unused ones" );
 
 ConVar tf_always_loser( "tf_always_loser", "0", FCVAR_CHEAT | FCVAR_REPLICATED, "Force loserstate to true." );
 
@@ -12031,7 +12031,7 @@ const char *CTFPlayer::GetOverrideStepSound( const char *pszBaseStepSoundName )
 
 	int iOverrideFootstepSoundSet = kFootstepSoundSet_Default;
 	CALL_ATTRIB_HOOK_INT( iOverrideFootstepSoundSet, override_footstep_sound_set );
-	bool MVMUnusedFootsteps = tf_mvm_footstep_sounds.GetBool();
+	bool MVMUnusedFootsteps = bf_mvm_footstep_sounds.GetBool();
 
 	// we need to do this here or it does not function otherwise.
 	switch( iOverrideFootstepSoundSet )

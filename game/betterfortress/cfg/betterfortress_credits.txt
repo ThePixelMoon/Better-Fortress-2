@@ -70,6 +70,12 @@ DESCRIPTION INFO_OPTIONS
 		{ BOOL }
 		{ "1" }
 	}
+	"credit2_6"
+	{
+		"k-vog - Classselection animation bug"
+		{ BOOL }
+		{ "1" }
+	}
 	"category4"
 	{
 		"UPDATE: OFFSHORE"

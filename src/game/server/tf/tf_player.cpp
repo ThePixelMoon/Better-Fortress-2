@@ -4980,9 +4980,11 @@ void CTFPlayer::Spawn()
 
 	extern ConVar tf_teleporter_fov_time;
 	extern ConVar tf_teleporter_fov_start;
+	extern ConVar tf_mvm_engineer_teleporter_uber_duration;
 	
+	// MVM Versus - Add robot engineer teleports as new spawnpoints! Bots are handled in automatic somewhere else, so we exclude them
 	// Play teleporter effects for robot players who spawned at teleporters
-	if ( GetTeamNumber() == TF_TEAM_PVE_INVADERS && TFGameRules() && TFGameRules()->IsMannVsMachineMode() )
+	if ( GetTeamNumber() == TF_TEAM_PVE_INVADERS && TFGameRules() && TFGameRules()->IsMannVsMachineMode() && !IsBot() )
 	{
 		// Get our current spawn point location and see if it's near a teleporter
 		Vector myOrigin = GetAbsOrigin();
@@ -5007,6 +5009,9 @@ void CTFPlayer::Spawn()
 				TeleportEffect();
 				SetFOV( this, 0, tf_teleporter_fov_time.GetFloat(), tf_teleporter_fov_start.GetInt() );
 				SpeakConceptIfAllowed( MP_CONCEPT_TELEPORTED );
+				float flUberTime = tf_mvm_engineer_teleporter_uber_duration.GetFloat();
+				m_Shared.AddCond( TF_COND_INVULNERABLE, flUberTime );
+				m_Shared.AddCond( TF_COND_INVULNERABLE_WEARINGOFF, flUberTime );
 				color32 fadeColor = {255,255,255,100};
 				UTIL_ScreenFade( this, fadeColor, 0.25, 0.4, FFADE_IN );
 				break; // Only play effect once

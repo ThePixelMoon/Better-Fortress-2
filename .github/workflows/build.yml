@@ -14,7 +14,7 @@ jobs:
         include:
           - os: windows-latest
             build_script: createbf2projects-nopause.bat
-            build_cmd: msbuild betterfortress2.sln /p:Configuration=Release /p:Platform=x64 /m
+            build_cmd: msbuild betterfortress2.sln /p:Configuration=Release /p:Platform=win64 /m
             artifact_name: bf2-windows
           - os: ubuntu-20.04
             build_script: ./buildbfprojects.sh release
@@ -27,6 +27,16 @@ jobs:
         with:
           submodules: true
 
+      - name: Setup Python (Windows)
+        if: runner.os == 'Windows'
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install Python (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get install -y python3
+
       #-- caching
       - name: Setup ccache (Linux)
         if: runner.os == 'Linux'
@@ -34,6 +44,13 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y ccache
           echo 'export PATH="/usr/lib/ccache:$PATH"' >> $GITHUB_ENV
+
+      - name: ~/.ccache stuff (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          if [ ! -d ~/.ccache ]; then
+            mkdir ~/.ccache
+          fi
 
       - name: Restore ccache cache (Linux)
         if: runner.os == 'Linux'
@@ -59,7 +76,7 @@ jobs:
       - name: Install Linux build dependencies
         if: runner.os == 'Linux'
         run: |
-          sudo apt-get install -y g++-multilib ninja-build python3 lib32z1-dev podman
+          sudo apt-get install -y g++-multilib ninja-build lib32z1-dev podman
 
       - name: Setup MSBuild (Windows only)
         if: runner.os == 'Windows'

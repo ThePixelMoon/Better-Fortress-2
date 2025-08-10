@@ -1,0 +1,95 @@
+# I'm old!
+name: Build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            build_script: src/createbf2projects.bat
+            build_cmd: msbuild betterfortress2.sln /p:Configuration=Release /p:Platform=Win32 /m
+            artifact_name: bf2-windows
+          - os: ubuntu-20.04
+            build_script: src/buildbfprojects.sh release
+            build_cmd: ""
+            artifact_name: bf2-linux
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      #-- caching
+      - name: Setup ccache (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ccache
+          echo 'export PATH="/usr/lib/ccache:$PATH"' >> $GITHUB_ENV
+
+      - name: Restore ccache cache (Linux)
+        if: runner.os == 'Linux'
+        uses: actions/cache@v4
+        with:
+          path: ~/.ccache
+          key: ${{ runner.os }}-ccache-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-ccache-
+
+      - name: Restore Windows build cache
+        if: runner.os == 'Windows'
+        uses: actions/cache@v4
+        with:
+          path: |
+            C:\Users\runneradmin\AppData\Local\Microsoft\MSBuild
+            C:\Users\runneradmin\AppData\Local\Temp
+          key: ${{ runner.os }}-msvc-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-msvc-
+      #-- end caching
+
+      - name: Install Linux build dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get install -y g++-multilib ninja-build python3 lib32z1-dev podman
+
+      - name: Setup MSBuild (Windows only)
+        if: runner.os == 'Windows'
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Generate project files
+        run: ${{ matrix.build_script }}
+        shell: bash
+
+      - name: Build (Windows only)
+        if: runner.os == 'Windows'
+        run: ${{ matrix.build_cmd }}
+
+      - name: Save ccache (Linux)
+        if: runner.os == 'Linux'
+        uses: actions/cache@v4
+        with:
+          path: ~/.ccache
+          key: ${{ runner.os }}-ccache-${{ github.sha }}
+
+      - name: Save Windows build cache
+        if: runner.os == 'Windows'
+        uses: actions/cache@v4
+        with:
+          path: |
+            C:\Users\runneradmin\AppData\Local\Microsoft\MSBuild
+            C:\Users\runneradmin\AppData\Local\Temp
+          key: ${{ runner.os }}-msvc-${{ github.sha }}
+
+      - name: Upload Game Folder
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: game/

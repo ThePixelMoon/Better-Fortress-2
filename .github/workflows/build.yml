@@ -13,11 +13,11 @@ jobs:
       matrix:
         include:
           - os: windows-latest
-            build_script: src/createbf2projects.bat
-            build_cmd: msbuild betterfortress2.sln /p:Configuration=Release /p:Platform=Win32 /m
+            build_script: createbf2projects-nopause.bat
+            build_cmd: msbuild betterfortress2.sln /p:Configuration=Release /p:Platform=x64 /m
             artifact_name: bf2-windows
           - os: ubuntu-20.04
-            build_script: src/buildbfprojects.sh release
+            build_script: ./buildbfprojects.sh release
             build_cmd: ""
             artifact_name: bf2-linux
 
@@ -68,15 +68,18 @@ jobs:
       - name: Generate project files (Windows)
         run: ${{ matrix.build_script }}
         shell: cmd
+        working-directory: src
         if: runner.os == 'Windows'
 
       - name: Generate project files (Linux)
         run: ${{ matrix.build_script }}
+        working-directory: src
         shell: bash
         if: runner.os == 'Linux'
 
       - name: Build (Windows only)
         if: runner.os == 'Windows'
+        working-directory: src
         run: ${{ matrix.build_cmd }}
 
       - name: Save ccache (Linux)

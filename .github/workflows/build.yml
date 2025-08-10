@@ -75,7 +75,7 @@ jobs:
 
       - name: Make build script executable (Linux)
         if: runner.os == 'Linux'
-        run: chmod +x buildbfprojects.sh
+        run: chmod +x buildbf2projects.sh
         working-directory: src
 
       - name: Install Linux build dependencies

@@ -9,6 +9,7 @@ jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         include:
           - os: windows-latest
@@ -64,9 +65,15 @@ jobs:
         if: runner.os == 'Windows'
         uses: microsoft/setup-msbuild@v2
 
-      - name: Generate project files
+      - name: Generate project files (Windows)
+        run: ${{ matrix.build_script }}
+        shell: cmd
+        if: runner.os == 'Windows'
+
+      - name: Generate project files (Linux)
         run: ${{ matrix.build_script }}
         shell: bash
+        if: runner.os == 'Linux'
 
       - name: Build (Windows only)
         if: runner.os == 'Windows'

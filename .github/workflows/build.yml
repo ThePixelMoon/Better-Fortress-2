@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    if: contains('["ALIEN31ITA","TheGabenZone"]', github.actor)
+    if: contains('["ALIEN31ITA","TheGabenZone","main-thing"]', github.actor)
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false

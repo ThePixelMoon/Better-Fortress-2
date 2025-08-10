@@ -17,7 +17,7 @@ jobs:
             build_cmd: msbuild betterfortress2.sln /p:Configuration=Release /p:Platform=win64 /m
             artifact_name: bf2-windows
           - os: ubuntu-latest
-            build_script: ./buildbfprojects
+            build_script: ./buildbf2projects
             build_cmd: ""
             artifact_name: bf2-linux
 
@@ -72,11 +72,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-msvc-
       #-- end caching
-
-      - name: Make build script executable (Linux)
-        if: runner.os == 'Linux'
-        run: chmod +x ./buildbf2projects
-        working-directory: src
 
       - name: Install Linux build dependencies
         if: runner.os == 'Linux'

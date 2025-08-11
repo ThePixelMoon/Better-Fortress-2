@@ -789,8 +789,7 @@
 		"29000"
 		{
 			"name"	"Taunt: Gangnam Mercs"
-			"prefab"	"valve bf_community_taunt"
-			"first_sale_date"		"2014/06/17"
+			"prefab"	"bf_community_taunt"
 			"item_name"	"#TBF_TauntGangnam"
 			"item_description"	"#TBF_TauntGangnam_Desc"
 			"image_inventory"	"backpack/player/taunts/taunt_gangnam"
@@ -1221,7 +1220,6 @@
 			"equip_regions"
 			{
 				"zombie_body"			"1"
-				"feet"					"1"
 			}
 			"used_by_classes"
 			{
@@ -1255,7 +1253,6 @@
 			"equip_regions"
 			{
 				"zombie_body"			"1"
-				"feet"					"1"
 			}
 			"used_by_classes"
 			{

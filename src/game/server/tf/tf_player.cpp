@@ -16555,7 +16555,7 @@ const char* CTFPlayer::GetSceneSoundToken( void )
 		//Engineer bot has some "special" voice clips that VALVe ruined
 		if (TFGameRules() && TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_INVADERS || IsMVMRobot() )
 		{
-			if (IsMiniBoss())
+			if ( IsMiniBoss() )
 			{
 				return "M_MVM_";
 			}

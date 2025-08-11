@@ -3552,6 +3552,9 @@ void CTFPlayer::PrecacheMvM()
 	PrecacheScriptSound( "MVM.Robot_Teleporter_Activate" );
 	PrecacheScriptSound( "MVM.MoneyPickup" );
 
+	//TEMPORARY PATCH - Figure it out why the sound plays but not precached?
+	PrecacheScriptSound("MVM.GiantDemoman_Grenadeshoot");
+
 	PrecacheMaterial( "effects/circle_nocull" );
 }
 
